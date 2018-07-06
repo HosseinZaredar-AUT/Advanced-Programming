@@ -9,11 +9,11 @@ public class EntityManager {
 
     private static Player player;
     private static ArrayList<HardWall> hardWalls;
-    private static ArrayList<Fire> fires;
+    private static ArrayList<Bullet> bullets;
 
     public EntityManager() {
         hardWalls = new ArrayList<>();
-        fires = new ArrayList<>();
+        bullets = new ArrayList<>();
 
     }
 
@@ -22,9 +22,8 @@ public class EntityManager {
         player = new Player(x, y);
     }
 
-    public static void createFire() {
-
-
+    public static void createFire(float x, float y, double angle) {
+        bullets.add(new Bullet(x, y, angle));
     }
 
     public static void createHardWall(float x, float y) {
@@ -37,7 +36,8 @@ public class EntityManager {
 
     }
 
-    public static void removeFire(Entity e) {
+    public static void removeBullet(Entity e) {
+        bullets.remove(e);
 
     }
 
@@ -58,7 +58,11 @@ public class EntityManager {
 
     }
 
-    public static Entity doCollideWithFire(Entity e) {
+    public static Entity doCollideWithBullet(Entity e) {
+        for (Bullet b : bullets) {
+            if (b.getBounds().intersects(e.getBounds()))
+                return b;
+        }
         return null;
 
     }
@@ -66,11 +70,22 @@ public class EntityManager {
     //TICK AND RENDER
     public void tick() {
         player.tick();
+
+        for (HardWall w : hardWalls)
+            w.tick();
+
+        for (Bullet f : bullets)
+            f.tick();
+
     }
 
     public void render(Graphics2D g) {
         for (HardWall w : hardWalls)
             w.render(g);
+
+        for (Bullet f : bullets)
+            f.render(g);
+
         player.render(g);
     }
 

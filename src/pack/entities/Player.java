@@ -13,9 +13,11 @@ public class Player extends Entity {
 
     private boolean up, down, right, left;
     private int degree;
-    private double degreeGun;
+    public static double degreeGun;
     private int xMove, yMove;
-    private final int SPEED = 6;
+    private final int SPEED = 4;
+    private final int FIRE_Rate = 5; //the less, the faster
+    private int fireCounter = 0;
 
     public Player(float x, float y) {
         super(x, y, 100, 100);
@@ -24,6 +26,8 @@ public class Player extends Entity {
 
     @Override
     public void tick() {
+
+        //MOVEMENT
         up = KeyManager.up;
         down = KeyManager.down;
         left = KeyManager.left;
@@ -51,10 +55,23 @@ public class Player extends Entity {
             x -= xMove;
             y -= yMove;
         }
-
-        degreeGun = MouseManager.angle;
-
         Camera.centerOnEntity(this);
+
+        //SHOOT
+        degreeGun = MouseManager.angle;
+        if (MouseManager.leftMouseButton) {
+
+            //todo make it precise...
+            if (fireCounter == FIRE_Rate) {
+                EntityManager.createFire(x + width / 2, y + height / 2, degreeGun);
+                fireCounter = -1;
+            }
+            fireCounter++;
+
+
+
+        }
+
     }
 
 

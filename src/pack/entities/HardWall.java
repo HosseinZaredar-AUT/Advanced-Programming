@@ -1,5 +1,6 @@
 package pack.entities;
 
+import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 
@@ -13,7 +14,9 @@ public class HardWall extends Entity {
 
     @Override
     public void tick() {
-        //EMPTY
+        Entity bullet = EntityManager.doCollideWithBullet(this);
+        if (bullet != null)
+            EntityManager.removeBullet(bullet);
     }
 
     @Override

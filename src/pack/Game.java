@@ -39,6 +39,7 @@ public class Game implements Runnable {
         frame.addKeyListener(keyManager);
         MouseManager mouseManager = new MouseManager();
         frame.addMouseMotionListener(mouseManager);
+        frame.addMouseListener(mouseManager);
 
         Assets.init();
         state = new GameState();

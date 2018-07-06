@@ -46,8 +46,8 @@ public class Camera {
         checkBlankSpace();
 
         //not important but necessary
-        entityX = entity.getX();
-        entityY = entity.getY();
+        entityX = entity.getX() + (entity.getWidth() / 2);
+        entityY = entity.getY() + (entity.getHeight() / 2);
     }
 
     public static float getXOffset() {

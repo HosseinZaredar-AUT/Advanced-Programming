@@ -1,5 +1,7 @@
 package pack.entities;
 
+import pack.Game;
+import pack.entities.manager.EntityManager;
 import pack.graphics.*;
 import pack.input.*;
 
@@ -12,9 +14,12 @@ public class Player extends Entity {
     private boolean up, down, right, left;
     private int degree;
     private double degreeGun;
+    private int xMove, yMove;
+    private final int SPEED = 6;
 
     public Player(float x, float y) {
         super(x, y, 100, 100);
+
     }
 
     @Override
@@ -24,14 +29,28 @@ public class Player extends Entity {
         left = KeyManager.left;
         right = KeyManager.right;
 
+        xMove = 0;
+        yMove = 0;
+
         if (up)
-            y -= 6;
+            yMove = -SPEED;
         if (down)
-            y += 6;
+            yMove = SPEED;
         if (left)
-            x -= 6;
+            xMove = -SPEED;
         if (right)
-            x += 6;
+            xMove = SPEED;
+
+        x += xMove;
+        y += yMove;
+
+        //Collision detection
+        if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
+                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0 ||
+                EntityManager.doCollideWithWalls(this) != null) {
+            x -= xMove;
+            y -= yMove;
+        }
 
         degreeGun = MouseManager.angle;
 
@@ -69,11 +88,16 @@ public class Player extends Entity {
 
 
         BufferedImage imageGun = Assets.playerGun;
-        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()+18), (int) (y - Camera.getYOffset()+13));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth()/4 +4 , imageGun.getHeight()/4 +4);
+        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset()+ 13));
+        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4 , imageGun.getHeight() / 4 + 4);
 
 
         g.drawImage(imageGun, transformGun, null);
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle((int)x + 6, (int)y + 6, width - 6, height - 6);
     }
 
 }

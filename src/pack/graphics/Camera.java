@@ -44,6 +44,7 @@ public class Camera {
         yOffset = entity.getY() - Game.frameHeight / 2 + entity.getHeight() / 2 + (float) MouseManager.dy / 5;
 
         checkBlankSpace();
+
         //not important but necessary
         entityX = entity.getX();
         entityY = entity.getY();

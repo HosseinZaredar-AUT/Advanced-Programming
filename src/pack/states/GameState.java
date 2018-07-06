@@ -1,31 +1,41 @@
 package pack.states;
 
+import pack.entities.manager.EntityManager;
 import pack.world.World;
-import pack.entities.Player;
 import java.awt.*;
 
 public class GameState extends State{
 
-    private Player player;
+    private EntityManager entityManager;
     private World world;
 
     public GameState() {
-        player = new Player(100f, 100f);
         world= new World("res/world/worldFile.txt");
+        entityManager = new EntityManager();
+
+        //TEST
+        entityManager.createPlayer(10, 10);
+        entityManager.createHardWall(1000, 100);
+        entityManager.createHardWall(1000, 200);
+        entityManager.createHardWall(1000, 300);
+        entityManager.createHardWall(1000, 400);
+        entityManager.createHardWall(1000, 500);
+        entityManager.createHardWall(900, 500);
+        entityManager.createHardWall(800, 500);
+        entityManager.createHardWall(700, 500);
     }
 
     @Override
     public void tick() {
         world.tick();
-        player.tick();
+        entityManager.tick();
 
     }
 
     @Override
     public void render(Graphics2D g) {
-
         world.render(g);
-        player.render(g);
+        entityManager.render(g);
 
     }
 }

@@ -18,6 +18,9 @@ public abstract class Entity {
 
     public abstract void render(Graphics2D g);
 
+    public abstract Rectangle getBounds();
+
+
     public float getX() {
         return x;
     }

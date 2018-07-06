@@ -1,0 +1,28 @@
+package pack.entities;
+
+import pack.graphics.Assets;
+import pack.graphics.Camera;
+
+import java.awt.*;
+
+public class HardWall extends Entity {
+
+    public HardWall(float x, float y) {
+        super(x, y, 100, 100);
+    }
+
+    @Override
+    public void tick() {
+        //EMPTY
+    }
+
+    @Override
+    public void render(Graphics2D g) {
+        g.drawImage(Assets.hardWall, (int)(x - Camera.getXOffset()), (int)(y - Camera.getYOffset()), width, height, null);
+    }
+
+    @Override
+    public Rectangle getBounds() {
+        return new Rectangle((int)x, (int)y, width, height);
+    }
+}

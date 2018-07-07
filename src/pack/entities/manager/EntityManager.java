@@ -1,7 +1,6 @@
 package pack.entities.manager;
 
 import pack.entities.*;
-
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -10,12 +9,18 @@ public class EntityManager {
     private static Player player;
     private static ArrayList<HardWall> hardWalls;
     private static ArrayList<SoftWall> softWalls;
+    private static ArrayList<Cannon> cannons;
     private static ArrayList<Bullet> bullets;
+    private static ArrayList<BulletFood> bulletFoods;
+    private static ArrayList<CannonFood> cannonFoods;
 
     public EntityManager() {
         hardWalls = new ArrayList<>();
         softWalls = new ArrayList<>();
+        cannons = new ArrayList<>();
         bullets = new ArrayList<>();
+        bulletFoods = new ArrayList<>();
+        cannonFoods = new ArrayList<>();
 
     }
 
@@ -24,7 +29,12 @@ public class EntityManager {
         player = new Player(x, y);
     }
 
-    public static void createFire(float x, float y, double angle) {
+
+    public static void createCannon(float x, float y, double angle) {
+        cannons.add(new Cannon(x, y, angle));
+    }
+
+    public static void createBullet(float x, float y, double angle) {
         bullets.add(new Bullet(x, y, angle));
     }
 
@@ -38,8 +48,21 @@ public class EntityManager {
 
     }
 
+    public static void createBulletFood(float x, float y) {
+        bulletFoods.add(new BulletFood(x, y));
+    }
+
+    public static void createCannonFood(float x, float y) {
+        cannonFoods.add(new CannonFood(x, y));
+    }
+
     //REMOVERS
 
+
+    public static void removeCannon(Entity e) {
+        cannons.remove(e);
+
+    }
 
     public static void removeBullet(Entity e) {
         bullets.remove(e);
@@ -48,7 +71,14 @@ public class EntityManager {
 
     public static void removeSoftWall(Entity e) {
         softWalls.remove(e);
+    }
 
+    public static void removeBulletFood(Entity e) {
+        bulletFoods.remove(e);
+    }
+
+    public static void removeCannonFood(Entity e) {
+        cannonFoods.remove(e);
     }
 
 
@@ -76,13 +106,37 @@ public class EntityManager {
 
     }
 
-    public static Entity doCollideWithBullet(Entity e) {
-        for (Bullet b : bullets) {
+    public static Cannon doCollideWithCannon(Entity e) {
+        for (Cannon b : cannons) {
             if (b.getBounds().intersects(e.getBounds()))
                 return b;
         }
         return null;
 
+    }
+
+    public static Bullet doCollideWithBullet(Entity e) {
+        for (Bullet b : bullets) {
+            if (b.getBounds().intersects(e.getBounds()))
+                return b;
+        }
+        return null;
+    }
+
+    public static BulletFood doCollideWithBulletFood(Entity e) {
+        for (BulletFood b : bulletFoods) {
+            if (b.getBounds().intersects(e.getBounds()))
+                return b;
+        }
+        return null;
+    }
+
+    public static CannonFood doCollideWithCannonFood(Entity e) {
+        for (CannonFood c : cannonFoods) {
+            if (c.getBounds().intersects(e.getBounds()))
+                return c;
+        }
+        return null;
     }
 
     //TICK AND RENDER
@@ -100,8 +154,11 @@ public class EntityManager {
         } catch (Exception ex) {
         }
 
-        for (Bullet f : bullets)
+        for (Cannon f : cannons)
             f.tick();
+
+        for (Bullet b : bullets)
+            b.tick();
 
     }
 
@@ -112,16 +169,21 @@ public class EntityManager {
         for (SoftWall w : softWalls)
             w.render(g);
 
-        for (Bullet f : bullets)
+        for (Cannon f : cannons)
             f.render(g);
 
+        for (Bullet b : bullets)
+            b.render(g);
+
+        for (BulletFood b : bulletFoods)
+            b.render(g);
+
+        for (CannonFood c : cannonFoods)
+            c.render(g);
+
         player.render(g);
+
     }
-
-
-
-
-
 
 
 }

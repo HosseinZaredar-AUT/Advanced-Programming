@@ -14,9 +14,13 @@ public class HardWall extends Entity {
 
     @Override
     public void tick() {
-        Entity bullet = EntityManager.doCollideWithBullet(this);
+        Bullet bullet = EntityManager.doCollideWithBullet(this);
         if (bullet != null)
             EntityManager.removeBullet(bullet);
+
+        Cannon cannon = EntityManager.doCollideWithCannon(this);
+        if (cannon != null)
+            EntityManager.removeCannon(cannon);
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.awt.event.MouseMotionListener;
 public class MouseManager extends MouseAdapter {
 
     public static boolean leftMouseButton;
-    public static boolean rightMouseButton;
+    public static int rightMouseButtonFlag = 1;
 
     public static double angle;
     public static double dx;
@@ -32,21 +32,23 @@ public class MouseManager extends MouseAdapter {
         angle = (Math.atan2(dy, dx) / (Math.PI)) * 180;
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (SwingUtilities.isRightMouseButton(e))
+            rightMouseButtonFlag *= -1;
+
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e))
             leftMouseButton = true;
-        else if(SwingUtilities.isRightMouseButton(e))
-            rightMouseButton = true;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e))
             leftMouseButton = false;
-        else if(SwingUtilities.isRightMouseButton(e))
-            rightMouseButton = false;
     }
 
 }

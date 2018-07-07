@@ -15,6 +15,7 @@ public class GameState extends State{
 
         //TEST
         entityManager.createPlayer(10, 10);
+
         entityManager.createHardWall(1000, 100);
         entityManager.createHardWall(1000, 200);
         entityManager.createHardWall(1000, 300);
@@ -23,10 +24,15 @@ public class GameState extends State{
         entityManager.createHardWall(900, 500);
         entityManager.createHardWall(800, 500);
         entityManager.createHardWall(700, 500);
+
         entityManager.createSoftWall(700, 600);
         entityManager.createSoftWall(700, 700);
         entityManager.createSoftWall(700, 800);
         entityManager.createSoftWall(700, 900);
+
+        entityManager.createBulletFood(1000, 1000);
+        entityManager.createCannonFood(100, 1000);
+
 
 
     }

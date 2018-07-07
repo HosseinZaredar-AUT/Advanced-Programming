@@ -13,6 +13,7 @@ public class EntityManager {
     private static ArrayList<Bullet> bullets;
     private static ArrayList<BulletFood> bulletFoods;
     private static ArrayList<CannonFood> cannonFoods;
+    private static ArrayList<Upgrader> upgraders;
 
     public EntityManager() {
         hardWalls = new ArrayList<>();
@@ -21,6 +22,7 @@ public class EntityManager {
         bullets = new ArrayList<>();
         bulletFoods = new ArrayList<>();
         cannonFoods = new ArrayList<>();
+        upgraders = new ArrayList<>();
 
     }
 
@@ -56,8 +58,11 @@ public class EntityManager {
         cannonFoods.add(new CannonFood(x, y));
     }
 
-    //REMOVERS
+    public static void createUpgrader(float x, float y) {
+        upgraders.add(new Upgrader(x, y));
+    }
 
+    //REMOVERS
 
     public static void removeCannon(Entity e) {
         cannons.remove(e);
@@ -79,6 +84,10 @@ public class EntityManager {
 
     public static void removeCannonFood(Entity e) {
         cannonFoods.remove(e);
+    }
+
+    public static void removeUpgrader(Entity e) {
+        upgraders.remove(e);
     }
 
 
@@ -139,6 +148,14 @@ public class EntityManager {
         return null;
     }
 
+    public static Upgrader doCollideWithUpgrader(Entity e) {
+        for (Upgrader u : upgraders) {
+            if (u.getBounds().intersects(e.getBounds()))
+                return u;
+        }
+        return null;
+    }
+
     //TICK AND RENDER
     public void tick() {
         player.tick();
@@ -180,6 +197,9 @@ public class EntityManager {
 
         for (CannonFood c : cannonFoods)
             c.render(g);
+
+        for (Upgrader u : upgraders)
+            u.render(g);
 
         player.render(g);
 

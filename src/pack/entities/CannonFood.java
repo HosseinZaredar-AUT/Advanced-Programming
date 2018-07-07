@@ -17,7 +17,7 @@ public class CannonFood extends Entity{
 
     @Override
     public void render(Graphics2D g) {
-        g.drawImage(Assets.CannonFood, (int)(x - Camera.getXOffset()), (int)(y - Camera.getYOffset()), null);
+        g.drawImage(Assets.cannonFood, (int)(x - Camera.getXOffset()), (int)(y - Camera.getYOffset()), null);
     }
 
     @Override

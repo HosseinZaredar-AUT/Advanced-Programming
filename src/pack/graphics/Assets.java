@@ -6,7 +6,7 @@ public class Assets {
 
     public static BufferedImage player, dirt, hardWall, softWall[],
             playerBulletGun, playerCannonGun, bullet, fire,
-            repairFood, BulletFood, CannonFood;
+            repairFood, bulletFood, cannonFood, upgrader ;
 
     public static void init() {
 
@@ -23,8 +23,10 @@ public class Assets {
         softWall[2] = pack.utils.ImageLoader.load("res/textures/softWall3.png");
         softWall[3] = pack.utils.ImageLoader.load("res/textures/softWall4.png");
         repairFood = pack.utils.ImageLoader.load("res/textures/repairFood.png");
-        CannonFood = pack.utils.ImageLoader.load("res/textures/cannonFood.png");
-        BulletFood = pack.utils.ImageLoader.load("res/textures/bulletFood.png");
+        cannonFood = pack.utils.ImageLoader.load("res/textures/cannonFood.png");
+        bulletFood = pack.utils.ImageLoader.load("res/textures/bulletFood.png");
+        upgrader = pack.utils.ImageLoader.load("res/textures/upgrader.png");
+
 
     }
 

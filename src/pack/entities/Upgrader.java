@@ -2,11 +2,13 @@ package pack.entities;
 
 import pack.graphics.Assets;
 import pack.graphics.Camera;
+
 import java.awt.*;
 
-public class BulletFood extends Entity {
+public class Upgrader extends Entity {
 
-    public BulletFood(float x, float y) {
+
+    public Upgrader(float x, float y) {
         super(x, y, 100, 100);
     }
 
@@ -17,7 +19,7 @@ public class BulletFood extends Entity {
 
     @Override
     public void render(Graphics2D g) {
-        g.drawImage(Assets.bulletFood, (int)(x - Camera.getXOffset()), (int)(y - Camera.getYOffset()), null);
+        g.drawImage(Assets.upgrader, (int)(x - Camera.getXOffset()), (int)(y- Camera.getYOffset()), null);
     }
 
     @Override
@@ -29,10 +31,11 @@ public class BulletFood extends Entity {
     public boolean equals(Object obj) {
         if (obj == this)
             return true;
-        if (!(obj instanceof BulletFood))
+        if (!(obj instanceof Upgrader))
             return false;
 
-        BulletFood other = (BulletFood) obj;
+        Upgrader other = (Upgrader) obj;
         return (x == other.x) && (y == other.y);
     }
+
 }

@@ -103,5 +103,6 @@ public class Game implements Runnable {
                 timer = 0;
 
         }
+
     }
 }

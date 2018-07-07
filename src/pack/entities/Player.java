@@ -18,6 +18,9 @@ public class Player extends Entity {
     private final int SPEED = 4;
     private final int FIRE_Rate = 5; //the less, the faster
     private int fireCounter = 0;
+    private final int MAX_HEALTH = 5;
+    private int health;
+
 
     public Player(float x, float y) {
         super(x, y, 100, 100);
@@ -50,11 +53,25 @@ public class Player extends Entity {
 
         //Collision detection
         if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0 ||
-                EntityManager.doCollideWithWalls(this) != null) {
+                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
             x -= xMove;
             y -= yMove;
+        } else {
+            x -= xMove;
+            y -= yMove;
+
+            x += xMove;
+            if (EntityManager.doCollideWithHardWalls(this) != null ||
+                    EntityManager.doCollideWithSoftWalls(this) != null)
+                x -= xMove;
+
+            y += yMove;
+            if (EntityManager.doCollideWithHardWalls(this) != null ||
+                    EntityManager.doCollideWithSoftWalls(this) != null)
+                y -= yMove;
+
         }
+
         Camera.centerOnEntity(this);
 
         //SHOOT

@@ -23,6 +23,12 @@ public class GameState extends State{
         entityManager.createHardWall(900, 500);
         entityManager.createHardWall(800, 500);
         entityManager.createHardWall(700, 500);
+        entityManager.createSoftWall(700, 600);
+        entityManager.createSoftWall(700, 700);
+        entityManager.createSoftWall(700, 800);
+        entityManager.createSoftWall(700, 900);
+
+
     }
 
     @Override

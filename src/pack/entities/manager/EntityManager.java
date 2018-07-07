@@ -9,10 +9,12 @@ public class EntityManager {
 
     private static Player player;
     private static ArrayList<HardWall> hardWalls;
+    private static ArrayList<SoftWall> softWalls;
     private static ArrayList<Bullet> bullets;
 
     public EntityManager() {
         hardWalls = new ArrayList<>();
+        softWalls = new ArrayList<>();
         bullets = new ArrayList<>();
 
     }
@@ -31,13 +33,21 @@ public class EntityManager {
 
     }
 
-    //REMOVERS
-    public static void removeWall(Entity e) {
+    public static void createSoftWall(float x, float y) {
+        softWalls.add(new SoftWall(x, y));
 
     }
 
+    //REMOVERS
+
+
     public static void removeBullet(Entity e) {
         bullets.remove(e);
+
+    }
+
+    public static void removeSoftWall(Entity e) {
+        softWalls.remove(e);
 
     }
 
@@ -45,8 +55,16 @@ public class EntityManager {
     //COLLISION CHECK
 
     //returns null if it does not collide with anything, else returns the entity which it collides
-    public static Entity doCollideWithWalls(Entity e) {
+    public static Entity doCollideWithHardWalls(Entity e) {
         for (HardWall w : hardWalls) {
+            if (w.getBounds().intersects(e.getBounds()))
+                return w;
+        }
+        return null;
+    }
+
+    public static Entity doCollideWithSoftWalls(Entity e) {
+        for (SoftWall w : softWalls) {
             if (w.getBounds().intersects(e.getBounds()))
                 return w;
         }
@@ -74,6 +92,14 @@ public class EntityManager {
         for (HardWall w : hardWalls)
             w.tick();
 
+        //CURRENT MODIFICATION EXCEPTION HANDLING
+        try {
+            for (SoftWall w : softWalls)
+                w.tick();
+
+        } catch (Exception ex) {
+        }
+
         for (Bullet f : bullets)
             f.tick();
 
@@ -81,6 +107,9 @@ public class EntityManager {
 
     public void render(Graphics2D g) {
         for (HardWall w : hardWalls)
+            w.render(g);
+
+        for (SoftWall w : softWalls)
             w.render(g);
 
         for (Bullet f : bullets)

@@ -14,7 +14,7 @@ public class Player extends Entity {
     private boolean up, down, right, left;
     private int degree;
     public static double degreeGun;
-    private int xMove, yMove;
+    public int xMove, yMove;
     private final int SPEED = 15;
 
     private int gunState; //1.Cannon, -1.Bullet

@@ -12,13 +12,14 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Enemy extends Entity {
-
+    private boolean up, down, right, left;
+    private boolean upFinal, downFinal, rightFinal, leftFinal;
     private Player player;
     private double degree;
     public static double degreeGun;
     private double xMove, yMove;
     private final int SPEED = 6;
-    private final int FIRE_Rate = 6; //the less, the faster
+    private final int FIRE_Rate = 1; //the less, the faster
     private int fireCounter = 0;
     private double xPlus, yPlus;
 
@@ -31,73 +32,164 @@ public class Enemy extends Entity {
 
     @Override
     public void tick() {
+        up = false;
+        down = false;
+        right = false;
+        left = false;
+        upFinal=false;
+        downFinal=false;
+        leftFinal=false;
+        rightFinal=false;
+        xPlus = 0;
+        yPlus = 0;
         if ((x > Camera.getXOffset()) && (x < (Camera.getXOffset() + Game.frameWidth)) && (y > Camera.getYOffset())
                 && (y < (Camera.getYOffset() + Game.frameHeight))) {
             degreeGun = MouseManager.angleWithEnemy(x, y);
             //same gun and tank
 
             boolean flag = true;
-            if (fireCounter == FIRE_Rate) {
-                Cannon cannon = EntityManager.createCannon(x, y, degreeGun);
+            Cannon cannon = EntityManager.createCannon(x, y, degreeGun);
+
+            while (((Math.abs(cannon.getX() + cannon.xPlus - player.getX()) > 2)
+                    || (Math.abs(cannon.getY() + cannon.yPlus - player.getY()) > 2)) && (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
+                    (Math.abs(cannon.getBounds().y) < Game.frameHeight)) {
+                if (EntityManager.doCollideWithHardWalls(cannon) != null) {
+                    EntityManager.removeCannon(cannon);
+                    flag = false;
+                    break;
+                }
+                cannon.xPlus += Math.cos(Math.toRadians(degreeGun)) * SPEED;
+                cannon.yPlus += Math.sin(Math.toRadians(degreeGun)) * SPEED;
+            }
+            cannon.xPlus = 0;
+            cannon.yPlus = 0;
+            if (fireCounter != FIRE_Rate) {
+                fireCounter++;
+                EntityManager.removeCannon(cannon);
+            } else {
                 fireCounter = -1;
+            }
 
+            //flag to show can shoot or no or to move toward player
+            //we can move with xPlus and yPlus
+            if (flag) {
+                degree = degreeGun;
+                x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
+                y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
+                System.out.println(getBounds());
+//                if (EntityManager.doCollideWithHardWalls(this) != null) {
+//                    x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
+//                    y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
+//                    flag = false;
 
-                while ((Math.abs((cannon.getX() + cannon.xPlus) - player.getX()) > 10) && (Math.abs((cannon.getY() + cannon.yPlus) - player.getY()) > 10)) {
-                    if (EntityManager.doCollideWithHardWalls(cannon) != null) {
+            } else if (!flag) {
+//
+                boolean move = true;
+                if (x >= player.getX()) {
 
-                        EntityManager.removeCannon(cannon);
-                        flag = false;
-                        break;
+                    left = true;
+                    leftFinal = true;
+                }
+                if (x < player.getX()) {
+                    right = true;
+                    rightFinal = true;
+                }
+                if (y >= player.getY()) {
+                    up = true;
+                    upFinal = true;
+                }
+                if (y < player.getY()) {
+                    down = true;
+                    downFinal = true;
+                }
+
+                for (int i = 0; i < 1; i++) {
+                    if (up && right)
+                        degree = -45;
+                    else if (up && left)
+                        degree = -135;
+                    else if (right && down)
+                        degree = 45;
+                    else if (left && down)
+                        degree = 135;
+                    else if (down)
+                        degree = 90;
+                    else if (up)
+                        degree = -90;
+                    else if (right)
+                        degree = 0;
+                    else if (left)
+                        degree = 180;
+
+                    move = true;
+                    x += Math.cos(Math.toRadians(degree)) * SPEED;
+                    y += Math.sin(Math.toRadians(degree)) * SPEED;
+                    if (EntityManager.doCollideWithHardWalls(this) != null) {
+
+                        move = false;
+                        x -= Math.cos(Math.toRadians(degree)) * SPEED;
+                        y -= Math.sin(Math.toRadians(degree)) * SPEED;
+
+                        if (up) {
+                            up = false;
+                            continue;
+                        }
+//                        if ((!up) && (upFinal)) {
+//                            up = true;
+//                        }
+                        if (down) {
+                            down = false;
+                            continue;
+                        }
+//                        if ((!down) && (downFinal)) {
+//                            down = true;
+//                        }
+                        if (right) {
+                            right = false;
+                            continue;
+                        }
+//                        if ((!right) && (rightFinal)) {
+//                            right = true;
+//                        }
+                        if (left) {
+                            left = false;
+                            continue;
+                        }
+//                        if ((!left) && (leftFinal)) {
+//                            left = true;
+//                        }
                     }
 
-                    cannon.xPlus += Math.cos(Math.toRadians(degreeGun)) * 6;
-                    cannon.yPlus += Math.sin(Math.toRadians(degreeGun)) * 6;
-
+                    else {
+                        break;}
                 }
 
-                cannon.xPlus = 0;
-                cannon.yPlus = 0;
-            }
 
-            fireCounter++;
-
-            degree = degreeGun;
-
-            double temp = degree;
-            float xTemp = x;
-            float yTemp = y;
-            for (int i = 0; i < 180; i += 2) {
-                degree = temp + i;
-
-                xPlus =  (Math.cos(Math.toRadians(degree)) * SPEED);
-                yPlus =  (Math.sin(Math.toRadians(degree)) * SPEED);
-
-                System.out.println(Math.cos(Math.toRadians(degree))*SPEED + " degree");
-                if (EntityManager.doCollideWithHardWalls(this) == null) {
-                    System.out.println(getBounds());
-                    break;
+                if (!move) {
+                    System.out.println("A");
                 }
 
-                degree = temp - i;
+//
+//                if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
+//                        y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
+//                    x -= Math.cos(Math.toRadians(degree)) * SPEED;
+//                    y -= Math.sin(Math.toRadians(degree)) * SPEED;
+//
+//                } else {
+//
+//                    y -= Math.sin(Math.toRadians(degree)) * SPEED;
+//
+//                    if (EntityManager.doCollideWithHardWalls(this) != null ||
+//                            EntityManager.doCollideWithSoftWalls(this) != null)
+//                        x -= Math.cos(Math.toRadians(degree)) * SPEED;;
+//
+//                    y += Math.sin(Math.toRadians(degree)) * SPEED;
+//                    if (EntityManager.doCollideWithHardWalls(this) != null ||
+//                            EntityManager.doCollideWithSoftWalls(this) != null)
+//                        y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
-                xPlus = (int) (Math.cos(Math.toRadians(degree)) * SPEED);
-                yPlus = (int) (Math.sin(Math.toRadians(degree)) * SPEED);
+//                }
 
-                if (EntityManager.doCollideWithHardWalls(this) == null) {
-                    break;
-                }
-            }
-            x += xPlus;
-            y += yPlus;
-
-            xPlus = 0;
-            yPlus = 0;
-
-            if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                    y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0
-                    || (EntityManager.doCollideWithPlayer(this) != null)) {
-                x = xTemp;
-                y = yTemp;
             }
 
 
@@ -127,17 +219,8 @@ public class Enemy extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        if (xPlus<0)
-            xPlus+=-3;
-        if (yPlus<0)
-            yPlus+=-3;
 
-        if (xPlus>0)
-            xPlus=+3;
-        if (yPlus>0)
-            yPlus+=3;
-
-        return new Rectangle((int) x +(int)(xPlus) + 6, (int) y + (int)(yPlus) + 6, width - 6, height - 6);
+        return new Rectangle((int) x, (int) y, width, height);
     }
 
 }

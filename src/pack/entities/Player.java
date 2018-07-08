@@ -15,7 +15,7 @@ public class Player extends Entity {
     private int degree;
     public static double degreeGun;
     private int xMove, yMove;
-    private final int SPEED = 6;
+    private final int SPEED = 15;
 
     private int gunState; //1.Cannon, -1.Bullet
     private int cannonRate = 40; //the less, the faster
@@ -75,10 +75,10 @@ public class Player extends Entity {
             y -= yMove;
 
         } else {
-            x -= xMove;
+
             y -= yMove;
 
-            x += xMove;
+
             if (EntityManager.doCollideWithHardWalls(this) != null ||
                     EntityManager.doCollideWithSoftWalls(this) != null)
                 x -= xMove;
@@ -140,10 +140,10 @@ public class Player extends Entity {
 
             if (gunState == 1 && cannon > 0) {
                 if (cannonCounter == cannonRate) {
-                    EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun);
+                    EntityManager.createCannon(x + width / 2+10, y + height / 2+10, degreeGun+3);
                     if (cannonLevel == 2 || cannonLevel == 3) {
                         EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun + 8);
-                        EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun - 8);
+                        EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun + 8);
                     }
                     cannon--;
                     cannonCounter = -1;

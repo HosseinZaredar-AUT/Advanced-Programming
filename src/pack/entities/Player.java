@@ -145,7 +145,7 @@ public class Player extends Entity {
 
         degreeGun = MouseManager.angle;
         if (MouseManager.leftMouseButton) {
-            //todo make it precise...
+            //todo make it precise...w
 
             if (gunState == 1 && cannon > 0) {
                 if (cannonCounter == cannonRate) {

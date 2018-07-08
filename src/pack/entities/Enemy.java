@@ -17,10 +17,10 @@ public class Enemy extends Entity {
     private double degree;
     public static double degreeGun;
     private double xMove, yMove;
-    private final int SPEED = 10;
-    private final int FIRE_Rate = 2; //the less, the faster
+    private final int SPEED = 6;
+    private final int FIRE_Rate = 6; //the less, the faster
     private int fireCounter = 0;
-    private  int xPlus, yPlus;
+    private double xPlus, yPlus;
 
 
     public Enemy(float x, float y, Player player) {
@@ -38,60 +38,60 @@ public class Enemy extends Entity {
 
             boolean flag = true;
             if (fireCounter == FIRE_Rate) {
-                Bullet bullet = EntityManager.createFire(x, y, degreeGun);
+                Cannon cannon = EntityManager.createCannon(x, y, degreeGun);
                 fireCounter = -1;
 
 
-                while ((Math.abs((bullet.getX() + bullet.xPlus) - player.getX()) > 10) && (Math.abs((bullet.getY() + bullet.yPlus) - player.getY()) > 10)) {
-                    if (EntityManager.doCollideWithWalls(bullet) != null) {
+                while ((Math.abs((cannon.getX() + cannon.xPlus) - player.getX()) > 10) && (Math.abs((cannon.getY() + cannon.yPlus) - player.getY()) > 10)) {
+                    if (EntityManager.doCollideWithHardWalls(cannon) != null) {
 
-                        EntityManager.removeBullet(bullet);
+                        EntityManager.removeCannon(cannon);
                         flag = false;
                         break;
                     }
 
-                    bullet.xPlus += Math.cos(Math.toRadians(degreeGun)) * 6;
-                    bullet.yPlus += Math.sin(Math.toRadians(degreeGun)) * 6;
+                    cannon.xPlus += Math.cos(Math.toRadians(degreeGun)) * 6;
+                    cannon.yPlus += Math.sin(Math.toRadians(degreeGun)) * 6;
 
                 }
 
-                bullet.xPlus = 0;
-                bullet.yPlus = 0;
+                cannon.xPlus = 0;
+                cannon.yPlus = 0;
             }
 
             fireCounter++;
 
-            degree = MouseManager.angleWithEnemy(x, y);
+            degree = degreeGun;
 
             double temp = degree;
             float xTemp = x;
             float yTemp = y;
-            for (int i = 0; i < 180; i += 5) {
+            for (int i = 0; i < 180; i += 2) {
                 degree = temp + i;
-                x = xTemp;
-                y = yTemp;
-                xPlus = (int)( Math.cos(Math.toRadians(degree)) * SPEED);
-                yPlus = (int) (Math.sin(Math.toRadians(degree)) * SPEED);
 
+                xPlus =  (Math.cos(Math.toRadians(degree)) * SPEED);
+                yPlus =  (Math.sin(Math.toRadians(degree)) * SPEED);
 
-                if (EntityManager.doCollideWithWalls(this) == null) {
+                System.out.println(Math.cos(Math.toRadians(degree))*SPEED + " degree");
+                if (EntityManager.doCollideWithHardWalls(this) == null) {
+                    System.out.println(getBounds());
                     break;
                 }
 
                 degree = temp - i;
 
-                xPlus = (int)( Math.cos(Math.toRadians(degree)) * SPEED);
-                yPlus = (int)( Math.sin(Math.toRadians(degree)) * SPEED);
+                xPlus = (int) (Math.cos(Math.toRadians(degree)) * SPEED);
+                yPlus = (int) (Math.sin(Math.toRadians(degree)) * SPEED);
 
-                if (EntityManager.doCollideWithWalls(this) == null) {
+                if (EntityManager.doCollideWithHardWalls(this) == null) {
                     break;
                 }
             }
             x += xPlus;
             y += yPlus;
 
-            xPlus=0;
-            yPlus=0;
+            xPlus = 0;
+            yPlus = 0;
 
             if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
                     y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0
@@ -117,7 +117,7 @@ public class Enemy extends Entity {
         g.drawImage(image, transform, null);
 
 
-        BufferedImage imageGun = Assets.playerGun;
+        BufferedImage imageGun = Assets.playerCannonGun;
         AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset() + 13));
         transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4, imageGun.getHeight() / 4 + 4);
 
@@ -127,7 +127,17 @@ public class Enemy extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int) x + xPlus, (int) y + yPlus, width - 6, height - 6);
+        if (xPlus<0)
+            xPlus+=-3;
+        if (yPlus<0)
+            yPlus+=-3;
+
+        if (xPlus>0)
+            xPlus=+3;
+        if (yPlus>0)
+            yPlus+=3;
+
+        return new Rectangle((int) x +(int)(xPlus) + 6, (int) y + (int)(yPlus) + 6, width - 6, height - 6);
     }
 
 }

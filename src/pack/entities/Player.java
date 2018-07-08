@@ -15,12 +15,33 @@ public class Player extends Entity {
     private int degree;
     public static double degreeGun;
     private int xMove, yMove;
-    private final int SPEED = 14;
-    private final int FIRE_Rate = 1; //the less, the faster
-    private int fireCounter = 0;
+    private final int SPEED = 6;
+
+    private int gunState; //1.Cannon, -1.Bullet
+    private int cannonRate = 40; //the less, the faster
+    private int cannonLevel = 0;
+    private int cannonCounter = 0;
+    private int bulletRate = 6; //the less, the faster
+    private int bulletLevel = 0;
+    private int bulletCounter = 0;
+
+
+    private final int MAX_HEALTH = 5;
+    private int health;
+
+    private final int MAX_CANNON = 30;
+    private int cannon;
+
+    private final int MAX_BULLET = 100;
+    private int bullet;
+
 
     public Player(float x, float y) {
         super(x, y, 100, 100);
+        gunState = 1;
+        health = MAX_HEALTH;
+        bullet = MAX_BULLET;
+        cannon = MAX_CANNON;
 
     }
 
@@ -48,28 +69,94 @@ public class Player extends Entity {
         x += xMove;
         y += yMove;
 
-        //Collision detection
         if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0 ||
-                EntityManager.doCollideWithWalls(this) != null) {
+                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
             x -= xMove;
             y -= yMove;
+
+        } else {
+            x -= xMove;
+            y -= yMove;
+
+            x += xMove;
+            if (EntityManager.doCollideWithHardWalls(this) != null ||
+                    EntityManager.doCollideWithSoftWalls(this) != null)
+                x -= xMove;
+
+            y += yMove;
+            if (EntityManager.doCollideWithHardWalls(this) != null ||
+                    EntityManager.doCollideWithSoftWalls(this) != null)
+                y -= yMove;
+
         }
+
         Camera.centerOnEntity(this);
 
+        //FOOD
+        if (bullet != MAX_BULLET) {
+            BulletFood bulletFood = EntityManager.doCollideWithBulletFood(this);
+            if (bulletFood != null) {
+                bullet = MAX_BULLET;
+                EntityManager.removeBulletFood(bulletFood);
+            }
+        }
+
+        if (cannon != MAX_CANNON) {
+            CannonFood cannonFood = EntityManager.doCollideWithCannonFood(this);
+            if (cannonFood != null) {
+                cannon = MAX_CANNON;
+                EntityManager.removeCannonFood(cannonFood);
+            }
+        }
+
+        //UPGRADERS
+        Upgrader upgrader = EntityManager.doCollideWithUpgrader(this);
+        if (upgrader != null) {
+
+            //TODO take care of levels getting more that 3
+            if (gunState == -1) {
+                bulletLevel++;
+                bulletRate--;
+                bulletCounter = -1;
+            } else {
+                cannonLevel++;
+                if (cannonLevel == 1 || cannonLevel == 3) {
+                    cannonRate -= 20;
+                } else {
+                    cannonRate += 20;
+                }
+                cannonCounter = -1;
+            }
+            EntityManager.removeUpgrader(upgrader);
+
+        }
+
         //SHOOT
+        gunState = MouseManager.rightMouseButtonFlag;
+
         degreeGun = MouseManager.angle;
         if (MouseManager.leftMouseButton) {
-
             //todo make it precise...
-            if (fireCounter == FIRE_Rate) {
-                EntityManager.createFire(x , y , degreeGun);
-                fireCounter = -1;
+
+            if (gunState == 1 && cannon > 0) {
+                if (cannonCounter == cannonRate) {
+                    EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun);
+                    if (cannonLevel == 2 || cannonLevel == 3) {
+                        EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun + 8);
+                        EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun - 8);
+                    }
+                    cannon--;
+                    cannonCounter = -1;
+                }
+                cannonCounter++;
+            } else if (gunState == -1 && bullet > 0) {
+                if (bulletCounter == bulletRate) {
+                    EntityManager.createBullet(x + width / 2, y + height / 2, degreeGun);
+                    bullet--;
+                    bulletCounter = -1;
+                }
+                bulletCounter++;
             }
-            fireCounter++;
-
-
-
         }
 
     }
@@ -103,18 +190,33 @@ public class Player extends Entity {
 
         g.drawImage(image, transform, null);
 
+        //TODO take care of different level images...
+        BufferedImage imageGun;
+        if (gunState == 1)
+            imageGun = Assets.playerCannonGun;
+        else
+            imageGun = Assets.playerBulletGun;
 
-        BufferedImage imageGun = Assets.playerGun;
         AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset()+ 13));
         transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4 , imageGun.getHeight() / 4 + 4);
 
 
         g.drawImage(imageGun, transformGun, null);
+
+        g.setColor(Color.BLACK);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
+        g.drawString("Cannon: " + cannon, 15, 60);
+        g.drawString("Bullet: " + bullet, 15, 90);
+
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        g.drawString("Cannon Level: " + cannonLevel, 15, 140);
+        g.drawString("Bullet Level: " + bulletLevel, 15, 170);
+
     }
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x + 6, (int)y + 6, width , height );
+        return new Rectangle((int)x + 6, (int)y + 6, width - 6, height - 6);
     }
 
 }

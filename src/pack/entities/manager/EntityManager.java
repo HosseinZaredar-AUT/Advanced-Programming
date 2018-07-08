@@ -15,6 +15,7 @@ public class EntityManager {
     private static ArrayList<CannonFood> cannonFoods;
     private static ArrayList<Upgrader> upgraders;
     private static ArrayList<Enemy> enemies;
+    private static ArrayList<EnemySimple> simpleEnemy;
 
 
     public EntityManager() {
@@ -26,7 +27,7 @@ public class EntityManager {
         cannonFoods = new ArrayList<>();
         upgraders = new ArrayList<>();
         enemies = new ArrayList<>();
-
+simpleEnemy = new ArrayList<>();
 
     }
 
@@ -37,6 +38,11 @@ public class EntityManager {
 
     public static void createEnemy(float x, float y) {
         enemies.add(new Enemy(x, y,player));
+    }
+
+
+    public static void createEnemySimple(float x, float y) {
+        simpleEnemy.add(new EnemySimple(x, y,player));
     }
 
     public static Cannon createCannon(float x, float y, double angle) {
@@ -120,6 +126,8 @@ public class EntityManager {
     }
 
     public static Entity doCollideWithPlayer(Entity e) {
+        if (player.getBounds().intersects(e.getBounds()))
+            return player;
         return null;
 
     }
@@ -157,6 +165,19 @@ public class EntityManager {
         return null;
     }
 
+    public static Entity doCollideWithAllEnemies(Entity e) {
+        for (Enemy c : enemies) {
+            if (c.getBounds().intersects(e.getBounds()))
+                return c;
+        }
+        for (EnemySimple c : simpleEnemy) {
+            if (c.getBounds().intersects(e.getBounds()))
+                return c;
+        }
+        
+        return null;
+    }
+
     public static Upgrader doCollideWithUpgrader(Entity e) {
         for (Upgrader u : upgraders) {
             if (u.getBounds().intersects(e.getBounds()))
@@ -170,6 +191,9 @@ public class EntityManager {
         player.tick();
 
         for (Enemy e : enemies)
+            e.tick();
+
+        for (EnemySimple e : simpleEnemy)
             e.tick();
 
         for (HardWall w : hardWalls)
@@ -214,6 +238,9 @@ public class EntityManager {
             u.render(g);
 
         for (Enemy e : enemies)
+            e.render(g);
+
+        for (EnemySimple e : simpleEnemy)
             e.render(g);
 
         player.render(g);

@@ -30,6 +30,6 @@ public class HardWall extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, width, height);
+        return new Rectangle((int)x, (int)y, width - 10, height -10);
     }
 }

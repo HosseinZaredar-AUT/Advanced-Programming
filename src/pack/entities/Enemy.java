@@ -18,7 +18,7 @@ public class Enemy extends Entity {
     public static double degreeGun;
     private double xMove, yMove;
     private final int SPEED = 6;
-    private final int FIRE_Rate = 1; //the less, the faster
+    private final int FIRE_Rate = 4; //the less, the faster
     private int fireCounter = 0;
     private double xPlus, yPlus;
 
@@ -45,7 +45,6 @@ public class Enemy extends Entity {
                 && (y < (Camera.getYOffset() + Game.frameHeight))) {
             degreeGun = MouseManager.angleWithEnemy(x, y);
             //same gun and tank
-
             boolean flag = true;
             Cannon cannon = EntityManager.createCannon(x, y, degreeGun);
 
@@ -76,48 +75,47 @@ public class Enemy extends Entity {
                 x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
                 System.out.println(getBounds());
-//                if (EntityManager.doCollideWithHardWalls(this) != null) {
-//                    x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
-//                    y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
-//                    flag = false;
-
+                if ((EntityManager.doCollideWithHardWalls(this) != null)||
+                        (EntityManager.doCollideWithPlayer(this)!=null)) {
+                    x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
+                    y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
+                    flag = false;
+                }
             } else if (!flag) {
-//
+
                 boolean move = true;
-                if ((player.xMove==0)&&(player.yMove==0))
-                {
-                    System.out.println("Adddddddddd");
-                    if (player.getY()==y) {
+                if ((player.xMove == 0) && (player.yMove == 0)) {
+
+                    if (player.getY() == y) {
                         if (player.getX() < x) {
-right=true;
-rightFinal=true;
-up=true;
-upFinal=true;
+                            right = true;
+                            rightFinal = true;
+                            up = true;
+                            upFinal = true;
                         }
                         if (player.getX() > x) {
-                            left=true;
-                            leftFinal=true;
-                            up=true;
-                            upFinal=true;
+                            left = true;
+                            leftFinal = true;
+                            up = true;
+                            upFinal = true;
                         }
                     }
 
-                    if (player.getX()==x) {
+                    if (player.getX() == x) {
                         if (player.getY() < y) {
-                            right=true;
-                            rightFinal=true;
-                            down=true;
-                            downFinal=true;
+                            right = true;
+                            rightFinal = true;
+                            down = true;
+                            downFinal = true;
                         }
                         if (player.getY() > y) {
-                            right=true;
-                            rightFinal=true;
-                            up=true;
-                            upFinal=true;
+                            right = true;
+                            rightFinal = true;
+                            up = true;
+                            upFinal = true;
                         }
                     }
-                }
-                else {
+                } else {
                     if (x > player.getX()) {
 
                         left = true;
@@ -168,30 +166,28 @@ upFinal=true;
                         if (i == 1) {
                             if (left) {
                                 left = false;
-                                if ((up==false)&&(upFinal==true))
-                                    up=true;
-                                if ((down==false)&&(downFinal==true))
-                                    down=true;
+                                if ((up == false) && (upFinal == true))
+                                    up = true;
+                                if ((down == false) && (downFinal == true))
+                                    down = true;
                             } else if (right) {
-                                right=false;
-                                if ((up==false)&&(upFinal==true))
-                                    up=true;
-                                if ((down==false)&&(downFinal==true))
-                                    down=true;
-                            }
-                            else if (down){
-                             down =false;
-                                if ((right==false)&&(rightFinal==true))
-                                    right=true;
-                                if ((left==false)&&(leftFinal==true))
-                                    left=true;
-                            }
-                            else if (up) {
-                                up=false;
-                                if ((right==false)&&(rightFinal==true))
-                                    right=true;
-                                if ((left==false)&&(leftFinal==true))
-                                    left=true;
+                                right = false;
+                                if ((up == false) && (upFinal == true))
+                                    up = true;
+                                if ((down == false) && (downFinal == true))
+                                    down = true;
+                            } else if (down) {
+                                down = false;
+                                if ((right == false) && (rightFinal == true))
+                                    right = true;
+                                if ((left == false) && (leftFinal == true))
+                                    left = true;
+                            } else if (up) {
+                                up = false;
+                                if ((right == false) && (rightFinal == true))
+                                    right = true;
+                                if ((left == false) && (leftFinal == true))
+                                    left = true;
                             }
                             continue;
                         }
@@ -236,25 +232,27 @@ upFinal=true;
                 }
 
 //
-//                if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-//                        y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
-//                    x -= Math.cos(Math.toRadians(degree)) * SPEED;
-//                    y -= Math.sin(Math.toRadians(degree)) * SPEED;
-//
-//                } else {
-//
-//                    y -= Math.sin(Math.toRadians(degree)) * SPEED;
-//
-//                    if (EntityManager.doCollideWithHardWalls(this) != null ||
-//                            EntityManager.doCollideWithSoftWalls(this) != null)
-//                        x -= Math.cos(Math.toRadians(degree)) * SPEED;;
-//
-//                    y += Math.sin(Math.toRadians(degree)) * SPEED;
-//                    if (EntityManager.doCollideWithHardWalls(this) != null ||
-//                            EntityManager.doCollideWithSoftWalls(this) != null)
-//                        y -= Math.sin(Math.toRadians(degree)) * SPEED;
+                if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
+                        y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
+                    x -= Math.cos(Math.toRadians(degree)) * SPEED;
+                    y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
-//                }
+                } else {
+
+                    y -= Math.sin(Math.toRadians(degree)) * SPEED;
+
+                    if (EntityManager.doCollideWithHardWalls(this) != null ||
+                            EntityManager.doCollideWithSoftWalls(this) != null)
+                        x -= Math.cos(Math.toRadians(degree)) * SPEED;
+                    ;
+
+                    y += Math.sin(Math.toRadians(degree)) * SPEED;
+                    if (EntityManager.doCollideWithHardWalls(this) != null ||
+                            EntityManager.doCollideWithSoftWalls(this) != null)
+                        y -= Math.sin(Math.toRadians(degree)) * SPEED;
+
+                }
+
 
             }
 

@@ -2,10 +2,12 @@ package pack.states;
 
 import pack.entities.manager.EntityManager;
 import pack.world.World;
+
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GameState extends State{
+public class GameState extends State {
+
 
     private EntityManager entityManager;
     private World world;
@@ -14,15 +16,16 @@ public class GameState extends State{
     private ArrayList<Float> fpsHistory;
 
     public GameState() {
-        
+
         fpsHistory = new ArrayList<>();
         lastRender = -1;
-        
-        world= new World("res/world/worldFile.txt");
+
+        world = new World("res/world/worldFile.txt");
         entityManager = new EntityManager();
 
         //TEST
         entityManager.createPlayer(10, 10);
+        entityManager.createEnemySimple(100, 600);
 
 //        entityManager.createHardWall(1000, 100);
         entityManager.createHardWall(1000, 200);
@@ -40,10 +43,9 @@ public class GameState extends State{
         entityManager.createCannonFood(100, 1000);
         entityManager.createCannonFood(250, 1000);
 
-        entityManager.createUpgrader(200 ,1400);
-        entityManager.createUpgrader(200 ,1600);
-        entityManager.createUpgrader(700 ,1400);
-
+        entityManager.createUpgrader(200, 1400);
+        entityManager.createUpgrader(200, 1600);
+        entityManager.createUpgrader(700, 1400);
 
 
     }

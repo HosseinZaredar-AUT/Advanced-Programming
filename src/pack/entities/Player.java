@@ -70,7 +70,8 @@ public class Player extends Entity {
         y += yMove;
 
         if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
+                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0||
+                (EntityManager.doCollideWithAllEnemies(this)!=null)) {
             x -= xMove;
             y -= yMove;
 

@@ -58,13 +58,13 @@ public class Enemy extends Entity {
                 }
                 cannon.xPlus += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 cannon.yPlus += Math.sin(Math.toRadians(degreeGun)) * SPEED;
-                System.out.println("in while");
             }
             cannon.xPlus = 0;
             cannon.yPlus = 0;
             if (fireCounter != FIRE_Rate) {
                 fireCounter++;
                 EntityManager.removeEnemyCannon(cannon);
+
             } else {
                 fireCounter = -1;
             }
@@ -84,40 +84,39 @@ public class Enemy extends Entity {
             } else if (!flag) {
 //
                 boolean move = true;
-                if ((player.xMove==0)&&(player.yMove==0))
-                {
+                if ((player.xMove == 0) && (player.yMove == 0)) {
                     System.out.println("Adddddddddd");
-                    if (player.getY()==y) {
+                    if (player.getY() == y) {
                         if (player.getX() < x) {
-                            right=true;
-                            rightFinal=true;
-                            up=true;
-                            upFinal=true;
+                            right = true;
+                            rightFinal = true;
+                            up = true;
+                            upFinal = true;
+
                         }
                         if (player.getX() > x) {
-                            left=true;
-                            leftFinal=true;
-                            up=true;
-                            upFinal=true;
+                            left = true;
+                            leftFinal = true;
+                            up = true;
+                            upFinal = true;
                         }
                     }
 
-                    if (player.getX()==x) {
+                    if (player.getX() == x) {
                         if (player.getY() < y) {
-                            right=true;
-                            rightFinal=true;
-                            down=true;
-                            downFinal=true;
+                            right = true;
+                            rightFinal = true;
+                            down = true;
+                            downFinal = true;
                         }
                         if (player.getY() > y) {
-                            right=true;
-                            rightFinal=true;
-                            up=true;
-                            upFinal=true;
+                            right = true;
+                            rightFinal = true;
+                            up = true;
+                            upFinal = true;
                         }
                     }
-                }
-                else {
+                } else {
                     if (x > player.getX()) {
 
                         left = true;
@@ -168,30 +167,31 @@ public class Enemy extends Entity {
                         if (i == 1) {
                             if (left) {
                                 left = false;
-                                if ((up==false)&&(upFinal==true))
-                                    up=true;
-                                if ((down==false)&&(downFinal==true))
-                                    down=true;
+                                if ((up == false) && (upFinal == true))
+                                    up = true;
+                                if ((down == false) && (downFinal == true))
+                                    down = true;
                             } else if (right) {
-                                right=false;
-                                if ((up==false)&&(upFinal==true))
-                                    up=true;
-                                if ((down==false)&&(downFinal==true))
-                                    down=true;
-                            }
-                            else if (down){
-                                down =false;
-                                if ((right==false)&&(rightFinal==true))
-                                    right=true;
-                                if ((left==false)&&(leftFinal==true))
-                                    left=true;
-                            }
-                            else if (up) {
-                                up=false;
-                                if ((right==false)&&(rightFinal==true))
-                                    right=true;
-                                if ((left==false)&&(leftFinal==true))
-                                    left=true;
+                                right = false;
+                                if ((up == false) && (upFinal == true))
+                                    up = true;
+                                if ((down == false) && (downFinal == true))
+                                    down = true;
+                            } else if (down) {
+
+                                down = false;
+
+
+                                if ((right == false) && (rightFinal == true))
+                                    right = true;
+                                if ((left == false) && (leftFinal == true))
+                                    left = true;
+                            } else if (up) {
+                                up = false;
+                                if ((right == false) && (rightFinal == true))
+                                    right = true;
+                                if ((left == false) && (leftFinal == true))
+                                    left = true;
                             }
                             continue;
                         }
@@ -260,7 +260,6 @@ public class Enemy extends Entity {
 
 
         }
-
     }
 
 

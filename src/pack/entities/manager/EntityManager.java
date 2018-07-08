@@ -24,6 +24,7 @@ public class EntityManager {
     private static ArrayList<Mine> mines;
 
 
+
     public EntityManager() {
         hardWalls = new ArrayList<>();
         softWalls = new ArrayList<>();
@@ -41,6 +42,7 @@ public class EntityManager {
 
 
     }
+
 
     //DELTA
     public static float deltaXWithPlayer(Entity e) {
@@ -342,7 +344,6 @@ public class EntityManager {
 
         for (Artillery a : artilleries)
             a.render(g);
-
 
 
         player.render(g);

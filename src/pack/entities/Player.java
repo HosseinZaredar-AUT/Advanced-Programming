@@ -17,6 +17,7 @@ public class Player extends Entity {
     public int xMove, yMove;
     private final int SPEED = 10;
 
+
     private int gunState; //1.Cannon, -1.Bullet
     private int cannonRate = 40; //the less, the faster
     private int cannonLevel = 0;
@@ -75,10 +76,10 @@ public class Player extends Entity {
             y -= yMove;
 
         } else {
-            x -= xMove;
+
             y -= yMove;
 
-            x += xMove;
+
             if (EntityManager.doCollideWithHardWalls(this) != null ||
                     EntityManager.doCollideWithSoftWalls(this) != null)
                 x -= xMove;

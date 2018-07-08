@@ -24,7 +24,7 @@ public class GameState extends State{
         //TEST
         entityManager.createPlayer(10, 10);
 
-        entityManager.createHardWall(1000, 100);
+//        entityManager.createHardWall(1000, 100);
         entityManager.createHardWall(1000, 200);
         entityManager.createHardWall(1000, 300);
         entityManager.createHardWall(1000, 400);
@@ -33,10 +33,8 @@ public class GameState extends State{
         entityManager.createHardWall(800, 500);
         entityManager.createHardWall(700, 500);
 
-        entityManager.createMine(800, 200);
-        entityManager.createMine(400, 1800);
 
-        //entityManager.createEnemy(1100, 400);
+        entityManager.createEnemy(1190, 400);
 
         entityManager.createBulletFood(1000, 1000);
         entityManager.createBulletFood(1250, 1000);

@@ -33,10 +33,10 @@ public class GameState extends State{
         entityManager.createHardWall(800, 500);
         entityManager.createHardWall(700, 500);
 
-        entityManager.createSoftWall(700, 600);
-        entityManager.createSoftWall(700, 700);
-        entityManager.createSoftWall(700, 800);
-        entityManager.createSoftWall(700, 900);
+        entityManager.createMine(800, 200);
+        entityManager.createMine(400, 1800);
+
+        //entityManager.createEnemy(1100, 400);
 
         entityManager.createBulletFood(1000, 1000);
         entityManager.createBulletFood(1250, 1000);
@@ -46,6 +46,12 @@ public class GameState extends State{
         entityManager.createUpgrader(200 ,1400);
         entityManager.createUpgrader(200 ,1600);
         entityManager.createUpgrader(700 ,1400);
+
+        entityManager.createRepairFood(1700, 1800 );
+
+        entityManager.createArtillery(1900, 1000);
+
+        entityManager.createEnemy(1190, 400);
 
 
 

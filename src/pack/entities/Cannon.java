@@ -12,12 +12,17 @@ public class Cannon extends Entity {
     public static final float DAMAGE = 1;
     private double angle;
     private float xSpeed, ySpeed;
+    public  int xPlus , yPlus ;
+
 
     public Cannon(float x, float y, double angle) {
         super(x, y, 24, 24);
         this.angle = angle;
         xSpeed = (float) (SPEED * Math.cos(Math.toRadians(angle)));
         ySpeed = (float) (SPEED * Math.sin(Math.toRadians(angle)));
+        xPlus = 0;
+        yPlus = 0;
+
     }
 
     @Override
@@ -30,7 +35,7 @@ public class Cannon extends Entity {
     @Override
     public void render(Graphics2D g) {
 
-        BufferedImage image = Assets.fire;
+        BufferedImage image = Assets.cannon;
         AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
         transform.rotate(Math.toRadians(angle), image.getWidth()/2 , image.getHeight()/2 );
 

@@ -51,4 +51,10 @@ public class MouseManager extends MouseAdapter {
             leftMouseButton = false;
     }
 
+    public static double angleWithEnemy(float x,float y){
+        float dx = x - Camera.getEntityX() ;
+        float dy = y - Camera.getEntityY() ;
+        return  (Math.atan2(dy, dx) / (Math.PI)) * 180 + 180;
+    }
+
 }

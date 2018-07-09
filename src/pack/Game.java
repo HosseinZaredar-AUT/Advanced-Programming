@@ -43,8 +43,6 @@ public class Game implements Runnable {
 
         Assets.init();
         state = new GameState();
-
-
     }
 
     public GameFrame getFrame() {
@@ -57,8 +55,6 @@ public class Game implements Runnable {
 
     private void tick() {
         state.tick();
-
-
     }
 
     private void render() {

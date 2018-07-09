@@ -253,6 +253,12 @@ public class EntityManager {
         return null;
     }
 
+    public static Cannon existEnemyCanon(Cannon cannon){
+        if (enemyCannons.contains(cannon))
+            return cannon;
+        return null;
+    }
+
     public static Artillery doCollideWithArtillery(Entity e) {
         for (Artillery a : artilleries) {
             if (a.getBounds().intersects(e.getBounds()))

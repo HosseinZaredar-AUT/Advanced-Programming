@@ -1,6 +1,7 @@
 package pack.entities;
 
 import pack.Game;
+import pack.Sound.ExampleSounds;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
@@ -9,6 +10,7 @@ import pack.input.MouseManager;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutorService;
 
 public class Enemy extends Entity {
     private boolean up, down, right, left;
@@ -37,9 +39,11 @@ public class Enemy extends Entity {
         downFinal = false;
         leftFinal = false;
         rightFinal = false;
-
-        if ((x > Camera.getXOffset()) && (x < (Camera.getXOffset() + Game.frameWidth)) && (y > Camera.getYOffset())
-                && (y < (Camera.getYOffset() + Game.frameHeight))) {
+//if for game.width and game.height
+        boolean equalXORY = true;
+        if (((x > (Camera.getXOffset() - 100)) && (x < (Camera.getXOffset() + Game.frameWidth + 100))) || ((y > Camera.getYOffset() - 100)
+                && (y < (Camera.getYOffset() + Game.frameHeight + 100)))
+                ) {
             degreeGun = MouseManager.angleWithEnemy(x, y);
             //same gun and tank
             boolean flag = true;
@@ -48,7 +52,7 @@ public class Enemy extends Entity {
             while (((Math.abs(cannon.getX() + cannon.xPlus - player.getX()) > 2)
                     || (Math.abs(cannon.getY() + cannon.yPlus - player.getY()) > 2)) && (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(cannon.getBounds().y) < Game.frameHeight)) {
-                if (EntityManager.doCollideWithHardWalls(cannon) != null) {
+                if ((EntityManager.doCollideWithHardWalls(cannon) != null)) {
                     EntityManager.removeEnemyCannon(cannon);
                     flag = false;
                     break;
@@ -72,168 +76,164 @@ public class Enemy extends Entity {
                 degree = degreeGun;
                 x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
-                System.out.println(getBounds());
-                if (EntityManager.doCollideWithHardWalls(this) != null ||
-                        EntityManager.doCollideWithSoftWalls(this) != null ||
-                        EntityManager.doCollideWithPlayer(this)!=null) {
+
+                if (EntityManager.doCollideWithHardWalls(this) != null) {
+                    EntityManager.removeEnemyCannon(cannon);
                     x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                     y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
                     flag = false;
-
+                } else if (EntityManager.doCollideWithSoftWalls(this) != null ||
+                        EntityManager.doCollideWithPlayer(this) != null) {
+                    x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
+                    y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
+                    flag = false;
                 }
-            } else if (!flag) {
 
-                boolean move = true;
-                if ((player.xMove == 0) && (player.yMove == 0)) {
+            }
+            if (!flag) {
 
-                    if (player.getY() == y) {
-                        if (player.getX() < x) {
-                            right = true;
-                            rightFinal = true;
-                            up = true;
-                            upFinal = true;
-                        }
-                        if (player.getX() > x) {
+                boolean move = false;
+                if (((player.xMove == 0) && (player.yMove == 0)) && ((Math.abs(player.getY() - y) < 4) || (Math.abs(player.getX() - x) < 4))) {
+                    equalXORY = false;
+                } else {
+                    if ((player.xMove == 0) && (player.yMove == 0)) {
+                        if (x > player.getX()) {
+
                             left = true;
                             leftFinal = true;
+                        }
+                        if (x < player.getX()) {
+                            right = true;
+                            rightFinal = true;
+                        }
+                        if (y >= player.getY()) {
                             up = true;
                             upFinal = true;
                         }
-                    }
-
-                    if (player.getX() == x) {
-                        if (player.getY() < y) {
-                            right = true;
-                            rightFinal = true;
+                        if (y < player.getY()) {
                             down = true;
                             downFinal = true;
                         }
-                        if (player.getY() > y) {
+                    } else {
+                        if (x > player.getX()) {
+
+                            left = true;
+                            leftFinal = true;
+                        }
+                        if (x < player.getX()) {
                             right = true;
                             rightFinal = true;
+                        }
+                        if (y >= player.getY()) {
                             up = true;
                             upFinal = true;
                         }
+                        if (y < player.getY()) {
+                            down = true;
+                            downFinal = true;
+                        }
                     }
-                } else {
-                    if (x > player.getX()) {
-
-                        left = true;
-                        leftFinal = true;
-                    }
-                    if (x < player.getX()) {
-                        right = true;
-                        rightFinal = true;
-                    }
-                    if (y >= player.getY()) {
-                        up = true;
-                        upFinal = true;
-                    }
-                    if (y < player.getY()) {
-                        down = true;
-                        downFinal = true;
-                    }
-                }
 
 
-                for (int i = 0; i < 3; i++) {
-                    if (up && right)
-                        degree = -45;
-                    else if (up && left)
-                        degree = -135;
-                    else if (right && down)
-                        degree = 45;
-                    else if (left && down)
-                        degree = 135;
-                    else if (down)
-                        degree = 90;
-                    else if (up)
-                        degree = -90;
-                    else if (right)
-                        degree = 0;
-                    else if (left)
-                        degree = 180;
+                    for (int i = 0; i < 3; i++) {
+                        if (up && right)
+                            degree = -45;
+                        else if (up && left)
+                            degree = -135;
+                        else if (right && down) {
+                            degree = 45;
+                        } else if (left && down)
+                            degree = 135;
+                        else if (down)
+                            degree = 90;
+                        else if (up)
+                            degree = -90;
+                        else if (right)
+                            degree = 0;
+                        else if (left)
+                            degree = 180;
+                        System.out.println();
+                        move = true;
+                        x += Math.cos(Math.toRadians(degree)) * SPEED;
+                        y += Math.sin(Math.toRadians(degree)) * SPEED;
+                        if (EntityManager.doCollideWithHardWalls(this) != null) {
 
-                    move = true;
-                    x += Math.cos(Math.toRadians(degree)) * SPEED;
-                    y += Math.sin(Math.toRadians(degree)) * SPEED;
-                    if (EntityManager.doCollideWithHardWalls(this) != null) {
+                            move = false;
+                            x -= Math.cos(Math.toRadians(degree)) * SPEED;
+                            y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
-                        move = false;
-                        x -= Math.cos(Math.toRadians(degree)) * SPEED;
-                        y -= Math.sin(Math.toRadians(degree)) * SPEED;
-
-                        if (i == 1) {
-                            if (left) {
-                                left = false;
-                                if ((up == false) && (upFinal == true))
-                                    up = true;
-                                if ((down == false) && (downFinal == true))
-                                    down = true;
-                            } else if (right) {
-                                right = false;
-                                if ((up == false) && (upFinal == true))
-                                    up = true;
-                                if ((down == false) && (downFinal == true))
-                                    down = true;
-                            } else if (down) {
-                                down = false;
-                                if ((right == false) && (rightFinal == true))
-                                    right = true;
-                                if ((left == false) && (leftFinal == true))
-                                    left = true;
-                            } else if (up) {
-                                up = false;
-                                if ((right == false) && (rightFinal == true))
-                                    right = true;
-                                if ((left == false) && (leftFinal == true))
-                                    left = true;
+                            if (i == 1) {
+                                if (left) {
+                                    left = false;
+                                    if ((up == false) && (upFinal == true))
+                                        up = true;
+                                    if ((down == false) && (downFinal == true))
+                                        down = true;
+                                } else if (right) {
+                                    right = false;
+                                    if ((up == false) && (upFinal == true))
+                                        up = true;
+                                    if ((down == false) && (downFinal == true))
+                                        down = true;
+                                    ;
+                                } else if (down) {
+                                    down = false;
+                                    if ((right == false) && (rightFinal == true))
+                                        right = true;
+                                    if ((left == false) && (leftFinal == true))
+                                        left = true;
+                                } else if (up) {
+                                    up = false;
+                                    if ((right == false) && (rightFinal == true))
+                                        right = true;
+                                    if ((left == false) && (leftFinal == true))
+                                        left = true;
+                                }
+                                continue;
                             }
-                            continue;
-                        }
 
-                        if (up) {
-                            up = false;
-                            continue;
-                        }
+                            if (up) {
+                                up = false;
+                                continue;
+                            }
 //                        if ((!up) && (upFinal)) {
 //                            up = true;
 //                        }
-                        if (down) {
-                            down = false;
-                            continue;
-                        }
+                            if (down) {
+                                down = false;
+                                continue;
+                            }
 //                        if ((!down) && (downFinal)) {
 //                            down = true;
 //                        }
-                        if (right) {
-                            right = false;
-                            continue;
-                        }
+                            if (right) {
+                                right = false;
+                                continue;
+                            }
 //                        if ((!right) && (rightFinal)) {
 //                            right = true;
 //                        }
-                        if (left) {
-                            left = false;
-                            continue;
-                        }
+                            if (left) {
+                                left = false;
+                                continue;
+                            }
 //                        if ((!left) && (leftFinal)) {
 //                            left = true;
 //                        }
-                    } else {
-                        break;
+                        } else {
+                            break;
+                        }
+
                     }
+                }
+
+                if ((!move) && (!equalXORY)) {
 
                 }
 
-
-                if (!move) {
-                    System.out.println("A");
-                }
-
-//
                 if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                        y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
+                        y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0 || (
+                        EntityManager.doCollideWithPlayer(this) != null)) {
                     x -= Math.cos(Math.toRadians(degree)) * SPEED;
                     y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
@@ -256,6 +256,8 @@ public class Enemy extends Entity {
 
             }
 
+//if (cannon!=null)
+//    ExampleSounds.playcannon();
 
         }
     }
@@ -263,7 +265,6 @@ public class Enemy extends Entity {
 
     @Override
     public void render(Graphics2D g) {
-
 
         BufferedImage image = Assets.player;
         AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));

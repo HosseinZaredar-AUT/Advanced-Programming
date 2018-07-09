@@ -310,6 +310,7 @@ public class EnemyTank extends Entity {
         return new Rectangle((int) x, (int) y, width, height);
     }
 
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this)

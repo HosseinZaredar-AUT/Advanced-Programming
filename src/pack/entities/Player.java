@@ -71,6 +71,10 @@ public class Player extends Entity {
     }
 
 
+
+
+
+
     private void move() {
         //MOVEMENT
         up = KeyManager.up;
@@ -158,11 +162,17 @@ public class Player extends Entity {
         Upgrader upgrader = EntityManager.doCollideWithUpgrader(this);
 
         if (upgrader != null) {
+            if (gunState == -1)
+                updateBullet();
+            else
+                updateCannon();
+
 
             if (gunState == -1)
                 updateBullet();
             else
                 updateCannon();
+
 
             EntityManager.removeUpgrader(upgrader);
         }
@@ -183,6 +193,7 @@ public class Player extends Entity {
             updateBullet();
 
         ExampleSounds.playagree();
+
     }
 
     private void updateBullet() {
@@ -192,7 +203,9 @@ public class Player extends Entity {
             bulletCounter = -1;
         } else if (cannonLevel < 3)
             updateCannon();
+
         ExampleSounds.playagree();
+
     }
 
     private void shoot() {
@@ -251,7 +264,10 @@ public class Player extends Entity {
         if (health <= 0) {
             EntityManager.gameOver = true;
       }
-    }
+
+        }
+
+
 
     private void prepareRender() {
         if (up && right)
@@ -271,9 +287,6 @@ public class Player extends Entity {
         else if (left)
             degree = 180;
     }
-
-
-
 
     @Override
     public void render(Graphics2D g) {

@@ -18,6 +18,11 @@ public class SoftWall extends Entity {
 
     @Override
     public void tick() {
+        getDamage();
+    }
+
+    private void getDamage() {
+
         Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
         if (friendlyCannon != null) {
             EntityManager.removeFriendlyCannon(friendlyCannon);
@@ -47,6 +52,7 @@ public class SoftWall extends Entity {
 
         }
     }
+
 
     @Override
     public void render(Graphics2D g) {

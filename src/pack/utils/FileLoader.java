@@ -1,5 +1,6 @@
 package pack.utils;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -8,14 +9,14 @@ public class FileLoader {
     public static String loadFileAsString(String path){
         StringBuilder builder = new StringBuilder();
 
-        try{
-            BufferedReader br = new BufferedReader(new FileReader(path));
+        try (FileReader fr = new FileReader(path); BufferedReader br = new BufferedReader(fr)) {
             String line;
             while((line = br.readLine()) != null)
-                builder.append(line + "\n");
+                builder.append(line).append("\n");
 
-            br.close();
-        }catch(IOException e){
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

@@ -1,21 +1,19 @@
 package pack.entities;
 
-import pack.Game;
 import pack.entities.manager.EntityManager;
-import pack.graphics.Camera;
-import pack.tiles.Tile;
 import pack.utils.FileLoader;
-import java.awt.*;
+
 
 public class EntityWorld {
 
 
-    public static int witdthInEntity;
+    public static int widthInEntity;
     public static int heightInEntity;
 
-    public EntityWorld( String path) {
+    public EntityWorld() {
 
-        loadWorld(path);
+        loadWorld("res/entityWorld/entityWorld.txt");
+
     }
 
 
@@ -25,51 +23,64 @@ public class EntityWorld {
         String file = FileLoader.loadFileAsString(path);
         String[] tokens = file.split("\\s+");
         // not automatic
-        witdthInEntity = 100;
+
+        widthInEntity = 100;
         heightInEntity = 100;
 
-//5*7
+
+
         /*
-        Artillery : a
+
         BulletFood : b
         CannonFood : c
-        Enemy : d
-        EnemySimple : e
+        EnemyTank : d
+        EnemyCar : e
         HardWall : f
         Mine : g
         Player : h
         RepairFood : i
         SoftWall : j
-       Upgrader : k
-       z : null
-         */
+        Upgrader : k
+        َ Artillery_Left : l
+        َ Artillery_Right : m
+        َ Artillery_Down : n
+        َ Artillery_Up : o
+
+
+
+        z : null
+        */
 
         char z = ' ';
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 z = tokens[x+y*20].charAt(0);
-                if (z == 'a') { EntityManager.createArtillery(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'b') { EntityManager.createBulletFood(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'c') { EntityManager.createCannonFood(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'd') { EntityManager.createEnemy(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'e') { EntityManager.createEnemySimple(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'f') { EntityManager.createHardWall(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'g') { EntityManager.createMine(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'h') { EntityManager.createPlayer(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'i') { EntityManager.createRepairFood(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'j') { EntityManager.createSoftWall(x*witdthInEntity,y*heightInEntity);}
-                if (z == 'k') { EntityManager.createUpgrader(x*witdthInEntity,y*heightInEntity);}
+
+                if (z == 'b') EntityManager.createBulletFood(x*widthInEntity,y*heightInEntity);
+                if (z == 'c') EntityManager.createCannonFood(x*widthInEntity,y*heightInEntity);
+                if (z == 'd') EntityManager.createEnemyTank(x*widthInEntity,y*heightInEntity);
+                if (z == 'e') EntityManager.createEnemyCar(x*widthInEntity,y*heightInEntity);
+                if (z == 'f') EntityManager.createHardWall(x*widthInEntity,y*heightInEntity);
+                if (z == 'g') EntityManager.createMine(x*widthInEntity,y*heightInEntity);
+                if (z == 'h') EntityManager.createPlayer(x*widthInEntity,y*heightInEntity);
+                if (z == 'i') EntityManager.createRepairFood(x*widthInEntity,y*heightInEntity);
+                if (z == 'j') EntityManager.createSoftWall(x*widthInEntity,y*heightInEntity);
+                if (z == 'k') EntityManager.createUpgrader(x*widthInEntity,y*heightInEntity);
+                if (z == 'l') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.LEFT);
+                if (z == 'm') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.RIGHT);
+                if (z == 'n') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.DOWN);
+                if (z == 'o') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.UP);
             }
         }
 
-
     }
 
-    public static int getwitdthInEntity() {
-        return witdthInEntity;
+    public static int getWidthInEntity() {
+        return widthInEntity;
     }
 
-    public static int getheightInEntity() {
+    public static int getHeightInEntity() {
+
         return heightInEntity;
     }
 

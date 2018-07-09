@@ -1,7 +1,6 @@
 package pack.entities;
 
 import pack.Game;
-import pack.Sound.ExampleSounds;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
@@ -10,27 +9,30 @@ import pack.input.MouseManager;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutorService;
 
-public class Enemy extends Entity {
+public class EnemyTank extends Entity {
     private boolean up, down, right, left;
     private boolean upFinal, downFinal, rightFinal, leftFinal;
-    private Player player;
     private double degree;
     private double degreeGun;
+    private float health = 1;
     private final int SPEED = 4;
     private final int FIRE_Rate = 40; //the less, the faster
     private int fireCounter = 0;
 
 
-    public Enemy(float x, float y, Player player) {
+    public EnemyTank(float x, float y) {
         super(x, y, 100, 100);
-        this.player = player;
 
     }
 
     @Override
     public void tick() {
+        getDamage();
+        doAI();
+    }
+
+    private void doAI() {
         up = false;
         down = false;
         right = false;
@@ -39,8 +41,9 @@ public class Enemy extends Entity {
         downFinal = false;
         leftFinal = false;
         rightFinal = false;
+
 //if for game.width and game.height
-        boolean equalXORY = true;
+        boolean equalXORY=true;
         if (((x > (Camera.getXOffset() - 100)) && (x < (Camera.getXOffset() + Game.frameWidth + 100))) || ((y > Camera.getYOffset() - 100)
                 && (y < (Camera.getYOffset() + Game.frameHeight + 100)))
                 ) {
@@ -49,8 +52,9 @@ public class Enemy extends Entity {
             boolean flag = true;
             Cannon cannon = EntityManager.createEnemyCannon(x, y, degreeGun);
 
-            while (((Math.abs(cannon.getX() + cannon.xPlus - player.getX()) > 2)
-                    || (Math.abs(cannon.getY() + cannon.yPlus - player.getY()) > 2)) && (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
+            while (((Math.abs(cannon.getX() + cannon.xPlus - EntityManager.getPlayer().getX()) > 2)
+                    || (Math.abs(cannon.getY() + cannon.yPlus - EntityManager.getPlayer().getY()) > 2)) &&
+                    (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(cannon.getBounds().y) < Game.frameHeight)) {
                 if ((EntityManager.doCollideWithHardWalls(cannon) != null)) {
                     EntityManager.removeEnemyCannon(cannon);
@@ -76,7 +80,7 @@ public class Enemy extends Entity {
                 degree = degreeGun;
                 x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
-
+                System.out.println(getBounds());
                 if (EntityManager.doCollideWithHardWalls(this) != null) {
                     EntityManager.removeEnemyCannon(cannon);
                     x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
@@ -93,42 +97,42 @@ public class Enemy extends Entity {
             if (!flag) {
 
                 boolean move = false;
-                if (((player.xMove == 0) && (player.yMove == 0)) && ((Math.abs(player.getY() - y) < 4) || (Math.abs(player.getX() - x) < 4))) {
-                    equalXORY = false;
-                } else {
-                    if ((player.xMove == 0) && (player.yMove == 0)) {
-                        if (x > player.getX()) {
+                if (((EntityManager.getPlayer().xMove == 0) && (EntityManager.getPlayer().yMove == 0))&&((Math.abs(EntityManager.getPlayer().getY() - y) < 4)||(Math.abs(EntityManager.getPlayer().getX() - x) < 4))) {
+                    equalXORY=false;
+                }else {
+                    if ((EntityManager.getPlayer().xMove == 0) && (EntityManager.getPlayer().yMove == 0)) {
+                        if (x > EntityManager.getPlayer().getX()) {
 
                             left = true;
                             leftFinal = true;
                         }
-                        if (x < player.getX()) {
+                        if (x < EntityManager.getPlayer().getX()) {
                             right = true;
                             rightFinal = true;
                         }
-                        if (y >= player.getY()) {
+                        if (y >= EntityManager.getPlayer().getY()) {
                             up = true;
                             upFinal = true;
                         }
-                        if (y < player.getY()) {
+                        if (y < EntityManager.getPlayer().getY()) {
                             down = true;
                             downFinal = true;
                         }
                     } else {
-                        if (x > player.getX()) {
+                        if (x > EntityManager.getPlayer().getX()) {
 
                             left = true;
                             leftFinal = true;
                         }
-                        if (x < player.getX()) {
+                        if (x < EntityManager.getPlayer().getX()) {
                             right = true;
                             rightFinal = true;
                         }
-                        if (y >= player.getY()) {
+                        if (y >= EntityManager.getPlayer().getY()) {
                             up = true;
                             upFinal = true;
                         }
-                        if (y < player.getY()) {
+                        if (y < EntityManager.getPlayer().getY()) {
                             down = true;
                             downFinal = true;
                         }
@@ -152,7 +156,7 @@ public class Enemy extends Entity {
                             degree = 0;
                         else if (left)
                             degree = 180;
-                        System.out.println();
+
                         move = true;
                         x += Math.cos(Math.toRadians(degree)) * SPEED;
                         y += Math.sin(Math.toRadians(degree)) * SPEED;
@@ -175,7 +179,7 @@ public class Enemy extends Entity {
                                         up = true;
                                     if ((down == false) && (downFinal == true))
                                         down = true;
-                                    ;
+
                                 } else if (down) {
                                     down = false;
                                     if ((right == false) && (rightFinal == true))
@@ -227,8 +231,8 @@ public class Enemy extends Entity {
                     }
                 }
 
-                if ((!move) && (!equalXORY)) {
-
+                if ((!move)&&(!equalXORY)) {
+                    System.out.println("A");
                 }
 
                 if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
@@ -242,23 +246,41 @@ public class Enemy extends Entity {
                     y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
                     if (EntityManager.doCollideWithHardWalls(this) != null ||
-                            EntityManager.doCollideWithSoftWalls(this) != null)
+                            EntityManager.doCollideWithSoftWalls(this) != null ||
+                            EntityManager.doCollideWithEnemyTank(this) != null ||
+                            EntityManager.doCollideWithEnemyCar(this) != null)
                         x -= Math.cos(Math.toRadians(degree)) * SPEED;
                     ;
 
                     y += Math.sin(Math.toRadians(degree)) * SPEED;
                     if (EntityManager.doCollideWithHardWalls(this) != null ||
-                            EntityManager.doCollideWithSoftWalls(this) != null)
+                            EntityManager.doCollideWithSoftWalls(this) != null ||
+                            EntityManager.doCollideWithEnemyTank(this) != null ||
+                            EntityManager.doCollideWithEnemyCar(this) != null)
                         y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
                 }
 
-
             }
 
-//if (cannon!=null)
-//    ExampleSounds.playcannon();
+        }
+    }
 
+    private void getDamage() {
+        Bullet bullet = EntityManager.doCollideWithFriendlyBullet(this);
+        if (bullet != null) {
+            health -= Bullet.DAMAGE;
+            EntityManager.removeFriendlyBullet(bullet);
+        }
+
+        Cannon cannon = EntityManager.doCollideWithFriendlyCannon(this);
+        if (cannon != null) {
+            health -= Cannon.DAMAGE;
+            EntityManager.removeFriendlyCannon(cannon);
+        }
+
+        if (health <= 0) {
+            EntityManager.removeEnemyTank(this);
         }
     }
 
@@ -266,7 +288,7 @@ public class Enemy extends Entity {
     @Override
     public void render(Graphics2D g) {
 
-        BufferedImage image = Assets.player;
+        BufferedImage image = Assets.enemyTank;
         AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
         transform.rotate(Math.toRadians(degree), image.getWidth() / 2, image.getHeight() / 2);
 
@@ -274,7 +296,7 @@ public class Enemy extends Entity {
         g.drawImage(image, transform, null);
 
 
-        BufferedImage imageGun = Assets.playerCannonGun;
+        BufferedImage imageGun = Assets.enemyTankGun;
         AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset() + 13));
         transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4, imageGun.getHeight() / 4 + 4);
 
@@ -286,6 +308,17 @@ public class Enemy extends Entity {
     public Rectangle getBounds() {
 
         return new Rectangle((int) x, (int) y, width, height);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof EnemyTank))
+            return false;
+
+        EnemyTank other = (EnemyTank) obj;
+        return (x == other.x) && (y == other.y);
     }
 
 }

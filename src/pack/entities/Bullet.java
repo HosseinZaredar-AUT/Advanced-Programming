@@ -27,9 +27,12 @@ public class Bullet extends Entity {
 
     @Override
     public void tick() {
+        move();
+    }
+
+    private void move() {
         x += xSpeed;
         y += ySpeed;
-
     }
 
     @Override

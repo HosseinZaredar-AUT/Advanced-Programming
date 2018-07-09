@@ -11,26 +11,25 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.time.LocalTime;
-import java.util.Date;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class Player extends Entity {
 
     private boolean up, down, right, left;
     private int degree;
-    public static double degreeGun;
-    public int xMove, yMove;
+    private double degreeGun;
+    public float xMove, yMove;
     private final int SPEED = 10;
+    private float xSpeed;
+    private float ySpeed;
     public static LocalTime localTime2;
 
-
     private int gunState; //1.Cannon, -1.Bullet
-    private int cannonRate = 10; //the less, the faster
+    private int cannonRate = 40; //the less, the faster
     private int cannonLevel = 0;
     private int cannonCounter = 0;
-    private int bulletRate = 3; //the less, the faster
+    private int bulletRate = 7; //the less, the faster
     private int bulletLevel = 0;
     private int bulletCounter = 0;
 
@@ -38,10 +37,10 @@ public class Player extends Entity {
     private final float MAX_HEALTH = 5;
     private float health;
 
-    private final int MAX_CANNON = 30;
+    private final int MAX_CANNON = 50;
     private int cannon;
 
-    private final int MAX_BULLET = 100;
+    private final int MAX_BULLET = 200;
     private int bullet;
 
 
@@ -51,16 +50,28 @@ public class Player extends Entity {
         health = MAX_HEALTH;
         bullet = MAX_BULLET;
         cannon = MAX_CANNON;
-        localTime2 = LocalTime.now();
+        xSpeed = (float)(Math.sqrt(2) / 2 * SPEED);
+        ySpeed = (float)(Math.sqrt(2) / 2 * SPEED);
+
     }
 
     @Override
     public void tick() {
-localTime2 = LocalTime.now();
-        if(GameState.localTime1.until(localTime2,SECONDS)>33) {
+        localTime2 = LocalTime.now();
+        if((GameState.localTime1.until(localTime2,SECONDS)>33)&&(EntityManager.gameOver==true)) {
             ExampleSounds.playgameSound1();
             GameState.localTime1 = LocalTime.now();
         }
+        move();
+        getFood();
+        upgrade();
+        shoot();
+        getDamage();
+        prepareRender();
+    }
+
+
+    private void move() {
         //MOVEMENT
         up = KeyManager.up;
         down = KeyManager.down;
@@ -71,20 +82,19 @@ localTime2 = LocalTime.now();
         yMove = 0;
 
         if (up)
-            yMove = -SPEED;
+            yMove = -ySpeed;
         if (down)
-            yMove = SPEED;
+            yMove = ySpeed;
         if (left)
-            xMove = -SPEED;
+            xMove = -xSpeed;
         if (right)
-            xMove = SPEED;
+            xMove = xSpeed;
 
         x += xMove;
         y += yMove;
 
         if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0 ||
-                (EntityManager.doCollideWithEnemy(this) != null)) {
+                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
             x -= xMove;
             y -= yMove;
 
@@ -95,24 +105,27 @@ localTime2 = LocalTime.now();
 
             if (EntityManager.doCollideWithHardWalls(this) != null ||
                     EntityManager.doCollideWithSoftWalls(this) != null ||
-                    EntityManager.doCollideWithEnemy(this) != null ||
-                    EntityManager.doCollideWithEnemySimple(this) != null)
+                    EntityManager.doCollideWithEnemyTank(this) != null ||
+                    EntityManager.doCollideWithEnemyCar(this) != null  ||
+                    EntityManager.doCollideWithArtillery(this) != null)
+
                 x -= xMove;
 
             y += yMove;
             if (EntityManager.doCollideWithHardWalls(this) != null ||
                     EntityManager.doCollideWithSoftWalls(this) != null ||
-                    EntityManager.doCollideWithEnemy(this) != null ||
-                    EntityManager.doCollideWithEnemySimple(this) != null)
+                    EntityManager.doCollideWithEnemyTank(this) != null ||
+                    EntityManager.doCollideWithEnemyCar(this) != null  ||
+                    EntityManager.doCollideWithArtillery(this) != null)
+
                 y -= yMove;
 
         }
-
         Camera.centerOnEntity(this);
+    }
 
-        //FOOD
+    private void getFood() {
         if (bullet != MAX_BULLET) {
-
             BulletFood bulletFood = EntityManager.doCollideWithBulletFood(this);
             if (bulletFood != null) {
                 ExampleSounds.playagree();
@@ -122,7 +135,6 @@ localTime2 = LocalTime.now();
         }
 
         if (cannon != MAX_CANNON) {
-
             CannonFood cannonFood = EntityManager.doCollideWithCannonFood(this);
             if (cannonFood != null) {
                 ExampleSounds.playagree();
@@ -132,7 +144,6 @@ localTime2 = LocalTime.now();
         }
 
         if (health != MAX_HEALTH) {
-
             RepairFood repairFood = EntityManager.doCollideWithRepairFood(this);
             if (repairFood != null) {
                 ExampleSounds.playagree();
@@ -141,29 +152,50 @@ localTime2 = LocalTime.now();
             }
         }
 
-        //UPGRADERS
-        Upgrader upgrader = EntityManager.doCollideWithUpgrader(this);
-        if (upgrader != null) {
-            ExampleSounds.playagree();
-            //TODO take care of levels getting more that 3
-            if (gunState == -1) {
-                bulletLevel++;
-                bulletRate--;
-                bulletCounter = -1;
-            } else {
-                cannonLevel++;
-                if (cannonLevel == 1 || cannonLevel == 3) {
-                    cannonRate -= 20;
-                } else {
-                    cannonRate += 20;
-                }
-                cannonCounter = -1;
-            }
-            EntityManager.removeUpgrader(upgrader);
+    }
 
+    private void upgrade() {
+        Upgrader upgrader = EntityManager.doCollideWithUpgrader(this);
+
+        if (upgrader != null) {
+
+            if (gunState == -1)
+                updateBullet();
+            else
+                updateCannon();
+
+            EntityManager.removeUpgrader(upgrader);
         }
 
-        //SHOOT
+        //if both of them are fully upgraded, nothing upgrades, but the Star is removed anyways.
+    }
+
+    private void updateCannon() {
+        if (cannonLevel < 3) {
+            cannonLevel++;
+            if (cannonLevel == 1 || cannonLevel == 3) {
+                cannonRate -= 20;
+            } else {
+                cannonRate += 20;
+            }
+            cannonCounter = -1;
+        } else if (bulletLevel < 3)
+            updateBullet();
+
+        ExampleSounds.playagree();
+    }
+
+    private void updateBullet() {
+        if (bulletLevel < 3) {
+            bulletLevel++;
+            bulletRate--;
+            bulletCounter = -1;
+        } else if (cannonLevel < 3)
+            updateCannon();
+        ExampleSounds.playagree();
+    }
+
+    private void shoot() {
         gunState = MouseManager.rightMouseButtonFlag;
 
         degreeGun = MouseManager.angle;
@@ -173,8 +205,7 @@ localTime2 = LocalTime.now();
             if (gunState == 1 && cannon > 0) {
                 if (cannonCounter == cannonRate) {
                     ExampleSounds.playcannon();
-
-                    EntityManager.createFriendlyCannon(x + width / 2 + 10, y + height / 2 + 10, degreeGun + 3);
+                    EntityManager.createFriendlyCannon(x + width / 2+10, y + height / 2+10, degreeGun+3);
                     if (cannonLevel == 2 || cannonLevel == 3) {
                         EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun + 8);
                         EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun - 8);
@@ -194,7 +225,9 @@ localTime2 = LocalTime.now();
             }
         }
 
-        //GETTING DAMAGE
+    }
+
+    private void getDamage() {
         Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null) {
             ExampleSounds.playEnemyBulletToMyTank();
@@ -205,7 +238,6 @@ localTime2 = LocalTime.now();
         Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
         if (enemyCannon != null) {
             health -= Cannon.DAMAGE;
-            ExampleSounds.playEnemyBulletToMyTank();
             EntityManager.removeEnemyCannon(enemyCannon);
         }
 
@@ -217,18 +249,11 @@ localTime2 = LocalTime.now();
         }
 
         if (health <= 0) {
-            //TODO something
-            health = MAX_HEALTH;
-            ExampleSounds.playrepair();
-        }
-
-
+            EntityManager.gameOver = true;
+      }
     }
 
-
-    @Override
-    public void render(Graphics2D g) {
-
+    private void prepareRender() {
         if (up && right)
             degree = -45;
         else if (up && left)
@@ -245,11 +270,17 @@ localTime2 = LocalTime.now();
             degree = 0;
         else if (left)
             degree = 180;
+    }
 
+
+
+
+    @Override
+    public void render(Graphics2D g) {
 
         BufferedImage image = Assets.player;
         AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
-        transform.rotate(Math.toRadians(degree), image.getWidth() / 2, image.getHeight() / 2);
+        transform.rotate(Math.toRadians(degree), image.getWidth()/2 , image.getHeight()/2 );
 
 
         g.drawImage(image, transform, null);
@@ -261,8 +292,8 @@ localTime2 = LocalTime.now();
         else
             imageGun = Assets.playerBulletGun;
 
-        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset() + 13));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4, imageGun.getHeight() / 4 + 4);
+        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()) + 10, (int) (y - Camera.getYOffset()));
+        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2 - 12 , imageGun.getHeight() / 2);
 
 
         g.drawImage(imageGun, transformGun, null);
@@ -281,7 +312,7 @@ localTime2 = LocalTime.now();
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int) x + 6, (int) y + 6, width - 6, height - 6);
+        return new Rectangle((int)x + 6, (int)y + 6, width - 6, height - 6);
     }
 
 }

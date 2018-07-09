@@ -9,7 +9,8 @@ public class Assets {
     public static BufferedImage player, dirt, hardWall, softWall[],
             playerBulletGun, playerCannonGun, bullet, cannon,
             repairFood, bulletFood, cannonFood, upgrader,
-            artilleryBase, artilleryGun, artilleryDead, mine;
+            artilleryBase, artilleryGun, artilleryDead, mine,
+            enemyTank, enemyTankGun, enemyCar, enemyCarGun;
 
 
     public static void init() {
@@ -37,6 +38,10 @@ public class Assets {
 
         mine = pack.utils.ImageLoader.load("res/textures/mine.png");
 
+        enemyTank = pack.utils.ImageLoader.load("res/textures/enemyTank.png");
+        enemyTankGun = pack.utils.ImageLoader.load("res/textures/enemyTankGun.png");
+        enemyCar = pack.utils.ImageLoader.load("res/textures/enemyCar.png");
+        enemyCarGun = pack.utils.ImageLoader.load("res/textures/enemyCarGun.png");
 
 
     }

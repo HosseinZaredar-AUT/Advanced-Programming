@@ -28,9 +28,12 @@ public class Cannon extends Entity {
 
     @Override
     public void tick() {
+        move();
+    }
+
+    private void move() {
         x += xSpeed;
         y += ySpeed;
-
     }
 
     @Override

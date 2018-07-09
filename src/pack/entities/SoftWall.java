@@ -22,6 +22,7 @@ public class SoftWall extends Entity {
     }
 
     private void getDamage() {
+
         Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
         if (friendlyCannon != null) {
             EntityManager.removeFriendlyCannon(friendlyCannon);

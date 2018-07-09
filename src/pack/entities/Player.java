@@ -98,6 +98,7 @@ public class Player extends Entity {
                     EntityManager.doCollideWithEnemyTank(this) != null ||
                     EntityManager.doCollideWithEnemyCar(this) != null  ||
                     EntityManager.doCollideWithArtillery(this) != null)
+
                 x -= xMove;
 
             y += yMove;
@@ -106,6 +107,7 @@ public class Player extends Entity {
                     EntityManager.doCollideWithEnemyTank(this) != null ||
                     EntityManager.doCollideWithEnemyCar(this) != null  ||
                     EntityManager.doCollideWithArtillery(this) != null)
+
                 y -= yMove;
 
         }

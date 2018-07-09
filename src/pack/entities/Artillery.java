@@ -46,6 +46,7 @@ public class Artillery extends Entity {
 
     private void shoot() {
         if (alive) {
+
             if ((x > Camera.getXOffset()) && (x < (Camera.getXOffset() + Game.frameWidth)) && (y > Camera.getYOffset())
                     && (y < (Camera.getYOffset() + Game.frameHeight))) {
                 degreeGun = MouseManager.angleWithEnemy(x, y);
@@ -63,6 +64,7 @@ public class Artillery extends Entity {
                         cannonCounter = -1;
                     }
                     cannonCounter++;
+
                 }
 
             }

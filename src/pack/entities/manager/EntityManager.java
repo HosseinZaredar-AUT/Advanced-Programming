@@ -53,6 +53,7 @@ public class EntityManager {
         enemyTanks.add(new EnemyTank(x, y));
     }
 
+
     public static void createEnemyCar(float x, float y) {
         enemyCars.add(new EnemyCar(x, y));
     }
@@ -273,6 +274,7 @@ public class EntityManager {
     public static EnemyTank doCollideWithEnemyTank(Entity e) {
         for (EnemyTank en : enemyTanks) {
             if (en.getBounds().intersects(e.getBounds()) && !en.equals(e))
+
                 return en;
         }
         return null;
@@ -280,11 +282,13 @@ public class EntityManager {
 
     public static EnemyCar doCollideWithEnemyCar(Entity e) {
         for (EnemyCar en : enemyCars) {
+
             if (en.getBounds().intersects(e.getBounds()))
                 return en;
         }
         return null;
     }
+
 
 
     //GETTERS
@@ -312,7 +316,6 @@ public class EntityManager {
 
         } catch (Exception ex) {
         }
-
 
 
         for (Artillery a : artilleries)

@@ -1,29 +1,27 @@
 package pack.states;
 
-import pack.entities.Artillery;
 import pack.entities.EntityWorld;
 import pack.entities.manager.EntityManager;
 import pack.world.World;
+
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GameState extends State{
+public class GameState extends State {
 
     private World world;
-
     private long lastRender;
     private ArrayList<Float> fpsHistory;
     private EntityWorld entityWorld;
 
     public GameState() {
-        
+
         fpsHistory = new ArrayList<>();
         lastRender = -1;
 
         new EntityManager();
         world = new World("res/world/worldFile.txt");
         entityWorld = new EntityWorld();
-
 
     }
 

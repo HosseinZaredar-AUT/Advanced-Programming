@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class EntityManager {
 
+    public static boolean gameOver = false;
     private static Player player;
     private static ArrayList<HardWall> hardWalls;
     private static ArrayList<SoftWall> softWalls;
@@ -283,7 +284,7 @@ public class EntityManager {
     public static EnemyCar doCollideWithEnemyCar(Entity e) {
         for (EnemyCar en : enemyCars) {
 
-            if (en.getBounds().intersects(e.getBounds()))
+            if (en.getBounds().intersects(e.getBounds()) && !en.equals(e))
                 return en;
         }
         return null;

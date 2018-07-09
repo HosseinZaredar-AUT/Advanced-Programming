@@ -12,7 +12,7 @@ public class Player extends Entity {
 
     private boolean up, down, right, left;
     private int degree;
-    public static double degreeGun;
+    private double degreeGun;
     public float xMove, yMove;
     private final int SPEED = 10;
     private float xSpeed;
@@ -23,7 +23,7 @@ public class Player extends Entity {
     private int cannonRate = 40; //the less, the faster
     private int cannonLevel = 0;
     private int cannonCounter = 0;
-    private int bulletRate = 6; //the less, the faster
+    private int bulletRate = 7; //the less, the faster
     private int bulletLevel = 0;
     private int bulletCounter = 0;
 
@@ -143,25 +143,40 @@ public class Player extends Entity {
 
     private void upgrade() {
         Upgrader upgrader = EntityManager.doCollideWithUpgrader(this);
+
         if (upgrader != null) {
+            if (gunState == -1)
+                updateBullet();
+            else
+                updateCannon();
 
-            //TODO take care of levels getting more that 3
-            if (gunState == -1) {
-                bulletLevel++;
-                bulletRate--;
-                bulletCounter = -1;
-            } else {
-                cannonLevel++;
-                if (cannonLevel == 1 || cannonLevel == 3) {
-                    cannonRate -= 20;
-                } else {
-                    cannonRate += 20;
-                }
-                cannonCounter = -1;
-            }
             EntityManager.removeUpgrader(upgrader);
-
         }
+
+        //if both of them are fully upgraded, nothing upgrades, but the Star is removed anyways.
+    }
+
+    private void updateCannon() {
+        if (cannonLevel < 3) {
+            cannonLevel++;
+            if (cannonLevel == 1 || cannonLevel == 3) {
+                cannonRate -= 20;
+            } else {
+                cannonRate += 20;
+            }
+            cannonCounter = -1;
+        } else if (bulletLevel < 3)
+            updateBullet();
+
+    }
+
+    private void updateBullet() {
+        if (bulletLevel < 3) {
+            bulletLevel++;
+            bulletRate--;
+            bulletCounter = -1;
+        } else if (cannonLevel < 3)
+            updateCannon();
     }
 
     private void shoot() {
@@ -214,8 +229,7 @@ public class Player extends Entity {
         }
 
         if (health <= 0) {
-            //TODO something
-            health = MAX_HEALTH;
+            EntityManager.gameOver = true;
         }
     }
 

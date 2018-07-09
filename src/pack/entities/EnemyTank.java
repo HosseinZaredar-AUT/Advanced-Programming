@@ -15,6 +15,7 @@ public class EnemyTank extends Entity {
     private boolean upFinal, downFinal, rightFinal, leftFinal;
     private double degree;
     private double degreeGun;
+    private float health = 1;
     private final int SPEED = 4;
     private final int FIRE_Rate = 40; //the less, the faster
     private int fireCounter = 0;
@@ -27,6 +28,11 @@ public class EnemyTank extends Entity {
 
     @Override
     public void tick() {
+        getDamage();
+        doAI();
+    }
+
+    private void doAI() {
         up = false;
         down = false;
         right = false;
@@ -173,7 +179,7 @@ public class EnemyTank extends Entity {
                                         up = true;
                                     if ((down == false) && (downFinal == true))
                                         down = true;
-                                    ;
+
                                 } else if (down) {
                                     down = false;
                                     if ((right == false) && (rightFinal == true))
@@ -255,10 +261,26 @@ public class EnemyTank extends Entity {
 
                 }
 
-
             }
 
+        }
+    }
 
+    private void getDamage() {
+        Bullet bullet = EntityManager.doCollideWithFriendlyBullet(this);
+        if (bullet != null) {
+            health -= Bullet.DAMAGE;
+            EntityManager.removeFriendlyBullet(bullet);
+        }
+
+        Cannon cannon = EntityManager.doCollideWithFriendlyCannon(this);
+        if (cannon != null) {
+            health -= Cannon.DAMAGE;
+            EntityManager.removeFriendlyCannon(cannon);
+        }
+
+        if (health <= 0) {
+            EntityManager.removeEnemyTank(this);
         }
     }
 

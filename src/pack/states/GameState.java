@@ -1,44 +1,48 @@
 package pack.states;
 
+import pack.entities.Entity;
+import pack.entities.EntityWorld;
 import pack.entities.manager.EntityManager;
 import pack.world.World;
+
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GameState extends State{
+public class GameState extends State {
 
     private EntityManager entityManager;
     private World world;
+private EntityWorld entityWorld;
 
     private long lastRender;
     private ArrayList<Float> fpsHistory;
 
     public GameState() {
-        
+
         fpsHistory = new ArrayList<>();
         lastRender = -1;
-        
-        world= new World("res/world/worldFile.txt");
+
+        world = new World("res/world/worldFile.txt");
         entityManager = new EntityManager();
-
+        entityWorld = new EntityWorld("res/entityWorld/entityWorld.txt");
         //TEST
-        entityManager.createPlayer(10, 10);
-
-        entityManager.createHardWall(1000, 200);
-        entityManager.createHardWall(1000, 300);
-        entityManager.createHardWall(1000, 400);
-        entityManager.createHardWall(1000, 500);
-
-
-
-        entityManager.createSoftWall(700, 600);
-        entityManager.createSoftWall(700, 700);
-        entityManager.createSoftWall(700, 800);
-        entityManager.createSoftWall(700, 900);
-
-
-        //entityManager.createEnemy(1190, 400);
-        entityManager.createEnemySimple(400, 1800);
+//        entityManager.createPlayer(10, 10);
+//
+//        entityManager.createHardWall(1000, 200);
+//        entityManager.createHardWall(1000, 300);
+//        entityManager.createHardWall(1000, 400);
+//        entityManager.createHardWall(1000, 500);
+//
+//
+//
+//        entityManager.createSoftWall(700, 600);
+//        entityManager.createSoftWall(700, 700);
+//        entityManager.createSoftWall(700, 800);
+//        entityManager.createSoftWall(700, 900);
+//
+//
+//        //entityManager.createEnemy(1190, 400);
+//        entityManager.createEnemySimple(400, 1800);
 
 //        entityManager.createBulletFood(1000, 1000);
 //        entityManager.createBulletFood(1250, 1000);
@@ -51,10 +55,9 @@ public class GameState extends State{
 //
 //        entityManager.createRepairFood(1700, 1800 );
 
-        entityManager.createArtillery(1900, 1000);
+//        entityManager.createArtillery(1900, 1000);
 
 //        entityManager.createEnemy(1190, 400);
-
 
 
     }

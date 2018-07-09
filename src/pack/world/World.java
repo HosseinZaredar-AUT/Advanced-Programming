@@ -46,8 +46,9 @@ public class World {
     private void loadWorld(String path) {
         String file = FileLoader.loadFileAsString(path);
         String[] tokens = file.split("\\s+");
-        widthInTiles = FileLoader.parseInt(tokens[0]);
-        heightInTiles = FileLoader.parseInt(tokens[1]);
+        widthInTiles = 20;
+        heightInTiles = 20;
+
 
         tiles = new int[widthInTiles][heightInTiles];
         for (int y = 0; y < heightInTiles; y++) {

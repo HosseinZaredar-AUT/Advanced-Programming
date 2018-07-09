@@ -2,7 +2,6 @@ package pack.entities;
 
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 
 public class RepairFood extends Entity {

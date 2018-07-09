@@ -4,7 +4,6 @@ import pack.Game;
 import pack.entities.manager.EntityManager;
 import pack.graphics.*;
 import pack.input.*;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -14,8 +13,10 @@ public class Player extends Entity {
     private boolean up, down, right, left;
     private int degree;
     public static double degreeGun;
-    public int xMove, yMove;
+    public float xMove, yMove;
     private final int SPEED = 10;
+    private float xSpeed;
+    private float ySpeed;
 
 
     private int gunState; //1.Cannon, -1.Bullet
@@ -30,10 +31,10 @@ public class Player extends Entity {
     private final float MAX_HEALTH = 5;
     private float health;
 
-    private final int MAX_CANNON = 30;
+    private final int MAX_CANNON = 50;
     private int cannon;
 
-    private final int MAX_BULLET = 100;
+    private final int MAX_BULLET = 200;
     private int bullet;
 
 
@@ -43,12 +44,24 @@ public class Player extends Entity {
         health = MAX_HEALTH;
         bullet = MAX_BULLET;
         cannon = MAX_CANNON;
+        xSpeed = (float)(Math.sqrt(2) / 2 * SPEED);
+        ySpeed = (float)(Math.sqrt(2) / 2 * SPEED);
 
     }
 
     @Override
     public void tick() {
 
+        move();
+        getFood();
+        upgrade();
+        shoot();
+        getDamage();
+        prepareRender();
+    }
+
+
+    private void move() {
         //MOVEMENT
         up = KeyManager.up;
         down = KeyManager.down;
@@ -59,13 +72,13 @@ public class Player extends Entity {
         yMove = 0;
 
         if (up)
-            yMove = -SPEED;
+            yMove = -ySpeed;
         if (down)
-            yMove = SPEED;
+            yMove = ySpeed;
         if (left)
-            xMove = -SPEED;
+            xMove = -xSpeed;
         if (right)
-            xMove = SPEED;
+            xMove = xSpeed;
 
         x += xMove;
         y += yMove;
@@ -81,19 +94,25 @@ public class Player extends Entity {
 
 
             if (EntityManager.doCollideWithHardWalls(this) != null ||
-                    EntityManager.doCollideWithSoftWalls(this) != null)
+                    EntityManager.doCollideWithSoftWalls(this) != null ||
+                    EntityManager.doCollideWithEnemyTank(this) != null ||
+                    EntityManager.doCollideWithEnemyCar(this) != null  ||
+                    EntityManager.doCollideWithArtillery(this) != null)
                 x -= xMove;
 
             y += yMove;
             if (EntityManager.doCollideWithHardWalls(this) != null ||
-                    EntityManager.doCollideWithSoftWalls(this) != null)
+                    EntityManager.doCollideWithSoftWalls(this) != null ||
+                    EntityManager.doCollideWithEnemyTank(this) != null ||
+                    EntityManager.doCollideWithEnemyCar(this) != null  ||
+                    EntityManager.doCollideWithArtillery(this) != null)
                 y -= yMove;
 
         }
-
         Camera.centerOnEntity(this);
+    }
 
-        //FOOD
+    private void getFood() {
         if (bullet != MAX_BULLET) {
             BulletFood bulletFood = EntityManager.doCollideWithBulletFood(this);
             if (bulletFood != null) {
@@ -118,7 +137,9 @@ public class Player extends Entity {
             }
         }
 
-        //UPGRADERS
+    }
+
+    private void upgrade() {
         Upgrader upgrader = EntityManager.doCollideWithUpgrader(this);
         if (upgrader != null) {
 
@@ -139,20 +160,21 @@ public class Player extends Entity {
             EntityManager.removeUpgrader(upgrader);
 
         }
+    }
 
-        //SHOOT
+    private void shoot() {
         gunState = MouseManager.rightMouseButtonFlag;
 
         degreeGun = MouseManager.angle;
         if (MouseManager.leftMouseButton) {
-            //todo make it precise...w
+            //todo make it precise...
 
             if (gunState == 1 && cannon > 0) {
                 if (cannonCounter == cannonRate) {
                     EntityManager.createFriendlyCannon(x + width / 2+10, y + height / 2+10, degreeGun+3);
                     if (cannonLevel == 2 || cannonLevel == 3) {
                         EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun + 8);
-                        EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun + 8);
+                        EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun - 8);
                     }
                     cannon--;
                     cannonCounter = -1;
@@ -168,7 +190,9 @@ public class Player extends Entity {
             }
         }
 
-        //GETTING DAMAGE
+    }
+
+    private void getDamage() {
         Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null) {
             health -= Bullet.DAMAGE;
@@ -191,16 +215,9 @@ public class Player extends Entity {
             //TODO something
             health = MAX_HEALTH;
         }
-
-
-
-
     }
 
-
-    @Override
-    public void render(Graphics2D g) {
-
+    private void prepareRender() {
         if (up && right)
             degree = -45;
         else if (up && left)
@@ -217,7 +234,13 @@ public class Player extends Entity {
             degree = 0;
         else if (left)
             degree = 180;
+    }
 
+
+
+
+    @Override
+    public void render(Graphics2D g) {
 
         BufferedImage image = Assets.player;
         AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));

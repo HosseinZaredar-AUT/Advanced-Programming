@@ -18,27 +18,31 @@ public class SoftWall extends Entity {
 
     @Override
     public void tick() {
+        getDamage();
+    }
+
+    private void getDamage() {
+        Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
+        if (friendlyCannon != null) {
+            EntityManager.removeFriendlyCannon(friendlyCannon);
+            health -= Cannon.DAMAGE;
+        }
+
         Bullet friendlyBullet = EntityManager.doCollideWithFriendlyBullet(this);
         if (friendlyBullet != null) {
             EntityManager.removeFriendlyBullet(friendlyBullet);
             health -= Bullet.DAMAGE;
         }
 
-        Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
-        if (friendlyBullet != null) {
-            EntityManager.removeFriendlyCannon(friendlyBullet);
-            health -= Cannon.DAMAGE;
-        }
-
         Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null) {
-            EntityManager.removeEnemyCannon(enemyBullet);
+            EntityManager.removeEnemyBullet(enemyBullet);
             health -= Bullet.DAMAGE;
         }
 
         Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
-        if (enemyBullet != null) {
-            EntityManager.removeEnemyCannon(enemyBullet);
+        if (enemyCannon != null) {
+            EntityManager.removeEnemyCannon(enemyCannon);
             health -= Cannon.DAMAGE;
         }
 
@@ -47,6 +51,7 @@ public class SoftWall extends Entity {
 
         }
     }
+
 
     @Override
     public void render(Graphics2D g) {

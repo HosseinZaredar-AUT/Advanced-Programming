@@ -1,8 +1,8 @@
 package pack.entities.manager;
 
+import pack.Game;
 import pack.entities.*;
-import pack.graphics.Assets;
-
+import pack.graphics.Camera;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -19,7 +19,8 @@ public class EntityManager {
     private static ArrayList<CannonFood> cannonFoods;
     private static ArrayList<RepairFood> repairFoods;
     private static ArrayList<Upgrader> upgraders;
-    private static ArrayList<Enemy> enemies;
+    private static ArrayList<EnemyTank> enemyTanks;
+    private static ArrayList<EnemyCar> enemyCars;
     private static ArrayList<Artillery> artilleries;
     private static ArrayList<Mine> mines;
 
@@ -36,45 +37,38 @@ public class EntityManager {
         cannonFoods = new ArrayList<>();
         repairFoods = new ArrayList<>();
         upgraders = new ArrayList<>();
-        enemies = new ArrayList<>();
+        enemyTanks = new ArrayList<>();
+        enemyCars = new ArrayList<>();
         artilleries = new ArrayList<>();
         mines = new ArrayList<>();
 
-
     }
-
-
-    //DELTA
-    public static float deltaXWithPlayer(Entity e) {
-        return e.getX() - player.getX();
-    }
-
-    public static float deltaYWithPlayer(Entity e) {
-        return  e.getY() - player.getY();
-    }
-
 
     //CREATORS
     public static void createPlayer(float x, float y) {
         player = new Player(x, y);
     }
 
-    public static void createEnemy(float x, float y) {
-        enemies.add(new Enemy(x, y, player));
+    public static void createEnemyTank(float x, float y) {
+        enemyTanks.add(new EnemyTank(x, y));
     }
 
-    public static void createArtillery(float x, float y) {
-        artilleries.add(new Artillery(x, y));
+    public static void createEnemyCar(float x, float y) {
+        enemyCars.add(new EnemyCar(x, y));
+    }
+
+
+    public static void createArtillery(float x, float y, Artillery.Type type) {
+        artilleries.add(new Artillery(x, y, type));
     }
 
     public static void createMine(float x, float y) {
         mines.add(new Mine(x, y));
     }
 
-    public static Cannon createFriendlyCannon(float x, float y, double angle) {
+    public static void createFriendlyCannon(float x, float y, double angle) {
         Cannon cannon = new Cannon(x, y, angle);
         friendlyCannons.add(cannon);
-        return cannon;
     }
 
     public static Cannon createEnemyCannon(float x, float y, double angle) {
@@ -87,8 +81,10 @@ public class EntityManager {
         friendlyBullets.add(new Bullet(x, y, angle));
     }
 
-    public static void createEnemyBullet(float x, float y, double angle) {
-        enemyBullets.add(new Bullet(x, y, angle));
+    public static Bullet createEnemyBullet(float x, float y, double angle) {
+        Bullet bullet = new Bullet(x, y, angle);
+        enemyBullets.add(bullet);
+        return bullet;
     }
 
     public static void createHardWall(float x, float y) {
@@ -138,6 +134,14 @@ public class EntityManager {
         mines.remove(e);
     }
 
+    public static void removeEnemyTank(Entity e) {
+        enemyTanks.remove(e);
+    }
+
+    public static void removeEnemyCar(Entity e) {
+        enemyCars.remove(e);
+    }
+
     public static void removeSoftWall(Entity e) {
         softWalls.remove(e);
     }
@@ -179,8 +183,9 @@ public class EntityManager {
     }
 
     public static Entity doCollideWithPlayer(Entity e) {
+        if (player.getBounds().intersects(e.getBounds()))
+            return player;
         return null;
-
     }
 
     public static Cannon doCollideWithFriendlyCannon(Entity e) {
@@ -265,12 +270,50 @@ public class EntityManager {
         return null;
     }
 
+    public static EnemyTank doCollideWithEnemyTank(Entity e) {
+        for (EnemyTank en : enemyTanks) {
+            if (en.getBounds().intersects(e.getBounds()) && !en.equals(e))
+                return en;
+        }
+        return null;
+    }
+
+    public static EnemyCar doCollideWithEnemyCar(Entity e) {
+        for (EnemyCar en : enemyCars) {
+            if (en.getBounds().intersects(e.getBounds()))
+                return en;
+        }
+        return null;
+    }
+
+
+    //GETTERS
+    public static Player getPlayer() {
+        return player;
+    }
+
+
     //TICK AND RENDER
-    public void tick() {
+    public static void tick() {
+
         player.tick();
 
-        for (Enemy e : enemies)
-            e.tick();
+        try {
+            for (EnemyTank e : enemyTanks)
+                e.tick();
+
+        } catch (Exception ex) {
+        }
+
+
+        try {
+            for (EnemyCar e : enemyCars)
+                e.tick();
+
+        } catch (Exception ex) {
+        }
+
+
 
         for (Artillery a : artilleries)
             a.tick();
@@ -303,47 +346,94 @@ public class EntityManager {
 
     }
 
-    public void render(Graphics2D g) {
+    public static void render(Graphics2D g) {
 
 
-        for (HardWall w : hardWalls)
+        for (HardWall w : hardWalls) {
+            if ((w.getX() + w.getWidth() > Camera.getXOffset()) && (w.getX() < (Camera.getXOffset() + Game.frameWidth)) && (w.getY() + w.getHeight() > Camera.getYOffset())
+                    && (w.getY() < (Camera.getYOffset() + Game.frameHeight)))
             w.render(g);
+        }
 
-        for (SoftWall w : softWalls)
+
+
+        for (SoftWall w : softWalls) {
+            if ((w.getX() + w.getWidth() > Camera.getXOffset()) && (w.getX() < (Camera.getXOffset() + Game.frameWidth)) && (w.getY() + w.getHeight() > Camera.getYOffset())
+                    && (w.getY() < (Camera.getYOffset() + Game.frameHeight)))
             w.render(g);
+        }
 
-        for (Cannon f : friendlyCannons)
+        for (Cannon f : friendlyCannons) {
+            if ((f.getX() + f.getWidth() > Camera.getXOffset()) && (f.getX() < (Camera.getXOffset() + Game.frameWidth)) && (f.getY() + f.getHeight() > Camera.getYOffset())
+                    && (f.getY() < (Camera.getYOffset() + Game.frameHeight)))
             f.render(g);
+        }
 
-        for (Cannon f : enemyCannons)
+        for (Cannon f : enemyCannons) {
+            if ((f.getX() + f.getWidth() > Camera.getXOffset()) && (f.getX() < (Camera.getXOffset() + Game.frameWidth)) && (f.getY() + f.getHeight() > Camera.getYOffset())
+                    && (f.getY() < (Camera.getYOffset() + Game.frameHeight)))
             f.render(g);
+        }
 
-        for (Bullet b : friendlyBullets)
+        for (Bullet b : friendlyBullets) {
+            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
             b.render(g);
+        }
 
-        for (Bullet b : enemyBullets)
+        for (Bullet b : enemyBullets) {
+            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
             b.render(g);
+        }
 
-        for (BulletFood b : bulletFoods)
+        for (BulletFood b : bulletFoods) {
+            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
             b.render(g);
+        }
 
-        for (CannonFood c : cannonFoods)
+        for (CannonFood c : cannonFoods) {
+            if ((c.getX() + c.getWidth() > Camera.getXOffset()) && (c.getX() < (Camera.getXOffset() + Game.frameWidth)) && (c.getY() + c.getHeight() > Camera.getYOffset())
+                    && (c.getY() < (Camera.getYOffset() + Game.frameHeight)))
             c.render(g);
+        }
 
-        for (RepairFood r : repairFoods)
+        for (RepairFood r : repairFoods) {
+            if ((r.getX() + r.getWidth() > Camera.getXOffset()) && (r.getX() < (Camera.getXOffset() + Game.frameWidth)) && (r.getY() + r.getHeight() > Camera.getYOffset())
+                    && (r.getY() < (Camera.getYOffset() + Game.frameHeight)))
             r.render(g);
+        }
 
-        for (Upgrader u : upgraders)
+        for (Upgrader u : upgraders) {
+            if ((u.getX() + u.getWidth() > Camera.getXOffset()) && (u.getX() < (Camera.getXOffset() + Game.frameWidth)) && (u.getY() + u.getHeight() > Camera.getYOffset())
+                    && (u.getY() < (Camera.getYOffset() + Game.frameHeight)))
             u.render(g);
+        }
 
-        for (Mine m : mines)
+        for (Mine m : mines) {
+            if ((m.getX() + m.getWidth() > Camera.getXOffset()) && (m.getX() < (Camera.getXOffset() + Game.frameWidth)) && (m.getY() + m.getHeight() > Camera.getYOffset())
+                    && (m.getY() < (Camera.getYOffset() + Game.frameHeight)))
             m.render(g);
+        }
 
-        for (Enemy e : enemies)
+        for (EnemyTank e : enemyTanks) {
+            if ((e.getX() + e.getWidth() > Camera.getXOffset()) && (e.getX() < (Camera.getXOffset() + Game.frameWidth)) && (e.getY() + e.getHeight() > Camera.getYOffset())
+                    && (e.getY() < (Camera.getYOffset() + Game.frameHeight)))
             e.render(g);
+        }
 
-        for (Artillery a : artilleries)
-            a.render(g);
+        for (EnemyCar e : enemyCars) {
+            if ((e.getX() + e.getWidth() > Camera.getXOffset()) && (e.getX() < (Camera.getXOffset() + Game.frameWidth)) && (e.getY() + e.getHeight() > Camera.getYOffset())
+                    && (e.getY() < (Camera.getYOffset() + Game.frameHeight)))
+            e.render(g);
+        }
+
+        for (Artillery a : artilleries) {
+            if ((a.getX() + a.getWidth() > Camera.getXOffset()) && (a.getX() < (Camera.getXOffset() + Game.frameWidth)) && (a.getY() + a.getHeight() > Camera.getYOffset())
+                    && (a.getY() < (Camera.getYOffset() + Game.frameHeight)))
+                a.render(g);
+        }
 
 
         player.render(g);

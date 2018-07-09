@@ -11,7 +11,7 @@ import java.awt.*;
 public class Game implements Runnable {
 
 
-    private final int FPS = 90;
+    private final int FPS = 60;
 
     private GameFrame frame;
     private State state;

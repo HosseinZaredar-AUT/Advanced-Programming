@@ -2,7 +2,6 @@ package pack.entities;
 
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -29,9 +28,12 @@ public class Cannon extends Entity {
 
     @Override
     public void tick() {
+        move();
+    }
+
+    private void move() {
         x += xSpeed;
         y += ySpeed;
-
     }
 
     @Override

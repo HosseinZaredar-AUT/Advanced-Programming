@@ -3,7 +3,6 @@ package pack.entities;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 
 public class HardWall extends Entity {
@@ -14,6 +13,10 @@ public class HardWall extends Entity {
 
     @Override
     public void tick() {
+        getDamage();
+    }
+
+    private void getDamage() {
         Bullet friendlyBullet = EntityManager.doCollideWithFriendlyBullet(this);
         if (friendlyBullet != null)
             EntityManager.removeFriendlyBullet(friendlyBullet);
@@ -24,12 +27,13 @@ public class HardWall extends Entity {
 
         Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null)
-            EntityManager.removeFriendlyBullet(enemyBullet);
+            EntityManager.removeEnemyBullet(enemyBullet);
 
         Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
         if (enemyCannon != null)
             EntityManager.removeEnemyCannon(enemyCannon);
     }
+
 
     @Override
     public void render(Graphics2D g) {

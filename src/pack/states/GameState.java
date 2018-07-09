@@ -1,5 +1,7 @@
 package pack.states;
 
+import pack.entities.Artillery;
+import pack.entities.EntityWorld;
 import pack.entities.manager.EntityManager;
 import pack.world.World;
 import java.awt.*;
@@ -7,50 +9,20 @@ import java.util.ArrayList;
 
 public class GameState extends State{
 
-    private EntityManager entityManager;
     private World world;
 
     private long lastRender;
     private ArrayList<Float> fpsHistory;
+    private EntityWorld entityWorld;
 
     public GameState() {
         
         fpsHistory = new ArrayList<>();
         lastRender = -1;
-        
-        world= new World("res/world/worldFile.txt");
-        entityManager = new EntityManager();
 
-        //TEST
-        entityManager.createPlayer(10, 10);
-
-//        entityManager.createHardWall(1000, 100);
-        entityManager.createHardWall(1000, 200);
-        entityManager.createHardWall(1000, 300);
-        entityManager.createHardWall(1000, 400);
-        entityManager.createHardWall(1000, 500);
-        entityManager.createHardWall(900, 500);
-        entityManager.createHardWall(800, 500);
-        entityManager.createHardWall(700, 500);
-
-
-        entityManager.createEnemy(1190, 400);
-
-        entityManager.createBulletFood(1000, 1000);
-        entityManager.createBulletFood(1250, 1000);
-        entityManager.createCannonFood(100, 1000);
-        entityManager.createCannonFood(250, 1000);
-
-        entityManager.createUpgrader(200 ,1400);
-        entityManager.createUpgrader(200 ,1600);
-        entityManager.createUpgrader(700 ,1400);
-
-        entityManager.createRepairFood(1700, 1800 );
-
-        entityManager.createArtillery(1900, 1000);
-
-        entityManager.createEnemy(1190, 400);
-
+        new EntityManager();
+        world = new World("res/world/worldFile.txt");
+        entityWorld = new EntityWorld();
 
 
     }
@@ -58,7 +30,7 @@ public class GameState extends State{
     @Override
     public void tick() {
         world.tick();
-        entityManager.tick();
+        EntityManager.tick();
 
     }
 
@@ -66,7 +38,7 @@ public class GameState extends State{
     public void render(Graphics2D g) {
 
         world.render(g);
-        entityManager.render(g);
+        EntityManager.render(g);
 
         // Print FPS info
         long currentRender = System.currentTimeMillis();

@@ -2,12 +2,10 @@ package pack.states;
 
 import pack.entities.manager.EntityManager;
 import pack.world.World;
-
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GameState extends State {
-
+public class GameState extends State{
 
     private EntityManager entityManager;
     private World world;
@@ -16,36 +14,47 @@ public class GameState extends State {
     private ArrayList<Float> fpsHistory;
 
     public GameState() {
-
+        
         fpsHistory = new ArrayList<>();
         lastRender = -1;
-
-        world = new World("res/world/worldFile.txt");
+        
+        world= new World("res/world/worldFile.txt");
         entityManager = new EntityManager();
 
         //TEST
         entityManager.createPlayer(10, 10);
-        entityManager.createEnemySimple(100, 600);
 
-//        entityManager.createHardWall(1000, 100);
         entityManager.createHardWall(1000, 200);
         entityManager.createHardWall(1000, 300);
         entityManager.createHardWall(1000, 400);
         entityManager.createHardWall(1000, 500);
-        entityManager.createHardWall(900, 500);
-        entityManager.createHardWall(800, 500);
-        entityManager.createHardWall(700, 500);
 
-        entityManager.createEnemy(1190, 400);
 
-        entityManager.createBulletFood(1000, 1000);
-        entityManager.createBulletFood(1250, 1000);
-        entityManager.createCannonFood(100, 1000);
-        entityManager.createCannonFood(250, 1000);
 
-        entityManager.createUpgrader(200, 1400);
-        entityManager.createUpgrader(200, 1600);
-        entityManager.createUpgrader(700, 1400);
+        entityManager.createSoftWall(700, 600);
+        entityManager.createSoftWall(700, 700);
+        entityManager.createSoftWall(700, 800);
+        entityManager.createSoftWall(700, 900);
+
+
+        //entityManager.createEnemy(1190, 400);
+        entityManager.createEnemySimple(400, 1800);
+
+//        entityManager.createBulletFood(1000, 1000);
+//        entityManager.createBulletFood(1250, 1000);
+//        entityManager.createCannonFood(100, 1000);
+//        entityManager.createCannonFood(250, 1000);
+
+//        entityManager.createUpgrader(200 ,1400);
+//        entityManager.createUpgrader(200 ,1600);
+//        entityManager.createUpgrader(700 ,1400);
+//
+//        entityManager.createRepairFood(1700, 1800 );
+
+        entityManager.createArtillery(1900, 1000);
+
+//        entityManager.createEnemy(1190, 400);
+
 
 
     }

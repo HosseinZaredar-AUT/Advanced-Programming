@@ -13,12 +13,16 @@ public class Bullet extends Entity {
     public static final float DAMAGE = 0.1f;
     private double angle;
     private float xSpeed, ySpeed;
+    public int xPlus, yPlus;
+
 
     public Bullet(float x, float y, double angle) {
         super(x, y, 24, 24);
         this.angle = angle;
         xSpeed = (float) (SPEED * Math.cos(Math.toRadians(angle)));
         ySpeed = (float) (SPEED * Math.sin(Math.toRadians(angle)));
+        xPlus = 0;
+        yPlus = 0;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class Bullet extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, width, height);
+        return new Rectangle((int) x + xPlus, (int) y + yPlus, width, height);
     }
 
     @Override

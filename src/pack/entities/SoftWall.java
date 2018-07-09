@@ -18,15 +18,27 @@ public class SoftWall extends Entity {
 
     @Override
     public void tick() {
-        Bullet bullet = EntityManager.doCollideWithBullet(this);
-        if (bullet != null) {
-            EntityManager.removeBullet(bullet);
+        Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
+        if (friendlyCannon != null) {
+            EntityManager.removeFriendlyCannon(friendlyCannon);
+            health -= Cannon.DAMAGE;
+        }
+
+        Bullet friendlyBullet = EntityManager.doCollideWithFriendlyBullet(this);
+        if (friendlyBullet != null) {
+            EntityManager.removeFriendlyBullet(friendlyBullet);
             health -= Bullet.DAMAGE;
         }
 
-        Cannon cannon = EntityManager.doCollideWithCannon(this);
-        if (cannon != null) {
-            EntityManager.removeCannon(cannon);
+        Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
+        if (enemyBullet != null) {
+            EntityManager.removeEnemyBullet(enemyBullet);
+            health -= Bullet.DAMAGE;
+        }
+
+        Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
+        if (enemyCannon != null) {
+            EntityManager.removeEnemyCannon(enemyCannon);
             health -= Cannon.DAMAGE;
         }
 

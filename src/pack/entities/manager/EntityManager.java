@@ -9,25 +9,37 @@ public class EntityManager {
     private static Player player;
     private static ArrayList<HardWall> hardWalls;
     private static ArrayList<SoftWall> softWalls;
-    private static ArrayList<Cannon> cannons;
-    private static ArrayList<Bullet> bullets;
+    private static ArrayList<Cannon> friendlyCannons;
+    private static ArrayList<Cannon> enemyCannons;
+    private static ArrayList<Bullet> friendlyBullets;
+    private static ArrayList<Bullet> enemyBullets;
     private static ArrayList<BulletFood> bulletFoods;
     private static ArrayList<CannonFood> cannonFoods;
+    private static ArrayList<RepairFood> repairFoods;
     private static ArrayList<Upgrader> upgraders;
     private static ArrayList<Enemy> enemies;
-    private static ArrayList<EnemySimple> simpleEnemy;
+    private static ArrayList<EnemySimple> enemySimples;
+    private static ArrayList<Artillery> artilleries;
+    private static ArrayList<Mine> mines;
+
 
 
     public EntityManager() {
         hardWalls = new ArrayList<>();
         softWalls = new ArrayList<>();
-        cannons = new ArrayList<>();
-        bullets = new ArrayList<>();
+        friendlyBullets = new ArrayList<>();
+        enemyBullets = new ArrayList<>();
+        friendlyCannons = new ArrayList<>();
+        enemyCannons = new ArrayList<>();
         bulletFoods = new ArrayList<>();
         cannonFoods = new ArrayList<>();
+        repairFoods = new ArrayList<>();
         upgraders = new ArrayList<>();
         enemies = new ArrayList<>();
-simpleEnemy = new ArrayList<>();
+        enemySimples = new ArrayList<>();
+        artilleries = new ArrayList<>();
+        mines = new ArrayList<>();
+
 
     }
 
@@ -37,22 +49,41 @@ simpleEnemy = new ArrayList<>();
     }
 
     public static void createEnemy(float x, float y) {
-        enemies.add(new Enemy(x, y,player));
+        enemies.add(new Enemy(x, y, player));
     }
-
 
     public static void createEnemySimple(float x, float y) {
-        simpleEnemy.add(new EnemySimple(x, y,player));
+        enemySimples.add(new EnemySimple(x, y,player));
     }
 
-    public static Cannon createCannon(float x, float y, double angle) {
+
+    public static void createArtillery(float x, float y) {
+        artilleries.add(new Artillery(x, y));
+    }
+
+    public static void createMine(float x, float y) {
+        mines.add(new Mine(x, y));
+    }
+
+    public static void createFriendlyCannon(float x, float y, double angle) {
         Cannon cannon = new Cannon(x, y, angle);
-        cannons.add(cannon);
+        friendlyCannons.add(cannon);
+    }
+
+    public static Cannon createEnemyCannon(float x, float y, double angle) {
+        Cannon cannon = new Cannon(x, y, angle);
+        enemyCannons.add(cannon);
         return cannon;
     }
 
-    public static void createBullet(float x, float y, double angle) {
-        bullets.add(new Bullet(x, y, angle));
+    public static void createFriendlyBullet(float x, float y, double angle) {
+        friendlyBullets.add(new Bullet(x, y, angle));
+    }
+
+    public static Bullet createEnemyBullet(float x, float y, double angle) {
+        Bullet bullet = new Bullet(x, y, angle);
+        enemyBullets.add(bullet);
+        return bullet;
     }
 
     public static void createHardWall(float x, float y) {
@@ -73,20 +104,33 @@ simpleEnemy = new ArrayList<>();
         cannonFoods.add(new CannonFood(x, y));
     }
 
+    public static void createRepairFood(float x, float y) {
+        repairFoods.add(new RepairFood(x, y));
+    }
+
     public static void createUpgrader(float x, float y) {
         upgraders.add(new Upgrader(x, y));
     }
 
     //REMOVERS
-
-    public static void removeCannon(Entity e) {
-        cannons.remove(e);
-
+    public static void removeFriendlyCannon(Entity e) {
+        friendlyCannons.remove(e);
     }
 
-    public static void removeBullet(Entity e) {
-        bullets.remove(e);
+    public static void removeEnemyCannon(Entity e) {
+        enemyCannons.remove(e);
+    }
 
+    public static void removeFriendlyBullet(Entity e) {
+        friendlyBullets.remove(e);
+    }
+
+    public static void removeEnemyBullet(Entity e) {
+        enemyBullets.remove(e);
+    }
+
+    public static void removeMine(Entity e) {
+        mines.remove(e);
     }
 
     public static void removeSoftWall(Entity e) {
@@ -99,6 +143,10 @@ simpleEnemy = new ArrayList<>();
 
     public static void removeCannonFood(Entity e) {
         cannonFoods.remove(e);
+    }
+
+    public static void removeRepairFood(Entity e) {
+        repairFoods.remove(e);
     }
 
     public static void removeUpgrader(Entity e) {
@@ -129,11 +177,10 @@ simpleEnemy = new ArrayList<>();
         if (player.getBounds().intersects(e.getBounds()))
             return player;
         return null;
-
     }
 
-    public static Cannon doCollideWithCannon(Entity e) {
-        for (Cannon b : cannons) {
+    public static Cannon doCollideWithFriendlyCannon(Entity e) {
+        for (Cannon b : friendlyCannons) {
             if (b.getBounds().intersects(e.getBounds()))
                 return b;
         }
@@ -141,8 +188,25 @@ simpleEnemy = new ArrayList<>();
 
     }
 
-    public static Bullet doCollideWithBullet(Entity e) {
-        for (Bullet b : bullets) {
+    public static Cannon doCollideWithEnemyCannon(Entity e) {
+        for (Cannon b : enemyCannons) {
+            if (b.getBounds().intersects(e.getBounds()))
+                return b;
+        }
+        return null;
+
+    }
+
+    public static Bullet doCollideWithFriendlyBullet(Entity e) {
+        for (Bullet b : friendlyBullets) {
+            if (b.getBounds().intersects(e.getBounds()))
+                return b;
+        }
+        return null;
+    }
+
+    public static Bullet doCollideWithEnemyBullet(Entity e) {
+        for (Bullet b : enemyBullets) {
             if (b.getBounds().intersects(e.getBounds()))
                 return b;
         }
@@ -165,16 +229,11 @@ simpleEnemy = new ArrayList<>();
         return null;
     }
 
-    public static Entity doCollideWithAllEnemies(Entity e) {
-        for (Enemy c : enemies) {
-            if (c.getBounds().intersects(e.getBounds()))
-                return c;
+    public static RepairFood doCollideWithRepairFood(Entity e) {
+        for (RepairFood r : repairFoods) {
+            if (r.getBounds().intersects(e.getBounds()))
+                return r;
         }
-        for (EnemySimple c : simpleEnemy) {
-            if (c.getBounds().intersects(e.getBounds()))
-                return c;
-        }
-        
         return null;
     }
 
@@ -186,6 +245,40 @@ simpleEnemy = new ArrayList<>();
         return null;
     }
 
+    public static Mine doCollideWithMine(Entity e) {
+        for (Mine m : mines) {
+            if (m.getBounds().intersects(e.getBounds()))
+                return m;
+        }
+        return null;
+    }
+
+    public static Artillery doCollideWithArtillery(Entity e) {
+        for (Artillery a : artilleries) {
+            if (a.getBounds().intersects(e.getBounds()))
+                return a;
+        }
+        return null;
+    }
+
+    public static Enemy doCollideWithEnemy(Entity e) {
+        for (Enemy en : enemies) {
+            if (en.getBounds().intersects(e.getBounds()))
+                return en;
+        }
+        return null;
+    }
+
+    public static EnemySimple doCollideWithEnemySimple(Entity e) {
+        for (EnemySimple en : enemySimples) {
+            if (en.getBounds().intersects(e.getBounds()))
+                return en;
+        }
+        return null;
+    }
+
+
+
     //TICK AND RENDER
     public void tick() {
         player.tick();
@@ -193,8 +286,14 @@ simpleEnemy = new ArrayList<>();
         for (Enemy e : enemies)
             e.tick();
 
-        for (EnemySimple e : simpleEnemy)
+        for (EnemySimple e : enemySimples)
             e.tick();
+
+        for (Artillery a : artilleries)
+            a.tick();
+
+        for (Artillery a : artilleries)
+            a.tick();
 
         for (HardWall w : hardWalls)
             w.tick();
@@ -207,25 +306,39 @@ simpleEnemy = new ArrayList<>();
         } catch (Exception ex) {
         }
 
-        for (Cannon f : cannons)
+        for (Cannon f : friendlyCannons)
             f.tick();
 
-        for (Bullet b : bullets)
+        for (Cannon f : enemyCannons)
+            f.tick();
+
+        for (Bullet b : friendlyBullets)
+            b.tick();
+
+        for (Bullet b : enemyBullets)
             b.tick();
 
     }
 
     public void render(Graphics2D g) {
+
+
         for (HardWall w : hardWalls)
             w.render(g);
 
         for (SoftWall w : softWalls)
             w.render(g);
 
-        for (Cannon f : cannons)
+        for (Cannon f : friendlyCannons)
             f.render(g);
 
-        for (Bullet b : bullets)
+        for (Cannon f : enemyCannons)
+            f.render(g);
+
+        for (Bullet b : friendlyBullets)
+            b.render(g);
+
+        for (Bullet b : enemyBullets)
             b.render(g);
 
         for (BulletFood b : bulletFoods)
@@ -234,16 +347,27 @@ simpleEnemy = new ArrayList<>();
         for (CannonFood c : cannonFoods)
             c.render(g);
 
+        for (RepairFood r : repairFoods)
+            r.render(g);
+
         for (Upgrader u : upgraders)
             u.render(g);
+
+        for (Mine m : mines)
+            m.render(g);
 
         for (Enemy e : enemies)
             e.render(g);
 
-        for (EnemySimple e : simpleEnemy)
+        for (EnemySimple e : enemySimples)
             e.render(g);
 
+        for (Artillery a : artilleries)
+            a.render(g);
+
+
         player.render(g);
+
 
     }
 

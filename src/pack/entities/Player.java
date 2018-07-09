@@ -15,7 +15,8 @@ public class Player extends Entity {
     private int degree;
     public static double degreeGun;
     public int xMove, yMove;
-    private final int SPEED = 15;
+    private final int SPEED = 10;
+
 
     private int gunState; //1.Cannon, -1.Bullet
     private int cannonRate = 40; //the less, the faster
@@ -26,8 +27,8 @@ public class Player extends Entity {
     private int bulletCounter = 0;
 
 
-    private final int MAX_HEALTH = 5;
-    private int health;
+    private final float MAX_HEALTH = 5;
+    private float health;
 
     private final int MAX_CANNON = 30;
     private int cannon;
@@ -70,8 +71,7 @@ public class Player extends Entity {
         y += yMove;
 
         if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0||
-                (EntityManager.doCollideWithAllEnemies(this)!=null)) {
+                y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0) {
             x -= xMove;
             y -= yMove;
 
@@ -81,12 +81,16 @@ public class Player extends Entity {
 
 
             if (EntityManager.doCollideWithHardWalls(this) != null ||
-                    EntityManager.doCollideWithSoftWalls(this) != null)
+                    EntityManager.doCollideWithSoftWalls(this) != null ||
+                    EntityManager.doCollideWithEnemy(this) != null ||
+                    EntityManager.doCollideWithEnemySimple(this) != null)
                 x -= xMove;
 
             y += yMove;
             if (EntityManager.doCollideWithHardWalls(this) != null ||
-                    EntityManager.doCollideWithSoftWalls(this) != null)
+                    EntityManager.doCollideWithSoftWalls(this) != null ||
+                    EntityManager.doCollideWithEnemy(this) != null ||
+                    EntityManager.doCollideWithEnemySimple(this) != null )
                 y -= yMove;
 
         }
@@ -107,6 +111,14 @@ public class Player extends Entity {
             if (cannonFood != null) {
                 cannon = MAX_CANNON;
                 EntityManager.removeCannonFood(cannonFood);
+            }
+        }
+
+        if (health != MAX_HEALTH) {
+            RepairFood repairFood = EntityManager.doCollideWithRepairFood(this);
+            if (repairFood != null) {
+                health = MAX_HEALTH;
+                EntityManager.removeRepairFood(repairFood);
             }
         }
 
@@ -141,10 +153,10 @@ public class Player extends Entity {
 
             if (gunState == 1 && cannon > 0) {
                 if (cannonCounter == cannonRate) {
-                    EntityManager.createCannon(x + width / 2+10, y + height / 2+10, degreeGun+3);
+                    EntityManager.createFriendlyCannon(x + width / 2+10, y + height / 2+10, degreeGun+3);
                     if (cannonLevel == 2 || cannonLevel == 3) {
-                        EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun + 8);
-                        EntityManager.createCannon(x + width / 2, y + height / 2, degreeGun + 8);
+                        EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun + 8);
+                        EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun - 8);
                     }
                     cannon--;
                     cannonCounter = -1;
@@ -152,13 +164,40 @@ public class Player extends Entity {
                 cannonCounter++;
             } else if (gunState == -1 && bullet > 0) {
                 if (bulletCounter == bulletRate) {
-                    EntityManager.createBullet(x + width / 2, y + height / 2, degreeGun);
+                    EntityManager.createFriendlyBullet(x + width / 2, y + height / 2, degreeGun);
                     bullet--;
                     bulletCounter = -1;
                 }
                 bulletCounter++;
             }
         }
+
+        //GETTING DAMAGE
+        Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
+        if (enemyBullet != null) {
+            health -= Bullet.DAMAGE;
+            EntityManager.removeEnemyBullet(enemyBullet);
+        }
+
+        Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
+        if (enemyCannon != null) {
+            health -= Cannon.DAMAGE;
+            EntityManager.removeEnemyCannon(enemyCannon);
+        }
+
+        Mine mine = EntityManager.doCollideWithMine(this);
+        if (mine != null) {
+            health -= Mine.DAMAGE;
+            EntityManager.removeMine(mine);
+        }
+
+        if (health <= 0) {
+            //TODO something
+            health = MAX_HEALTH;
+        }
+
+
+
 
     }
 
@@ -208,10 +247,11 @@ public class Player extends Entity {
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
         g.drawString("Cannon: " + cannon, 15, 60);
         g.drawString("Bullet: " + bullet, 15, 90);
+        g.drawString("Health: " + health, 15, 120);
 
         g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        g.drawString("Cannon Level: " + cannonLevel, 15, 140);
-        g.drawString("Bullet Level: " + bulletLevel, 15, 170);
+        g.drawString("Cannon Level: " + cannonLevel, 15, 170);
+        g.drawString("Bullet Level: " + bulletLevel, 15, 200);
 
     }
 

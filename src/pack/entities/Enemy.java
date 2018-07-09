@@ -15,12 +15,10 @@ public class Enemy extends Entity {
     private boolean upFinal, downFinal, rightFinal, leftFinal;
     private Player player;
     private double degree;
-    public static double degreeGun;
-    private double xMove, yMove;
-    private final int SPEED = 6;
-    private final int FIRE_Rate = 4; //the less, the faster
+    private double degreeGun;
+    private final int SPEED = 4;
+    private final int FIRE_Rate = 40; //the less, the faster
     private int fireCounter = 0;
-    private double xPlus, yPlus;
 
 
     public Enemy(float x, float y, Player player) {
@@ -39,31 +37,31 @@ public class Enemy extends Entity {
         downFinal = false;
         leftFinal = false;
         rightFinal = false;
-        xPlus = 0;
-        yPlus = 0;
+
         if ((x > Camera.getXOffset()) && (x < (Camera.getXOffset() + Game.frameWidth)) && (y > Camera.getYOffset())
                 && (y < (Camera.getYOffset() + Game.frameHeight))) {
             degreeGun = MouseManager.angleWithEnemy(x, y);
             //same gun and tank
             boolean flag = true;
-            Cannon cannon = EntityManager.createCannon(x, y, degreeGun);
+            Cannon cannon = EntityManager.createEnemyCannon(x, y, degreeGun);
 
             while (((Math.abs(cannon.getX() + cannon.xPlus - player.getX()) > 2)
                     || (Math.abs(cannon.getY() + cannon.yPlus - player.getY()) > 2)) && (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(cannon.getBounds().y) < Game.frameHeight)) {
                 if (EntityManager.doCollideWithHardWalls(cannon) != null) {
-                    EntityManager.removeCannon(cannon);
+                    EntityManager.removeEnemyCannon(cannon);
                     flag = false;
                     break;
                 }
                 cannon.xPlus += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 cannon.yPlus += Math.sin(Math.toRadians(degreeGun)) * SPEED;
             }
+
             cannon.xPlus = 0;
             cannon.yPlus = 0;
             if (fireCounter != FIRE_Rate) {
                 fireCounter++;
-                EntityManager.removeCannon(cannon);
+                EntityManager.removeEnemyCannon(cannon);
             } else {
                 fireCounter = -1;
             }
@@ -75,11 +73,13 @@ public class Enemy extends Entity {
                 x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
                 System.out.println(getBounds());
-                if ((EntityManager.doCollideWithHardWalls(this) != null)||
-                        (EntityManager.doCollideWithPlayer(this)!=null)) {
+                if (EntityManager.doCollideWithHardWalls(this) != null ||
+                        EntityManager.doCollideWithSoftWalls(this) != null ||
+                        EntityManager.doCollideWithPlayer(this)!=null) {
                     x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                     y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
                     flag = false;
+
                 }
             } else if (!flag) {
 

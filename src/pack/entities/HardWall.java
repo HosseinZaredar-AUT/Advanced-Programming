@@ -14,13 +14,21 @@ public class HardWall extends Entity {
 
     @Override
     public void tick() {
-        Bullet bullet = EntityManager.doCollideWithBullet(this);
-        if (bullet != null)
-            EntityManager.removeBullet(bullet);
+        Bullet friendlyBullet = EntityManager.doCollideWithFriendlyBullet(this);
+        if (friendlyBullet != null)
+            EntityManager.removeFriendlyBullet(friendlyBullet);
 
-        Cannon cannon = EntityManager.doCollideWithCannon(this);
-        if (cannon != null)
-            EntityManager.removeCannon(cannon);
+        Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
+        if (friendlyCannon != null)
+            EntityManager.removeFriendlyCannon(friendlyCannon);
+
+        Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
+        if (enemyBullet != null)
+            EntityManager.removeEnemyBullet(enemyBullet);
+
+        Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
+        if (enemyCannon != null)
+            EntityManager.removeEnemyCannon(enemyCannon);
     }
 
     @Override
@@ -30,6 +38,7 @@ public class HardWall extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, width - 10, height -10);
+        return new Rectangle((int)x, (int)y, width, height);
+
     }
 }

@@ -2,7 +2,6 @@ package pack.entities;
 
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -14,6 +13,7 @@ public class Cannon extends Entity {
     private double angle;
     private float xSpeed, ySpeed;
     public int xPlus, yPlus;
+
 
 
     public Cannon(float x, float y, double angle) {
@@ -36,7 +36,7 @@ public class Cannon extends Entity {
     @Override
     public void render(Graphics2D g) {
 
-        BufferedImage image = Assets.fire;
+        BufferedImage image = Assets.cannon;
         AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
         transform.rotate(Math.toRadians(angle), image.getWidth() / 2, image.getHeight() / 2);
 

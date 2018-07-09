@@ -17,7 +17,7 @@ public class EnemySimple extends Entity {
     private double degree;
     public static double degreeGun;
     private double xMove, yMove;
-    private final int SPEED = 3;
+    private final int SPEED = 5;
     private final int FIRE_Rate = 7; //the less, the faster
     private int fireCounter = 0;
     private double xPlus, yPlus;
@@ -46,24 +46,25 @@ public class EnemySimple extends Entity {
             degreeGun = MouseManager.angleWithEnemy(x, y);
             //same gun and tank
             boolean flag = true;
-            Cannon cannon = EntityManager.createCannon(x, y, degreeGun);
+            Bullet bullet = EntityManager.createEnemyBullet(x, y, degreeGun);
 
-            while (((Math.abs(cannon.getX() + cannon.xPlus - player.getX()) > 2)
-                    || (Math.abs(cannon.getY() + cannon.yPlus - player.getY()) > 2)) && (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
-                    (Math.abs(cannon.getBounds().y) < Game.frameHeight)) {
-                if (EntityManager.doCollideWithHardWalls(cannon) != null) {
-                    EntityManager.removeCannon(cannon);
+            while (((Math.abs(bullet.getX() + bullet.xPlus - player.getX()) > 2)
+                    || (Math.abs(bullet.getY() + bullet.yPlus - player.getY()) > 2)) &&
+                    (Math.abs(bullet.getBounds().x) < Game.frameWidth) &&
+                    (Math.abs(bullet.getBounds().y) < Game.frameHeight)) {
+                if (EntityManager.doCollideWithHardWalls(bullet) != null) {
+                    EntityManager.removeEnemyBullet(bullet);
                     flag = false;
                     break;
                 }
-                cannon.xPlus += Math.cos(Math.toRadians(degreeGun)) * SPEED;
-                cannon.yPlus += Math.sin(Math.toRadians(degreeGun)) * SPEED;
+                bullet.xPlus += Math.cos(Math.toRadians(degreeGun)) * SPEED;
+                bullet.yPlus += Math.sin(Math.toRadians(degreeGun)) * SPEED;
             }
-            cannon.xPlus = 0;
-            cannon.yPlus = 0;
+            bullet.xPlus = 0;
+            bullet.yPlus = 0;
             if (fireCounter != FIRE_Rate) {
                 fireCounter++;
-                EntityManager.removeCannon(cannon);
+                EntityManager.removeEnemyBullet(bullet);
             } else {
                 fireCounter = -1;
             }
@@ -71,23 +72,23 @@ public class EnemySimple extends Entity {
             //flag to show can shoot or no or to move toward player
             //we can move with xPlus and yPlus
 
-                degree = degreeGun;
-                x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
-                y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
-                System.out.println(getBounds());
+            degree = degreeGun;
+            x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
+            y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
+            System.out.println(getBounds());
             if ((EntityManager.doCollideWithHardWalls(this) != null)||
                     (EntityManager.doCollideWithPlayer(this)!=null)) {
-                    x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
-                    y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
-                    flag = false;
-                }
-
-
-
+                x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
+                y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
+                flag = false;
             }
 
 
+
         }
+
+
+    }
 
 
 

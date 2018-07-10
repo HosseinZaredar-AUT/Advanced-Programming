@@ -72,8 +72,8 @@ public class EntityWorld {
                 if (z == 'o') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.UP);
             }
         }
-
     }
+
 
     public static int getWidthInEntity() {
         return widthInEntity;

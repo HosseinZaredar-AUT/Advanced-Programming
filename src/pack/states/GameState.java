@@ -1,10 +1,14 @@
 package pack.states;
 
+
+import pack.sound.ExampleSounds;
+
 import pack.entities.EntityWorld;
 import pack.entities.manager.EntityManager;
 import pack.world.World;
 
 import java.awt.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class GameState extends State {
@@ -14,10 +18,18 @@ public class GameState extends State {
     private ArrayList<Float> fpsHistory;
     private EntityWorld entityWorld;
 
+    public static LocalTime localTime1;
+
+
+
     public GameState() {
+        localTime1=LocalTime.now();
 
         fpsHistory = new ArrayList<>();
         lastRender = -1;
+
+        ExampleSounds exampleSounds = new ExampleSounds();
+        //ExampleSounds.playgameSound1();
 
         new EntityManager();
         world = new World("res/world/worldFile.txt");

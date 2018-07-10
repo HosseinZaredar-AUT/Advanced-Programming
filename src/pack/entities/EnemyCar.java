@@ -117,7 +117,6 @@ public class EnemyCar extends Entity {
         AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
         transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2, imageGun.getHeight() / 2);
 
-
         g.drawImage(imageGun, transformGun, null);
     }
 

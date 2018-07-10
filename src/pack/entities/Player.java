@@ -1,12 +1,18 @@
 package pack.entities;
 
 import pack.Game;
+import pack.sound.ExampleSounds;
 import pack.entities.manager.EntityManager;
 import pack.graphics.*;
 import pack.input.*;
+import pack.states.GameState;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.time.LocalTime;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class Player extends Entity {
 
@@ -21,6 +27,7 @@ public class Player extends Entity {
     private boolean canShoot = true;
     private double timeStart;
     private double timeEnd;
+    public static LocalTime localTime2;
 
 
     private int gunState; //1.Cannon, -1.Bullet
@@ -54,7 +61,11 @@ public class Player extends Entity {
 
     @Override
     public void tick() {
-
+        localTime2 = LocalTime.now();
+        if((GameState.localTime1.until(localTime2,SECONDS)>33)&&(EntityManager.gameOver==true)) {
+            ExampleSounds.playgameSound1();
+            GameState.localTime1 = LocalTime.now();
+        }
         move();
         getFood();
         upgrade();
@@ -62,6 +73,10 @@ public class Player extends Entity {
         getDamage();
         prepareRender();
     }
+
+
+
+
 
 
     private void move() {
@@ -121,6 +136,7 @@ public class Player extends Entity {
         if (bullet != MAX_BULLET) {
             BulletFood bulletFood = EntityManager.doCollideWithBulletFood(this);
             if (bulletFood != null) {
+                ExampleSounds.playagree();
                 bullet = MAX_BULLET;
                 EntityManager.removeBulletFood(bulletFood);
             }
@@ -129,6 +145,7 @@ public class Player extends Entity {
         if (cannon != MAX_CANNON) {
             CannonFood cannonFood = EntityManager.doCollideWithCannonFood(this);
             if (cannonFood != null) {
+                ExampleSounds.playagree();
                 cannon = MAX_CANNON;
                 EntityManager.removeCannonFood(cannonFood);
             }
@@ -137,6 +154,7 @@ public class Player extends Entity {
         if (health != MAX_HEALTH) {
             RepairFood repairFood = EntityManager.doCollideWithRepairFood(this);
             if (repairFood != null) {
+                ExampleSounds.playagree();
                 health = MAX_HEALTH;
                 EntityManager.removeRepairFood(repairFood);
             }
@@ -152,6 +170,13 @@ public class Player extends Entity {
                 updateBullet();
             else
                 updateCannon();
+
+
+            if (gunState == -1)
+                updateBullet();
+            else
+                updateCannon();
+
 
             EntityManager.removeUpgrader(upgrader);
         }
@@ -170,6 +195,8 @@ public class Player extends Entity {
         } else if (bulletLevel < 2)
             updateBullet();
 
+        ExampleSounds.playagree();
+
     }
 
     private void updateBullet() {
@@ -179,6 +206,9 @@ public class Player extends Entity {
             bulletCounter = -1;
         } else if (cannonLevel < 3)
             updateCannon();
+
+        ExampleSounds.playagree();
+
     }
 
     private void shoot() {
@@ -195,6 +225,8 @@ public class Player extends Entity {
                 if (canShoot) {
 
                     EntityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
+
+                    ExampleSounds.playcannon();
                     if (cannonLevel == 2 || cannonLevel == 3) {
                         EntityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun + 8);
                         EntityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun - 8);
@@ -207,6 +239,9 @@ public class Player extends Entity {
             } else if (gunState == -1 && bullet > 0) {
                 if (bulletCounter == bulletRate) {
                     EntityManager.createFriendlyBullet((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
+
+                    ExampleSounds.playlightgun();
+
                     bullet--;
                     bulletCounter = -1;
                 }
@@ -219,6 +254,7 @@ public class Player extends Entity {
     private void getDamage() {
         Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null) {
+            ExampleSounds.playEnemyBulletToMyTank();
             health -= Bullet.DAMAGE;
             EntityManager.removeEnemyBullet(enemyBullet);
         }
@@ -232,13 +268,17 @@ public class Player extends Entity {
         Mine mine = EntityManager.doCollideWithMine(this);
         if (mine != null) {
             health -= Mine.DAMAGE;
+            ExampleSounds.playEnemyBulletToMyTank();
             EntityManager.removeMine(mine);
         }
 
         if (health <= 0) {
             EntityManager.gameOver = true;
+      }
+
         }
-    }
+
+
 
     private void prepareRender() {
         if (up && right)
@@ -258,9 +298,6 @@ public class Player extends Entity {
         else if (left)
             degree = 180;
     }
-
-
-
 
     @Override
     public void render(Graphics2D g) {

@@ -5,7 +5,6 @@ import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.MouseManager;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -80,7 +79,6 @@ public class EnemyTank extends Entity {
                 degree = degreeGun;
                 x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
-                System.out.println(getBounds());
                 if (EntityManager.doCollideWithHardWalls(this) != null) {
                     EntityManager.removeEnemyCannon(cannon);
                     x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
@@ -297,8 +295,8 @@ public class EnemyTank extends Entity {
 
 
         BufferedImage imageGun = Assets.enemyTankGun;
-        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset() + 13));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4, imageGun.getHeight() / 4 + 4);
+        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()) + 15, (int) (y - Camera.getYOffset()));
+        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2 - 15, imageGun.getHeight() / 2);
 
 
         g.drawImage(imageGun, transformGun, null);
@@ -308,6 +306,17 @@ public class EnemyTank extends Entity {
     public Rectangle getBounds() {
 
         return new Rectangle((int) x, (int) y, width, height);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof EnemyTank))
+            return false;
+
+        EnemyTank other = (EnemyTank) obj;
+        return (x == other.x) && (y == other.y);
     }
 
 }

@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 public class Assets {
 
     public static BufferedImage player, dirt, hardWall, softWall[],
-            playerBulletGun, playerCannonGun, bullet, cannon,
+            playerBulletGun[], playerCannonGun[], bullet, cannon,
             repairFood, bulletFood, cannonFood, upgrader,
             artilleryBase, artilleryGun, artilleryDead, mine,
             enemyTank, enemyTankGun, enemyCar, enemyCarGun;
@@ -18,8 +18,20 @@ public class Assets {
         dirt = pack.utils.ImageLoader.load("res/textures/dirt.png");
         player = pack.utils.ImageLoader.load("res/textures/player.png");
         hardWall = pack.utils.ImageLoader.load("res/textures/stone.png");
-        playerBulletGun = pack.utils.ImageLoader.load("res/textures/playerBulletGun.png");
-        playerCannonGun = pack.utils.ImageLoader.load("res/textures/playerCannonGun.png");
+
+        playerBulletGun = new BufferedImage[3];
+
+        playerBulletGun[0] = pack.utils.ImageLoader.load("res/textures/playerBulletGun0.png");
+        playerBulletGun[1] = pack.utils.ImageLoader.load("res/textures/playerBulletGun1.png");
+        playerBulletGun[2] = pack.utils.ImageLoader.load("res/textures/playerBulletGun2.png");
+
+        playerCannonGun = new BufferedImage[4];
+
+        playerCannonGun[0] = pack.utils.ImageLoader.load("res/textures/playerCannonGun0.png");
+        playerCannonGun[1] = pack.utils.ImageLoader.load("res/textures/playerCannonGun1.png");
+        playerCannonGun[2] = pack.utils.ImageLoader.load("res/textures/playerCannonGun2.png");
+        playerCannonGun[3] = pack.utils.ImageLoader.load("res/textures/playerCannonGun3.png");
+
         bullet = pack.utils.ImageLoader.load("res/textures/bullet.png");
         cannon = pack.utils.ImageLoader.load("res/textures/cannon.png");
 

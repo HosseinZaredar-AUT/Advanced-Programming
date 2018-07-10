@@ -105,7 +105,7 @@ public class EnemyCar extends Entity {
     public void render(Graphics2D g) {
 
 
-        BufferedImage image = Assets.player;
+        BufferedImage image = Assets.enemyCar;
         AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
         transform.rotate(Math.toRadians(degree), image.getWidth() / 2, image.getHeight() / 2);
 
@@ -113,9 +113,9 @@ public class EnemyCar extends Entity {
         g.drawImage(image, transform, null);
 
 
-        BufferedImage imageGun = Assets.playerCannonGun;
-        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset() + 13));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4, imageGun.getHeight() / 4 + 4);
+        BufferedImage imageGun = Assets.enemyCarGun;
+        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
+        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2, imageGun.getHeight() / 2);
 
 
         g.drawImage(imageGun, transformGun, null);
@@ -123,8 +123,18 @@ public class EnemyCar extends Entity {
 
     @Override
     public Rectangle getBounds() {
-
         return new Rectangle((int) x, (int) y, width, height);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof EnemyCar))
+            return false;
+
+        EnemyCar other = (EnemyCar) obj;
+        return (x == other.x) && (y == other.y);
     }
 
 }

@@ -70,11 +70,8 @@ public class EntityWorld {
                 if (z == 'm') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.RIGHT);
                 if (z == 'n') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.DOWN);
                 if (z == 'o') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.UP);
-
             }
         }
-
-
 
     }
 

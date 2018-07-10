@@ -18,12 +18,15 @@ public class Player extends Entity {
     private float xSpeed;
     private float ySpeed;
 
+    private boolean canShoot = true;
+    private double timeStart;
+    private double timeEnd;
+
 
     private int gunState; //1.Cannon, -1.Bullet
-    private int cannonRate = 40; //the less, the faster
+    private double cannonRate = 1; //the less, the faster
     private int cannonLevel = 0;
-    private int cannonCounter = 0;
-    private int bulletRate = 7; //the less, the faster
+    private int bulletRate = 6; //the less, the faster
     private int bulletLevel = 0;
     private int bulletCounter = 0;
 
@@ -164,14 +167,13 @@ public class Player extends Entity {
             } else {
                 cannonRate += 20;
             }
-            cannonCounter = -1;
-        } else if (bulletLevel < 3)
+        } else if (bulletLevel < 2)
             updateBullet();
 
     }
 
     private void updateBullet() {
-        if (bulletLevel < 3) {
+        if (bulletLevel < 2) {
             bulletLevel++;
             bulletRate--;
             bulletCounter = -1;
@@ -184,22 +186,27 @@ public class Player extends Entity {
 
         degreeGun = MouseManager.angle;
         if (MouseManager.leftMouseButton) {
-            //todo make it precise...
+
+            timeEnd = System.nanoTime();
+            if ((timeEnd - timeStart) / 1000000000 > 1)
+                canShoot = true;
 
             if (gunState == 1 && cannon > 0) {
-                if (cannonCounter == cannonRate) {
-                    EntityManager.createFriendlyCannon(x + width / 2+10, y + height / 2+10, degreeGun+3);
+                if (canShoot) {
+
+                    EntityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
                     if (cannonLevel == 2 || cannonLevel == 3) {
-                        EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun + 8);
-                        EntityManager.createFriendlyCannon(x + width / 2, y + height / 2, degreeGun - 8);
+                        EntityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun + 8);
+                        EntityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun - 8);
                     }
                     cannon--;
-                    cannonCounter = -1;
+
+                    canShoot = false;
+                    timeStart = System.nanoTime();
                 }
-                cannonCounter++;
             } else if (gunState == -1 && bullet > 0) {
                 if (bulletCounter == bulletRate) {
-                    EntityManager.createFriendlyBullet(x + width / 2, y + height / 2, degreeGun);
+                    EntityManager.createFriendlyBullet((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
                     bullet--;
                     bulletCounter = -1;
                 }
@@ -265,17 +272,30 @@ public class Player extends Entity {
 
         g.drawImage(image, transform, null);
 
-        //TODO take care of different level images...
-        BufferedImage imageGun;
-        if (gunState == 1)
-            imageGun = Assets.playerCannonGun;
-        else
-            imageGun = Assets.playerBulletGun;
+        BufferedImage imageGun = null;
 
-        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset()+ 13));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4 , imageGun.getHeight() / 4 + 4);
+        if (gunState == 1) {
+            switch (cannonLevel) {
+                case 0: imageGun = Assets.playerCannonGun[0]; break;
+                case 1: imageGun = Assets.playerCannonGun[1]; break;
+                case 2: imageGun = Assets.playerCannonGun[2]; break;
+                case 3: imageGun = Assets.playerCannonGun[3]; break;
+            }
+        }
+        else {
+            switch (bulletLevel) {
+                case 0: imageGun = Assets.playerBulletGun[0]; break;
+                case 1: imageGun = Assets.playerBulletGun[1]; break;
+                case 2: imageGun = Assets.playerBulletGun[2]; break;
+            }
+
+        }
+
+        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()) + 10, (int) (y - Camera.getYOffset()));
+        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2 - 12 , imageGun.getHeight() / 2);
 
 
+        System.out.println(degreeGun);
         g.drawImage(imageGun, transformGun, null);
 
         g.setColor(Color.BLACK);

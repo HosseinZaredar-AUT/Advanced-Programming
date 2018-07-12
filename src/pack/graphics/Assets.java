@@ -10,7 +10,8 @@ public class Assets {
             playerBulletGun[], playerCannonGun[], bullet, cannon,
             repairFood, bulletFood, cannonFood, upgrader,
             artilleryBase, artilleryGun, artilleryDead, mine,
-            enemyTank, enemyTankGun, enemyCar, enemyCarGun;
+            enemyTank, enemyTankGun, enemyCar, enemyCarGun, barbedWire,
+            menuBackground, createGame[], joinGame[], exit[] ;
 
 
     public static void init() {
@@ -49,13 +50,26 @@ public class Assets {
         artilleryDead = pack.utils.ImageLoader.load("res/textures/artilleryDead.png");
 
         mine = pack.utils.ImageLoader.load("res/textures/mine.png");
+        barbedWire = pack.utils.ImageLoader.load("res/textures/barbedWire.png");
 
         enemyTank = pack.utils.ImageLoader.load("res/textures/enemyTank.png");
         enemyTankGun = pack.utils.ImageLoader.load("res/textures/enemyTankGun.png");
         enemyCar = pack.utils.ImageLoader.load("res/textures/enemyCar.png");
         enemyCarGun = pack.utils.ImageLoader.load("res/textures/enemyCarGun.png");
 
+        menuBackground = pack.utils.ImageLoader.load("res/textures/menuBackground.jpg");
 
+        createGame = new BufferedImage[2];
+        createGame[0] = pack.utils.ImageLoader.load("res/textures/createGame0.png");
+        createGame[1] = pack.utils.ImageLoader.load("res/textures/createGame1.png");
+
+        joinGame = new BufferedImage[2];
+        joinGame[0] = pack.utils.ImageLoader.load("res/textures/joinGame0.png");
+        joinGame[1] = pack.utils.ImageLoader.load("res/textures/joinGame1.png");
+
+        exit = new BufferedImage[2];
+        exit[0] = pack.utils.ImageLoader.load("res/textures/exit0.png");
+        exit[1] = pack.utils.ImageLoader.load("res/textures/exit1.png");
     }
 
 }

@@ -25,7 +25,7 @@ public class Mine extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, width, height);
+        return new Rectangle((int)x + 30, (int)y + 30, width - 60, height - 60);
     }
 
     @Override

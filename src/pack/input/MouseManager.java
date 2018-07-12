@@ -2,15 +2,14 @@ package pack.input;
 
 import pack.entities.Entity;
 import pack.graphics.Camera;
-
+import pack.ui.MyUIManager;
 import javax.swing.*;
-import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 public class MouseManager extends MouseAdapter {
+
+    private static MyUIManager uiManager;
 
     public static boolean leftMouseButton;
     public static boolean rightMouseButton;
@@ -25,6 +24,8 @@ public class MouseManager extends MouseAdapter {
         dx = e.getX() - Camera.getEntityX() + Camera.getXOffset();
         dy = e.getY() - Camera.getEntityY() + Camera.getYOffset();
         angle = (Math.atan2(dy, dx) / (Math.PI)) * 180;
+        if(uiManager != null)
+            uiManager.onMouseMove(e);
     }
 
     @Override
@@ -51,8 +52,11 @@ public class MouseManager extends MouseAdapter {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e))
+        if (SwingUtilities.isLeftMouseButton(e)) {
             leftMouseButton = false;
+            if(uiManager != null)
+                uiManager.onMouseRelease(e);
+        }
         if (SwingUtilities.isRightMouseButton(e))
             rightMouseButton = false;
     }
@@ -61,6 +65,10 @@ public class MouseManager extends MouseAdapter {
         float dx = enemy.getX() - player.getX();
         float dy = enemy.getY() - player.getY();
         return  (Math.atan2(dy, dx) / (Math.PI)) * 180 + 180;
+    }
+
+    public static void setUIManager(MyUIManager manager) {
+        uiManager = manager;
     }
 
 }

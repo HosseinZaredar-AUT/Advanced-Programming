@@ -7,6 +7,7 @@ import pack.network.Client;
 import pack.network.Server;
 import pack.states.ClientGameState;
 import pack.states.GameState;
+import pack.states.MainMenuState;
 import pack.states.State;
 import javax.swing.*;
 import java.awt.*;
@@ -31,6 +32,9 @@ public class Game implements Runnable {
 
     private void init() {
         frame = new GameFrame("JTanks");
+        //to make it fullscreen
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //frame.setUndecorated(true);
         frame.setSize(frameWidth, frameHeight);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,18 +57,8 @@ public class Game implements Runnable {
 
     public void start() {
 
-        if (JOptionPane.showConfirmDialog(frame, "Create a server?") == 0) {
-            state = new GameState();
-            Server server = new Server(state);
-            ThreadPool.execute(server);
-            ThreadPool.execute(this);
-        } else {
-            String ip = JOptionPane.showInputDialog("Enter server's IP");
-            Client client = new Client(ip);
-            state = new ClientGameState();
-            ThreadPool.execute(this);
-
-        }
+        state = new MainMenuState(this);
+        ThreadPool.execute(this);
     }
 
     private void tick() {
@@ -114,7 +108,10 @@ public class Game implements Runnable {
             }
 
         }
-
-
     }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
 }

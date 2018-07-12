@@ -7,13 +7,19 @@ import java.net.Socket;
 
 public class Client {
 
+    private String ip;
     private static Socket server;
 
     public Client(String ip) {
+        this.ip = ip;
+    }
+
+    public boolean connect() {
         try {
             server = new Socket(ip, 7654);
+            return true;
         } catch (IOException e) {
-            e.printStackTrace();
+            return false;
         }
     }
 

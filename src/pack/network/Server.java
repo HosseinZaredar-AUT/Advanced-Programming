@@ -1,6 +1,7 @@
 package pack.network;
 
 import pack.entities.manager.EntityManager;
+import pack.states.GameState;
 import pack.states.State;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,7 +22,7 @@ public class Server implements Runnable {
     private int joinedPlayers = 0;
 
 
-    public Server(State state) {
+    public Server(GameState state) {
 
         entityManager = state.getEntityManager();
         clientsMap = new HashMap();

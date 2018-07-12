@@ -1,5 +1,6 @@
 package pack.states;
 
+import pack.Game;
 import pack.entities.players.ClientPlayer;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Camera;
@@ -16,12 +17,14 @@ import java.io.OutputStream;
 public class ClientGameState extends State {
 
     private World world;
+    private Game game;
     private EntityManager entityManager;
     private ClientPlayer me;
 
 
-    public ClientGameState() {
+    public ClientGameState(Game game) {
         world = new World("res/world/worldFile.txt");
+        this.game = game;
     }
 
 
@@ -40,9 +43,7 @@ public class ClientGameState extends State {
             Camera.centerOnEntity(me);
 
         } catch (Exception ex) {
-            //SHOULD GO BACK TO MAIN MENU
-            System.out.println("Connection lost");
-            System.exit(1);
+            game.setState(new MainMenuState(game));
         }
 
 
@@ -84,7 +85,7 @@ public class ClientGameState extends State {
         try {
             out.write(stringBuilder.toString().getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
+            game.setState(new MainMenuState(game));
         }
 
 
@@ -94,10 +95,8 @@ public class ClientGameState extends State {
             ObjectInputStream objectIn2 = new ObjectInputStream(in2);
             entityManager = (EntityManager) objectIn2.readObject();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            game.setState(new MainMenuState(game));
         }
 
 

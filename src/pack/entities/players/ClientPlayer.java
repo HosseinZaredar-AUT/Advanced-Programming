@@ -2,12 +2,7 @@ package pack.entities.players;
 
 import pack.entities.*;
 import pack.entities.manager.EntityManager;
-import pack.graphics.Assets;
-import pack.graphics.Camera;
 import pack.network.Server;
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -17,6 +12,7 @@ public class ClientPlayer extends Player {
 
     private String command;
     private boolean rightClick, leftClick;
+    public boolean hasLeft = false;
 
 
     public ClientPlayer(float x, float y, int number, EntityManager entityManager) {
@@ -34,7 +30,8 @@ public class ClientPlayer extends Player {
             objectOut.writeObject(this);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            hasLeft = true;
+            return;
         }
 
 
@@ -47,8 +44,8 @@ public class ClientPlayer extends Player {
             command = new String(buffer, 0, size);
 
         } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("problem with reading String");
+            hasLeft = true;
+            return;
         }
 
         String[] tokens = command.split(",");

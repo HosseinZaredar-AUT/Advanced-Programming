@@ -1,7 +1,5 @@
 package pack;
 
-
-import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.input.KeyManager;
 import pack.input.MouseManager;
@@ -12,15 +10,13 @@ import pack.states.GameState;
 import pack.states.State;
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
 
 public class Game implements Runnable {
 
 
-    private final int FPS = 60;
+    private final int FPS = 30;
     private GameFrame frame;
     private State state;
-    private int counter = 0;
 
 
     public static int frameWidth, frameHeight;
@@ -57,13 +53,13 @@ public class Game implements Runnable {
 
     public void start() {
 
-        if (JOptionPane.showConfirmDialog(frame, "Do you want to run the server") == 0) {
+        if (JOptionPane.showConfirmDialog(frame, "Create a server?") == 0) {
             state = new GameState();
             Server server = new Server(state);
             ThreadPool.execute(server);
             ThreadPool.execute(this);
         } else {
-            String ip = JOptionPane.showInputDialog(this, "Enter IP");
+            String ip = JOptionPane.showInputDialog("Enter server's IP");
             Client client = new Client(ip);
             state = new ClientGameState();
             ThreadPool.execute(this);
@@ -80,20 +76,9 @@ public class Game implements Runnable {
         Graphics2D g = (Graphics2D) frame.getBufferStrategy().getDrawGraphics();
 
         try {
+            g.clearRect(0, 0, frameWidth, frameHeight);
 
-            //GAME OVER CHECK
-//            if (state.getEntityManager().gameOver) {
-//                g.setColor(Color.BLACK);
-//                g.fillRect(0, 0, frameWidth, frameHeight);
-//                g.setColor(Color.WHITE);
-//                g.setFont(new Font(Font.SERIF, Font.BOLD, 60));
-//                g.drawString("GAME OVER !", 430, 380);
-
-
-                g.clearRect(0, 0, frameWidth, frameHeight);
-
-                state.render(g);
-
+            state.render(g);
 
         } finally {
             g.dispose();

@@ -14,7 +14,7 @@ public class EnemyCar extends Entity {
     private double degree;
     private double degreeGun;
     private float health;
-    private final int SPEED = 5;
+    private final int SPEED = 10;
     private final int FIRE_Rate = 7; //the less, the faster
     private int fireCounter = 0;
 
@@ -120,7 +120,7 @@ public class EnemyCar extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int) x, (int) y, width, height);
+        return new Rectangle((int) x + 2 * SPEED / 3, (int) y + 2 * SPEED / 3, width - 4 * SPEED / 3 , height - 4 * SPEED / 3);
     }
 
     @Override

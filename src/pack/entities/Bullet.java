@@ -3,14 +3,13 @@ package pack.entities;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 public class Bullet extends Entity {
 
-    private final int SPEED = 8;
+    private final int SPEED = 16;
     public static final float DAMAGE = 0.1f;
     private double angle;
     private float xSpeed, ySpeed;

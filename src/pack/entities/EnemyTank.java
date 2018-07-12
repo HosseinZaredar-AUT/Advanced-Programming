@@ -16,7 +16,7 @@ public class EnemyTank extends Entity {
     private double degree;
     private double degreeGun;
     private float health = 1;
-    private final int SPEED = 4;
+    private final int SPEED = 8;
     private final int FIRE_Rate = 40; //the less, the faster
     private int fireCounter = 0;
 
@@ -138,6 +138,22 @@ public class EnemyTank extends Entity {
 
 
                     for (int i = 0; i < 3; i++) {
+                        if (up && right)
+                            degree = -45;
+                        else if (up && left)
+                            degree = -135;
+                        else if (right && down) {
+                            degree = 45;
+                        } else if (left && down)
+                            degree = 135;
+                        else if (down)
+                            degree = 90;
+                        else if (up)
+                            degree = -90;
+                        else if (right)
+                            degree = 0;
+                        else if (left)
+                            degree = 180;
 
                         move = true;
                         x += Math.cos(Math.toRadians(degree)) * SPEED;
@@ -217,9 +233,7 @@ public class EnemyTank extends Entity {
                     System.out.println("A");
                 }
 
-                if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                        y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0 || (
-                        entityManager.doCollideWithPlayer(this) != null)) {
+                if (entityManager.doCollideWithPlayer(this) != null) {
                     x -= Math.cos(Math.toRadians(degree)) * SPEED;
                     y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
@@ -289,7 +303,7 @@ public class EnemyTank extends Entity {
     @Override
     public Rectangle getBounds() {
 
-        return new Rectangle((int) x, (int) y, width, height);
+        return new Rectangle((int) x + 2 * SPEED / 3, (int) y + 2 * SPEED / 3, width - 4 * SPEED / 3 , height - 4 * SPEED / 3);
     }
 
     @Override

@@ -15,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class EntityManager implements Serializable {
 
@@ -404,6 +405,15 @@ public class EntityManager implements Serializable {
 
         for (Bullet b : enemyBullets)
             b.tick();
+
+
+        //REMOVING GONE CLIENTS
+        Iterator<ClientPlayer> it = clientPlayers.iterator();
+        while (it.hasNext()) {
+            ClientPlayer current = it.next();
+            if (current.hasLeft)
+                it.remove();
+        }
 
         if (clientPlayers.size() > 0) {
             for (ClientPlayer cp : clientPlayers) {

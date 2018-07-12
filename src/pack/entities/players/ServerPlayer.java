@@ -4,7 +4,6 @@ import pack.entities.*;
 import pack.entities.manager.EntityManager;
 import pack.graphics.*;
 import pack.input.*;
-import java.awt.*;
 
 public class ServerPlayer extends Player {
 

@@ -31,6 +31,7 @@ public class ClientGameState extends State {
 
         world.tick();
 
+
         //GETTING ME
         InputStream in = Client.getInputStream();
         try {
@@ -38,10 +39,10 @@ public class ClientGameState extends State {
             me = (ClientPlayer) objectIn.readObject();
             Camera.centerOnEntity(me);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            //SHOULD GO BACK TO MAIN MENU
+            System.out.println("Connection lost");
+            System.exit(1);
         }
 
 

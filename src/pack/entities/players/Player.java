@@ -4,7 +4,6 @@ import pack.entities.Entity;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -16,7 +15,7 @@ public class Player extends Entity {
     protected int degree;
     protected double degreeGun;
     protected float xMove, yMove;
-    protected final int SPEED = 10;
+    protected final int SPEED = 20;
     protected float xSpeed;
     protected float ySpeed;
 
@@ -107,15 +106,11 @@ public class Player extends Entity {
         g.drawString("Cannon: " + cannon, 15, 60);
         g.drawString("Bullet: " + bullet, 15, 90);
         g.drawString("Health: " + health, 15, 120);
-
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        g.drawString("Cannon Level: " + cannonLevel, 15, 170);
-        g.drawString("Bullet Level: " + bulletLevel, 15, 200);
     }
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x + 6, (int)y + 6, width - 6, height - 6);
+        return new Rectangle((int) x + 2 * SPEED / 3, (int) y + 2 * SPEED / 3, width -  4 * SPEED / 3 , height - 4 * SPEED / 3);
     }
 
 }

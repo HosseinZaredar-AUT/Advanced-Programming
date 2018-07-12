@@ -11,6 +11,7 @@ public class Assets {
             repairFood, bulletFood, cannonFood, upgrader,
             artilleryBase, artilleryGun, artilleryDead, mine,
             enemyTank, enemyTankGun, enemyCar, enemyCarGun, barbedWire,
+            bush,
             menuBackground, createGame[], joinGame[], exit[] ;
 
 
@@ -57,6 +58,11 @@ public class Assets {
         enemyCar = pack.utils.ImageLoader.load("res/textures/enemyCar.png");
         enemyCarGun = pack.utils.ImageLoader.load("res/textures/enemyCarGun.png");
 
+        bush = pack.utils.ImageLoader.load("res/textures/bush.png");
+
+
+
+        //MENU
         menuBackground = pack.utils.ImageLoader.load("res/textures/menuBackground.jpg");
 
         createGame = new BufferedImage[2];

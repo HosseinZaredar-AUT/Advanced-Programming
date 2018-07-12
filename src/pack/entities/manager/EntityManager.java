@@ -25,6 +25,7 @@ public class EntityManager implements Serializable {
     private ArrayList<ClientPlayer> newClientPlayers;
 
     private ArrayList<HardWall> hardWalls;
+    private ArrayList<BarbedWire> barbedWires;
     private ArrayList<SoftWall> softWalls;
     private ArrayList<Cannon> friendlyCannons;
     private ArrayList<Cannon> enemyCannons;
@@ -38,10 +39,12 @@ public class EntityManager implements Serializable {
     private ArrayList<EnemyCar> enemyCars;
     private ArrayList<Artillery> artilleries;
     private ArrayList<Mine> mines;
+    private ArrayList<Bush> bushes;
 
 
     public EntityManager() {
         hardWalls = new ArrayList<>();
+        barbedWires = new ArrayList<>();
         softWalls = new ArrayList<>();
         friendlyBullets = new ArrayList<>();
         enemyBullets = new ArrayList<>();
@@ -55,6 +58,7 @@ public class EntityManager implements Serializable {
         enemyCars = new ArrayList<>();
         artilleries = new ArrayList<>();
         mines = new ArrayList<>();
+        bushes = new ArrayList<>();
         clientPlayers = new ArrayList<>();
         newClientPlayers = new ArrayList<>();
 
@@ -149,6 +153,16 @@ public class EntityManager implements Serializable {
 
     }
 
+    public void createBarbedWire(float x, float y) {
+        barbedWires.add(new BarbedWire(x, y, this));
+
+    }
+
+    public void createBush(float x, float y) {
+        bushes.add(new Bush(x, y, this));
+
+    }
+
     public void createSoftWall(float x, float y) {
         softWalls.add(new SoftWall(x, y, this));
 
@@ -227,6 +241,14 @@ public class EntityManager implements Serializable {
         for (HardWall w : hardWalls) {
             if (w.getBounds().intersects(e.getBounds()))
                 return w;
+        }
+        return null;
+    }
+
+    public Entity doCollideWithBarbedWires(Entity e) {
+        for (BarbedWire b : barbedWires) {
+            if (b.getBounds().intersects(e.getBounds()))
+                return b;
         }
         return null;
     }
@@ -353,6 +375,8 @@ public class EntityManager implements Serializable {
     //TICK AND RENDER
     public void tick() {
 
+        addNewClientPlayers();
+
         if (clientPlayers.size() > 0) {
             for (ClientPlayer cp : clientPlayers)
                 cp.tick();
@@ -441,6 +465,11 @@ public class EntityManager implements Serializable {
                 w.render(g);
         }
 
+        for (BarbedWire b : barbedWires) {
+            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
+                b.render(g);
+        }
 
         for (SoftWall w : softWalls) {
             if ((w.getX() + w.getWidth() > Camera.getXOffset()) && (w.getX() < (Camera.getXOffset() + Game.frameWidth)) && (w.getY() + w.getHeight() > Camera.getYOffset())
@@ -531,7 +560,12 @@ public class EntityManager implements Serializable {
 
         }
 
-        addNewClientPlayers();
+        for (Bush b : bushes) {
+            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
+            b.render(g);
+        }
+
     }
 
 

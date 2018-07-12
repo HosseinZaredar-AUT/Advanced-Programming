@@ -2,12 +2,10 @@ package pack.entities;
 
 import pack.entities.manager.EntityManager;
 import pack.utils.FileLoader;
-
 import java.io.Serializable;
 
 
 public class EntityWorld implements Serializable {
-
 
     private int widthInEntity;
     private int heightInEntity;
@@ -17,26 +15,21 @@ public class EntityWorld implements Serializable {
 
     public EntityWorld(EntityManager entityManager) {
         this.entityManager = entityManager;
-        loadWorld("res/entityWorld/entityWorld.txt");
-
+        loadBackground("res/entityWorld/backgroundWorld.txt");
+        loadForeground("res/entityWorld/foregroundWorld.txt");
 
     }
 
-
-
-
-    private void loadWorld(String path) {
-        String file = FileLoader.loadFileAsString(path);
-        String[] tokens = file.split("\\s+");
-        // not automatic
+    private void loadBackground(String path) {
+        String background = FileLoader.loadFileAsString(path);
+        String[] tokens = background.split("\\s+");
 
         widthInEntity = Integer.parseInt(tokens[0]);
         heightInEntity = Integer.parseInt(tokens[1]);
 
-
-
         /*
 
+        BarbedWire: a
         BulletFood : b
         CannonFood : c
         EnemyTank : d
@@ -60,8 +53,9 @@ public class EntityWorld implements Serializable {
         char z = ' ';
         for (int y = 0; y < widthInEntity ; y++) {
             for (int x = 0; x < heightInEntity; x++) {
-                z = tokens[x + (y * 20) + 2].charAt(0);
+                z = tokens[x + (y * heightInEntity) + 2].charAt(0);
 
+                if (z == 'a') entityManager.createBarbedWire(x * entityWidth, y * entityHeight);
                 if (z == 'b') entityManager.createBulletFood(x * entityWidth, y * entityHeight);
                 if (z == 'c') entityManager.createCannonFood(x * entityWidth, y * entityHeight);
                 if (z == 'd') entityManager.createEnemyTank(x * entityWidth, y * entityHeight);
@@ -77,8 +71,29 @@ public class EntityWorld implements Serializable {
                 if (z == 'n') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.DOWN);
                 if (z == 'o') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.UP);
             }
+
         }
+
     }
+
+
+    private void loadForeground(String path) {
+
+        //Bushes (and other possible foreground entities)
+        String foreground = FileLoader.loadFileAsString(path);
+        String[] tokens = foreground.split("\\s+");
+        char z = ' ';
+        for (int y = 0; y < widthInEntity ; y++) {
+            for (int x = 0; x < heightInEntity; x++) {
+                z = tokens[x + (y * heightInEntity) + 2].charAt(0);
+
+                if (z == 'b') entityManager.createBush(x * entityWidth, y * entityHeight);
+
+            }
+        }
+
+    }
+
 
 
 }

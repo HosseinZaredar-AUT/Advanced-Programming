@@ -85,7 +85,8 @@ public class EnemyTank extends Entity {
                     y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
                     flag = false;
                 } else if (entityManager.doCollideWithSoftWalls(this) != null ||
-                        entityManager.doCollideWithPlayer(this) != null) {
+                        entityManager.doCollideWithPlayer(this) != null ||
+                        entityManager.doCollideWithBarbedWires(this) != null) {
                     x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                     y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
                     flag = false;
@@ -244,7 +245,8 @@ public class EnemyTank extends Entity {
                     if (entityManager.doCollideWithHardWalls(this) != null ||
                             entityManager.doCollideWithSoftWalls(this) != null ||
                             entityManager.doCollideWithEnemyTank(this) != null ||
-                            entityManager.doCollideWithEnemyCar(this) != null)
+                            entityManager.doCollideWithEnemyCar(this) != null ||
+                            entityManager.doCollideWithBarbedWires(this) != null)
                         x -= Math.cos(Math.toRadians(degree)) * SPEED;
                     ;
 
@@ -252,7 +254,8 @@ public class EnemyTank extends Entity {
                     if (entityManager.doCollideWithHardWalls(this) != null ||
                             entityManager.doCollideWithSoftWalls(this) != null ||
                             entityManager.doCollideWithEnemyTank(this) != null ||
-                            entityManager.doCollideWithEnemyCar(this) != null)
+                            entityManager.doCollideWithEnemyCar(this) != null ||
+                            entityManager.doCollideWithBarbedWires(this) != null)
                         y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
                 }

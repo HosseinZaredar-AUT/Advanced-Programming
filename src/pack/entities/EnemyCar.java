@@ -69,7 +69,8 @@ public class EnemyCar extends Entity {
                     (entityManager.doCollideWithPlayer(this)!=null) ||
                     entityManager.doCollideWithSoftWalls(this) != null ||
                     entityManager.doCollideWithEnemyCar(this) != null ||
-                    entityManager.doCollideWithEnemyTank(this) != null) {
+                    entityManager.doCollideWithEnemyTank(this) != null ||
+                    entityManager.doCollideWithBarbedWires(this) != null) {
                 x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
             }

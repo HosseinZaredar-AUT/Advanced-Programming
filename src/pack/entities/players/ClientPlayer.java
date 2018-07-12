@@ -94,7 +94,8 @@ public class ClientPlayer extends Player {
                     entityManager.doCollideWithSoftWalls(this) != null ||
                     entityManager.doCollideWithEnemyTank(this) != null ||
                     entityManager.doCollideWithEnemyCar(this) != null  ||
-                    entityManager.doCollideWithArtillery(this) != null)
+                    entityManager.doCollideWithArtillery(this) != null ||
+                    entityManager.doCollideWithBarbedWires(this) != null)
 
                 x -= xMove;
 
@@ -103,7 +104,8 @@ public class ClientPlayer extends Player {
                     entityManager.doCollideWithSoftWalls(this) != null ||
                     entityManager.doCollideWithEnemyTank(this) != null ||
                     entityManager.doCollideWithEnemyCar(this) != null  ||
-                    entityManager.doCollideWithArtillery(this) != null)
+                    entityManager.doCollideWithArtillery(this) != null ||
+                    entityManager.doCollideWithBarbedWires(this) != null)
 
                 y -= yMove;
 

@@ -1,7 +1,6 @@
 package pack.states;
 
-import pack.entities.ClientPlayer;
-import pack.entities.EntityWorld;
+import pack.entities.players.ClientPlayer;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Camera;
 import pack.input.KeyManager;

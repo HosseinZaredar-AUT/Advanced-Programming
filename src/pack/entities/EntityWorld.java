@@ -66,7 +66,7 @@ public class EntityWorld implements Serializable {
                 if (z == 'e') entityManager.createEnemyCar(x*widthInEntity,y*heightInEntity);
                 if (z == 'f') entityManager.createHardWall(x*widthInEntity,y*heightInEntity);
                 if (z == 'g') entityManager.createMine(x*widthInEntity,y*heightInEntity);
-                if (z == 'h') entityManager.createPlayer(x*widthInEntity,y*heightInEntity);
+                if (z == 'h') entityManager.createServerPlayer(x*widthInEntity,y*heightInEntity);
                 if (z == 'i') entityManager.createRepairFood(x*widthInEntity,y*heightInEntity);
                 if (z == 'j') entityManager.createSoftWall(x*widthInEntity,y*heightInEntity);
                 if (z == 'k') entityManager.createUpgrader(x*widthInEntity,y*heightInEntity);

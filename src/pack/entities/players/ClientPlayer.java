@@ -1,90 +1,81 @@
-package pack.entities;
+package pack.entities.players;
 
-import pack.Game;
-import pack.sound.ExampleSounds;
+import pack.entities.*;
 import pack.entities.manager.EntityManager;
-import pack.graphics.*;
-import pack.input.*;
-import pack.states.GameState;
-
+import pack.graphics.Assets;
+import pack.graphics.Camera;
+import pack.network.Server;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.time.LocalTime;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
-import static java.time.temporal.ChronoUnit.SECONDS;
+public class ClientPlayer extends Player {
 
-public class Player extends Entity {
-
-    private int number;
-    private float startX;
-    private float startY;
-    private boolean up, down, right, left;
-    private int degree;
-    private double degreeGun;
-    public float xMove, yMove;
-    private final int SPEED = 10;
-    private float xSpeed;
-    private float ySpeed;
-
-    private boolean canShoot = true;
-    private double timeStart;
-    private double timeEnd;
-//    public static LocalTime localTime2;
+    private String command;
+    private boolean rightClick, leftClick;
 
 
-    private int gunState; //1.Cannon, -1.Bullet
-    private double cannonRate = 1; //the less, the faster
-    private int cannonLevel = 0;
-    private int bulletRate = 6; //the less, the faster
-    private int bulletLevel = 0;
-    private int bulletCounter = 0;
-
-
-    private final float MAX_HEALTH = 25;
-    private float health;
-
-    private final int MAX_CANNON = 50;
-    private int cannon;
-
-    private final int MAX_BULLET = 200;
-    private int bullet;
-
-
-    public Player(float x, float y, int number, EntityManager entityManager) {
-        super(x, y, 100, 100, entityManager);
-        startX = x;
-        startY = y;
-        gunState = 1;
-        health = MAX_HEALTH;
-        bullet = MAX_BULLET;
-        cannon = MAX_CANNON;
-        xSpeed = (float)(Math.sqrt(2) / 2 * SPEED);
-        ySpeed = (float)(Math.sqrt(2) / 2 * SPEED);
-        this.number = number;
+    public ClientPlayer(float x, float y, int number, EntityManager entityManager) {
+        super(x, y, number, entityManager);
     }
 
     @Override
     public void tick() {
-//        localTime2 = LocalTime.now();
-//        if((GameState.localTime1.until(localTime2,SECONDS)>33)&&(entityManager.gameOver==true)) {
-//            ExampleSounds.playgameSound1();
-//            GameState.localTime1 = LocalTime.now();
-//        }
+
+        //
+        OutputStream out = Server.getOutputStream(number);
+        if (out == null)
+            System.out.println("null e");
+
+        try {
+            ObjectOutputStream objectOut = new ObjectOutputStream(out);
+            objectOut.writeObject(this);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        //GETTING INFO FROM REAL CLIENT
+        InputStream in = Server.getInputStream(number);
+        byte[] buffer = new byte[1024];
+
+        try {
+            int size = in.read(buffer);
+            command = new String(buffer, 0, size);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("problem with reading String");
+        }
+
+        String[] tokens = command.split(",");
+        up = tokens[0].equals("1");
+        down = tokens[1].equals("1");
+        right = tokens[2].equals("1");
+        left = tokens[3].equals("1");
+
+        System.out.println(up);
+        rightClick = tokens[4].equals("1");
+        leftClick = tokens[5].equals("1");
+        degreeGun = Float.parseFloat(tokens[6]);
+
+
         move();
         getFood();
         upgrade();
         shoot();
         getDamage();
         prepareRender();
+
     }
 
     private void move() {
         //MOVEMENT
-        up = KeyManager.up;
-        down = KeyManager.down;
-        left = KeyManager.left;
-        right = KeyManager.right;
 
         xMove = 0;
         yMove = 0;
@@ -101,26 +92,28 @@ public class Player extends Entity {
         x += xMove;
         y += yMove;
 
-        y -= yMove;
-
-        if (entityManager.doCollideWithHardWalls(this) != null ||
-                entityManager.doCollideWithSoftWalls(this) != null ||
-                entityManager.doCollideWithEnemyTank(this) != null ||
-                entityManager.doCollideWithEnemyCar(this) != null  ||
-                entityManager.doCollideWithArtillery(this) != null)
-
-            x -= xMove;
-
-        y += yMove;
-        if (entityManager.doCollideWithHardWalls(this) != null ||
-                entityManager.doCollideWithSoftWalls(this) != null ||
-                entityManager.doCollideWithEnemyTank(this) != null ||
-                entityManager.doCollideWithEnemyCar(this) != null  ||
-                entityManager.doCollideWithArtillery(this) != null)
 
             y -= yMove;
 
-        Camera.centerOnEntity(this);
+
+            if (entityManager.doCollideWithHardWalls(this) != null ||
+                    entityManager.doCollideWithSoftWalls(this) != null ||
+                    entityManager.doCollideWithEnemyTank(this) != null ||
+                    entityManager.doCollideWithEnemyCar(this) != null  ||
+                    entityManager.doCollideWithArtillery(this) != null)
+
+                x -= xMove;
+
+            y += yMove;
+            if (entityManager.doCollideWithHardWalls(this) != null ||
+                    entityManager.doCollideWithSoftWalls(this) != null ||
+                    entityManager.doCollideWithEnemyTank(this) != null ||
+                    entityManager.doCollideWithEnemyCar(this) != null  ||
+                    entityManager.doCollideWithArtillery(this) != null)
+
+                y -= yMove;
+
+//        Camera.centerOnEntity(this);
     }
 
     private void getFood() {
@@ -162,13 +155,6 @@ public class Player extends Entity {
             else
                 updateCannon();
 
-
-            if (gunState == -1)
-                updateBullet();
-            else
-                updateCannon();
-
-
             entityManager.removeUpgrader(upgrader);
         }
 
@@ -179,9 +165,9 @@ public class Player extends Entity {
         if (cannonLevel < 3) {
             cannonLevel++;
             if (cannonLevel == 1 || cannonLevel == 3) {
-                cannonRate -= 20;
+                cannonRate -= 0.5;
             } else {
-                cannonRate += 20;
+                cannonRate += 0.5;
             }
         } else if (bulletLevel < 2)
             updateBullet();
@@ -203,13 +189,13 @@ public class Player extends Entity {
     }
 
     private void shoot() {
-        gunState = MouseManager.rightMouseButtonFlag;
+        if (rightClick)
+            gunState *= -1;
 
-        degreeGun = MouseManager.angle;
-        if (MouseManager.leftMouseButton) {
+        if (leftClick) {
 
             timeEnd = System.nanoTime();
-            if ((timeEnd - timeStart) / 1000000000 > 1)
+            if ((timeEnd - timeStart) / 1000000000 > cannonRate)
                 canShoot = true;
 
             if (gunState == 1 && cannon > 0) {
@@ -239,7 +225,6 @@ public class Player extends Entity {
                 bulletCounter++;
             }
         }
-
     }
 
     private void getDamage() {
@@ -265,9 +250,9 @@ public class Player extends Entity {
 
         if (health <= 0) {
             entityManager.gameOver = true;
-      }
-
         }
+
+    }
 
 
 
@@ -290,64 +275,9 @@ public class Player extends Entity {
             degree = 180;
     }
 
-    @Override
-    public void render(Graphics2D g) {
 
-        BufferedImage image = Assets.player;
-        AffineTransform transform = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
-        transform.rotate(Math.toRadians(degree), image.getWidth()/2 , image.getHeight()/2 );
-
-
-        g.drawImage(image, transform, null);
-
-        BufferedImage imageGun = null;
-
-        if (gunState == 1) {
-            switch (cannonLevel) {
-                case 0: imageGun = Assets.playerCannonGun[0]; break;
-                case 1: imageGun = Assets.playerCannonGun[1]; break;
-                case 2: imageGun = Assets.playerCannonGun[2]; break;
-                case 3: imageGun = Assets.playerCannonGun[3]; break;
-            }
-        }
-        else {
-            switch (bulletLevel) {
-                case 0: imageGun = Assets.playerBulletGun[0]; break;
-                case 1: imageGun = Assets.playerBulletGun[1]; break;
-                case 2: imageGun = Assets.playerBulletGun[2]; break;
-            }
-
-        }
-
-        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()) + 10, (int) (y - Camera.getYOffset()));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2 - 12 , imageGun.getHeight() / 2);
-
-        g.drawImage(imageGun, transformGun, null);
-
-        g.setColor(Color.BLACK);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
-        g.drawString("Cannon: " + cannon, 15, 60);
-        g.drawString("Bullet: " + bullet, 15, 90);
-        g.drawString("Health: " + health, 15, 120);
-
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        g.drawString("Cannon Level: " + cannonLevel, 15, 170);
-        g.drawString("Bullet Level: " + bulletLevel, 15, 200);
-
-    }
-
-    @Override
-    public Rectangle getBounds() {
-        return new Rectangle((int)x + 6, (int)y + 6, width - 6, height - 6);
-    }
-
-    public float getStartX() {
-        return startX;
-    }
-
-
-    public float getStartY() {
-        return startY;
+    public int getNumber() {
+        return number;
     }
 
 }

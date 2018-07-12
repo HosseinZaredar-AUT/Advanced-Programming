@@ -2,6 +2,7 @@ package pack.entities;
 
 import pack.Game;
 import pack.entities.manager.EntityManager;
+import pack.entities.players.Player;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.MouseManager;
@@ -32,15 +33,16 @@ public class EnemyCar extends Entity {
     }
 
     private void doAI() {
-        if ((x > Camera.getXOffset()) && (x < (Camera.getXOffset() + Game.frameWidth)) && (y > Camera.getYOffset())
-                && (y < (Camera.getYOffset() + Game.frameHeight))) {
-            degreeGun = MouseManager.angleWithEnemy(x, y);
+      if (entityManager.deltaXToClosestPlayer(this) < (2 * Game.frameWidth / 3) && entityManager.deltaYToClosestPlayer(this) < (2 * Game.frameHeight / 3)) {
+            degreeGun = MouseManager.angleToPlayer(entityManager.getClosestPlayer(this), this);
             //same gun and tank
             boolean flag = true;
             Bullet bullet = entityManager.createEnemyBullet(x, y, degreeGun);
 
-            while (((Math.abs(bullet.getX() + bullet.xPlus - entityManager.getPlayer().getX()) > 2)
-                    || (Math.abs(bullet.getY() + bullet.yPlus - entityManager.getPlayer().getY()) > 2)) &&
+          Player closestPlayer = entityManager.getClosestPlayer(this);
+
+          while (((Math.abs(bullet.getX() + bullet.xPlus - closestPlayer.getX()) > 2)
+                    || (Math.abs(bullet.getY() + bullet.yPlus - closestPlayer.getY()) > 2)) &&
                     (Math.abs(bullet.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(bullet.getBounds().y) < Game.frameHeight)) {
                 if (entityManager.doCollideWithHardWalls(bullet) != null) {

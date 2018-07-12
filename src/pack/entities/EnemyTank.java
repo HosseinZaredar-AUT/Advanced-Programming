@@ -2,6 +2,7 @@ package pack.entities;
 
 import pack.Game;
 import pack.entities.manager.EntityManager;
+import pack.entities.players.Player;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.MouseManager;
@@ -41,18 +42,17 @@ public class EnemyTank extends Entity {
         leftFinal = false;
         rightFinal = false;
 
-//if for game.width and game.height
         boolean equalXORY=true;
-        if (((x > (Camera.getXOffset() - 100)) && (x < (Camera.getXOffset() + Game.frameWidth + 100))) || ((y > Camera.getYOffset() - 100)
-                && (y < (Camera.getYOffset() + Game.frameHeight + 100)))
-                ) {
-            degreeGun = MouseManager.angleWithEnemy(x, y);
+        //if for game.width and game.height
+        if (entityManager.deltaXToClosestPlayer(this) < (Game.frameWidth) && entityManager.deltaYToClosestPlayer(this) < (Game.frameHeight)) {
+            degreeGun = MouseManager.angleToPlayer(entityManager.getClosestPlayer(this), this);
             //same gun and tank
             boolean flag = true;
             Cannon cannon = entityManager.createEnemyCannon(x, y, degreeGun);
 
-            while (((Math.abs(cannon.getX() + cannon.xPlus - entityManager.getPlayer().getX()) > 2)
-                    || (Math.abs(cannon.getY() + cannon.yPlus - entityManager.getPlayer().getY()) > 2)) &&
+            Player closestPlayer = entityManager.getClosestPlayer(this);
+            while (((Math.abs(cannon.getX() + cannon.xPlus - closestPlayer.getX()) > 2)
+                    || (Math.abs(cannon.getY() + cannon.yPlus - closestPlayer.getY()) > 2)) &&
                     (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(cannon.getBounds().y) < Game.frameHeight)) {
                 if ((entityManager.doCollideWithHardWalls(cannon) != null)) {
@@ -95,42 +95,42 @@ public class EnemyTank extends Entity {
             if (!flag) {
 
                 boolean move = false;
-                if (((entityManager.getPlayer().xMove == 0) && (entityManager.getPlayer().yMove == 0))&&((Math.abs(entityManager.getPlayer().getY() - y) < 4)||(Math.abs(entityManager.getPlayer().getX() - x) < 4))) {
+                if (((closestPlayer.getXMove() == 0) && (closestPlayer.getYMove() == 0))&&((Math.abs(closestPlayer.getY() - y) < 4)||(Math.abs(closestPlayer.getX() - x) < 4))) {
                     equalXORY=false;
                 }else {
-                    if ((entityManager.getPlayer().xMove == 0) && (entityManager.getPlayer().yMove == 0)) {
-                        if (x > entityManager.getPlayer().getX()) {
+                    if ((closestPlayer.getXMove() == 0) && (closestPlayer.getYMove() == 0)) {
+                        if (x > closestPlayer.getX()) {
 
                             left = true;
                             leftFinal = true;
                         }
-                        if (x < entityManager.getPlayer().getX()) {
+                        if (x < closestPlayer.getX()) {
                             right = true;
                             rightFinal = true;
                         }
-                        if (y >= entityManager.getPlayer().getY()) {
+                        if (y >= closestPlayer.getY()) {
                             up = true;
                             upFinal = true;
                         }
-                        if (y < entityManager.getPlayer().getY()) {
+                        if (y < closestPlayer.getY()) {
                             down = true;
                             downFinal = true;
                         }
                     } else {
-                        if (x > entityManager.getPlayer().getX()) {
+                        if (x > closestPlayer.getX()) {
 
                             left = true;
                             leftFinal = true;
                         }
-                        if (x < entityManager.getPlayer().getX()) {
+                        if (x < closestPlayer.getX()) {
                             right = true;
                             rightFinal = true;
                         }
-                        if (y >= entityManager.getPlayer().getY()) {
+                        if (y >= closestPlayer.getY()) {
                             up = true;
                             upFinal = true;
                         }
-                        if (y < entityManager.getPlayer().getY()) {
+                        if (y < closestPlayer.getY()) {
                             down = true;
                             downFinal = true;
                         }

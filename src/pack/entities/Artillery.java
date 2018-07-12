@@ -47,9 +47,9 @@ public class Artillery extends Entity {
     private void shoot() {
         if (alive) {
 
-            if ((x > Camera.getXOffset()) && (x < (Camera.getXOffset() + Game.frameWidth)) && (y > Camera.getYOffset())
-                    && (y < (Camera.getYOffset() + Game.frameHeight))) {
-                degreeGun = MouseManager.angleWithEnemy(x, y);
+            //when to shoot...
+            if (entityManager.deltaXToClosestPlayer(this) < (2 * Game.frameWidth / 3) && entityManager.deltaYToClosestPlayer(this) < (2 * Game.frameHeight / 3)) {
+                degreeGun = MouseManager.angleToPlayer(entityManager.getClosestPlayer(this), this);
                 if (-360 <= degreeGun - degreeBase && degreeGun - degreeBase <= -270)
                     degreeGun += 360;
                 if (degreeGun - degreeBase < -MAX_ROTATE)

@@ -2,6 +2,9 @@ package pack.entities.manager;
 
 import pack.Game;
 import pack.entities.*;
+import pack.entities.players.ClientPlayer;
+import pack.entities.players.Player;
+import pack.entities.players.ServerPlayer;
 import pack.graphics.Camera;
 import pack.network.Client;
 import pack.network.Server;
@@ -16,7 +19,7 @@ import java.util.ArrayList;
 public class EntityManager implements Serializable {
 
     public boolean gameOver = false;
-    private Player player = null;
+    private ServerPlayer serverPlayer = null;
     private ArrayList<ClientPlayer> clientPlayers;
     private ArrayList<ClientPlayer> newClientPlayers;
 
@@ -58,15 +61,43 @@ public class EntityManager implements Serializable {
 
     //might need to return player
     public void addClientPlayer(int number) {
-        ClientPlayer player = new ClientPlayer(this.player.getStartX(), this.player.getStartY(), 100, 100, number, this);
+        ClientPlayer player = new ClientPlayer(this.serverPlayer.getStartX(), this.serverPlayer.getStartY(), number, this);
         newClientPlayers.add(player);
         System.out.println("client added");
 
     }
 
+    public Player getClosestPlayer(Entity e) {
+        Player closestPlayer = serverPlayer;
+        for (ClientPlayer cp : clientPlayers) {
+            if (Math.pow(cp.getX() - e.getX(), 2) + Math.pow(cp.getY() - cp.getY(), 2) < Math.pow(closestPlayer.getX() - e.getX(), 2) + Math.pow(closestPlayer.getY() - e.getY(), 2))
+                closestPlayer = cp;
+        }
+        return closestPlayer;
+    }
+
+    public float deltaXToClosestPlayer(Entity e) {
+        float deltaX = Math.abs(serverPlayer.getX() - e.getX());
+        for (ClientPlayer cp : clientPlayers) {
+            if (Math.abs(cp.getX() - e.getX()) < deltaX)
+                deltaX = Math.abs(cp.getX() - e.getX());
+        }
+        return deltaX;
+    }
+
+    public float deltaYToClosestPlayer(Entity e) {
+        float deltaY = Math.abs(serverPlayer.getY() - e.getY());
+        for (ClientPlayer cp : clientPlayers) {
+            if (Math.abs(cp.getY() - e.getY()) < deltaY)
+                deltaY = Math.abs(cp.getY() - e.getY());
+        }
+        return deltaY;
+    }
+
+
     //CREATORS
-    public void createPlayer(float x, float y) {
-        player = new Player(x, y, 1, this);
+    public void createServerPlayer(float x, float y) {
+        serverPlayer = new ServerPlayer(x, y, 1, this);
     }
 
     public void createEnemyTank(float x, float y) {
@@ -204,8 +235,12 @@ public class EntityManager implements Serializable {
     }
 
     public Entity doCollideWithPlayer(Entity e) {
-        if (player.getBounds().intersects(e.getBounds()))
-            return player;
+        if (serverPlayer.getBounds().intersects(e.getBounds()))
+            return serverPlayer;
+        for (ClientPlayer cp : clientPlayers) {
+            if (cp.getBounds().intersects(e.getBounds()))
+                return cp;
+        }
         return null;
     }
 
@@ -310,12 +345,6 @@ public class EntityManager implements Serializable {
     }
 
 
-    //GETTERS
-    public Player getPlayer() {
-        return player;
-    }
-
-
     //TICK AND RENDER
     public void tick() {
 
@@ -325,7 +354,7 @@ public class EntityManager implements Serializable {
 
         }
 
-        player.tick();
+        serverPlayer.tick();
 
         try {
             for (EnemyTank e : enemyTanks)
@@ -478,7 +507,7 @@ public class EntityManager implements Serializable {
         }
 
 
-        player.render(g);
+        serverPlayer.render(g);
 
         if (clientPlayers.size() > 0) {
             for (ClientPlayer cp : clientPlayers) {

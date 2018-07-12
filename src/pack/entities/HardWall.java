@@ -7,8 +7,8 @@ import java.awt.*;
 
 public class HardWall extends Entity {
 
-    public HardWall(float x, float y) {
-        super(x, y, 100, 100);
+    public HardWall(float x, float y, EntityManager entityManager) {
+        super(x, y, 100, 100, entityManager);
     }
 
     @Override
@@ -17,21 +17,21 @@ public class HardWall extends Entity {
     }
 
     private void getDamage() {
-        Bullet friendlyBullet = EntityManager.doCollideWithFriendlyBullet(this);
+        Bullet friendlyBullet = entityManager.doCollideWithFriendlyBullet(this);
         if (friendlyBullet != null)
-            EntityManager.removeFriendlyBullet(friendlyBullet);
+            entityManager.removeFriendlyBullet(friendlyBullet);
 
-        Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
+        Cannon friendlyCannon = entityManager.doCollideWithFriendlyCannon(this);
         if (friendlyCannon != null)
-            EntityManager.removeFriendlyCannon(friendlyCannon);
+            entityManager.removeFriendlyCannon(friendlyCannon);
 
-        Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
+        Bullet enemyBullet = entityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null)
-            EntityManager.removeEnemyBullet(enemyBullet);
+            entityManager.removeEnemyBullet(enemyBullet);
 
-        Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
+        Cannon enemyCannon = entityManager.doCollideWithEnemyCannon(this);
         if (enemyCannon != null)
-            EntityManager.removeEnemyCannon(enemyCannon);
+            entityManager.removeEnemyCannon(enemyCannon);
     }
 
 

@@ -5,12 +5,14 @@ import pack.graphics.Camera;
 import pack.tiles.Tile;
 import pack.utils.FileLoader;
 import java.awt.*;
+import java.io.Serializable;
+import java.security.SecureRandomParameters;
 
-public class World {
+public class World implements Serializable {
 
 
-    public static int widthInTiles;
-    public static int heightInTiles;
+    private int widthInTiles;
+    private int heightInTiles;
     private int[][] tiles;
 
     public World( String path) {
@@ -58,11 +60,11 @@ public class World {
         }
     }
 
-    public static int getWidthInTiles() {
+    public int getWidthInTiles() {
         return widthInTiles;
     }
 
-    public static int getHeightInTiles() {
+    public int getHeightInTiles() {
         return heightInTiles;
     }
 

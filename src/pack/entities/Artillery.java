@@ -24,8 +24,8 @@ public class Artillery extends Entity {
     private int cannonCounter = -1;
 
 
-    public Artillery(float x, float y, Type type) {
-        super(x, y, 100, 100);
+    public Artillery(float x, float y, Type type, EntityManager entityManager) {
+        super(x, y, 100, 100, entityManager);
         health = 2;
         alive = true;
 
@@ -60,7 +60,7 @@ public class Artillery extends Entity {
 
                 if (degreeGun - degreeBase != MAX_ROTATE && degreeGun - degreeBase != -MAX_ROTATE) {
                     if (cannonCounter == CANNON_RATE) {
-                        EntityManager.createEnemyCannon(x + width / 2, y + height / 2, degreeGun);
+                        entityManager.createEnemyCannon(x + width / 2, y + height / 2, degreeGun);
                         cannonCounter = -1;
                     }
                     cannonCounter++;
@@ -75,15 +75,15 @@ public class Artillery extends Entity {
         if (alive) {
 
             //GETTING SHOT
-            Bullet bullet = EntityManager.doCollideWithFriendlyBullet(this);
+            Bullet bullet = entityManager.doCollideWithFriendlyBullet(this);
             if (bullet != null) {
-                EntityManager.removeFriendlyBullet(bullet);
+                entityManager.removeFriendlyBullet(bullet);
                 health -= Bullet.DAMAGE;
             }
 
-            Cannon cannon = EntityManager.doCollideWithFriendlyCannon(this);
+            Cannon cannon = entityManager.doCollideWithFriendlyCannon(this);
             if (cannon != null) {
-                EntityManager.removeFriendlyCannon(cannon);
+                entityManager.removeFriendlyCannon(cannon);
                 health -= Cannon.DAMAGE;
             }
 

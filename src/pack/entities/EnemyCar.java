@@ -18,8 +18,8 @@ public class EnemyCar extends Entity {
     private int fireCounter = 0;
 
 
-    public EnemyCar(float x, float y) {
-        super(x, y, 100, 100);
+    public EnemyCar(float x, float y, EntityManager entityManager) {
+        super(x, y, 100, 100, entityManager);
         health = 1;
 
     }
@@ -37,14 +37,14 @@ public class EnemyCar extends Entity {
             degreeGun = MouseManager.angleWithEnemy(x, y);
             //same gun and tank
             boolean flag = true;
-            Bullet bullet = EntityManager.createEnemyBullet(x, y, degreeGun);
+            Bullet bullet = entityManager.createEnemyBullet(x, y, degreeGun);
 
-            while (((Math.abs(bullet.getX() + bullet.xPlus - EntityManager.getPlayer().getX()) > 2)
-                    || (Math.abs(bullet.getY() + bullet.yPlus - EntityManager.getPlayer().getY()) > 2)) &&
+            while (((Math.abs(bullet.getX() + bullet.xPlus - entityManager.getPlayer().getX()) > 2)
+                    || (Math.abs(bullet.getY() + bullet.yPlus - entityManager.getPlayer().getY()) > 2)) &&
                     (Math.abs(bullet.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(bullet.getBounds().y) < Game.frameHeight)) {
-                if (EntityManager.doCollideWithHardWalls(bullet) != null) {
-                    EntityManager.removeEnemyBullet(bullet);
+                if (entityManager.doCollideWithHardWalls(bullet) != null) {
+                    entityManager.removeEnemyBullet(bullet);
                     flag = false;
                     break;
                 }
@@ -55,7 +55,7 @@ public class EnemyCar extends Entity {
             bullet.yPlus = 0;
             if (fireCounter != FIRE_Rate) {
                 fireCounter++;
-                EntityManager.removeEnemyBullet(bullet);
+                entityManager.removeEnemyBullet(bullet);
             } else {
                 fireCounter = -1;
             }
@@ -66,11 +66,11 @@ public class EnemyCar extends Entity {
             degree = degreeGun;
             x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
             y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
-            if ((EntityManager.doCollideWithHardWalls(this) != null)||
-                    (EntityManager.doCollideWithPlayer(this)!=null) ||
-                    EntityManager.doCollideWithSoftWalls(this) != null ||
-                    EntityManager.doCollideWithEnemyCar(this) != null ||
-                    EntityManager.doCollideWithEnemyTank(this) != null) {
+            if ((entityManager.doCollideWithHardWalls(this) != null)||
+                    (entityManager.doCollideWithPlayer(this)!=null) ||
+                    entityManager.doCollideWithSoftWalls(this) != null ||
+                    entityManager.doCollideWithEnemyCar(this) != null ||
+                    entityManager.doCollideWithEnemyTank(this) != null) {
                 x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
                 flag = false;
@@ -82,20 +82,20 @@ public class EnemyCar extends Entity {
     }
 
     private void getDamage() {
-        Bullet bullet = EntityManager.doCollideWithFriendlyBullet(this);
+        Bullet bullet = entityManager.doCollideWithFriendlyBullet(this);
         if (bullet != null) {
             health -= Bullet.DAMAGE;
-            EntityManager.removeFriendlyBullet(bullet);
+            entityManager.removeFriendlyBullet(bullet);
         }
 
-        Cannon cannon = EntityManager.doCollideWithFriendlyCannon(this);
+        Cannon cannon = entityManager.doCollideWithFriendlyCannon(this);
         if (cannon != null) {
             health -= Cannon.DAMAGE;
-            EntityManager.removeFriendlyCannon(cannon);
+            entityManager.removeFriendlyCannon(cannon);
         }
 
         if (health <= 0) {
-            EntityManager.removeEnemyCar(this);
+            entityManager.removeEnemyCar(this);
         }
     }
 

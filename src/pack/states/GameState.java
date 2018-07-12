@@ -1,12 +1,9 @@
 package pack.states;
 
-
 import pack.sound.ExampleSounds;
-
 import pack.entities.EntityWorld;
 import pack.entities.manager.EntityManager;
 import pack.world.World;
-
 import java.awt.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -17,30 +14,33 @@ public class GameState extends State {
     private long lastRender;
     private ArrayList<Float> fpsHistory;
     private EntityWorld entityWorld;
+    private EntityManager entityManager;
+//    public static LocalTime localTime1;
 
-    public static LocalTime localTime1;
 
 
 
     public GameState() {
-        localTime1=LocalTime.now();
+        //localTime1=LocalTime.now();
 
         fpsHistory = new ArrayList<>();
         lastRender = -1;
 
-        ExampleSounds exampleSounds = new ExampleSounds();
+//        ExampleSounds exampleSounds = new ExampleSounds();
         //ExampleSounds.playgameSound1();
 
-        new EntityManager();
+        entityManager = new EntityManager();
+        if (entityManager == null)
+            System.out.println("NULL");
         world = new World("res/world/worldFile.txt");
-        entityWorld = new EntityWorld();
+        entityWorld = new EntityWorld(entityManager);
 
     }
 
     @Override
     public void tick() {
         world.tick();
-        EntityManager.tick();
+        entityManager.tick();
 
     }
 
@@ -48,7 +48,7 @@ public class GameState extends State {
     public void render(Graphics2D g) {
 
         world.render(g);
-        EntityManager.render(g);
+        entityManager.render(g);
 
         // Print FPS info
         long currentRender = System.currentTimeMillis();
@@ -73,4 +73,10 @@ public class GameState extends State {
         lastRender = currentRender;
 
     }
+
+    @Override
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
 }

@@ -3,16 +3,20 @@ package pack.entities;
 import pack.entities.manager.EntityManager;
 import pack.utils.FileLoader;
 
+import java.io.Serializable;
 
-public class EntityWorld {
+
+public class EntityWorld implements Serializable {
 
 
-    public static int widthInEntity;
-    public static int heightInEntity;
+    private int widthInEntity;
+    private static int heightInEntity;
+    private EntityManager entityManager;
 
-    public EntityWorld() {
-
+    public EntityWorld(EntityManager entityManager) {
+        this.entityManager = entityManager;
         loadWorld("res/entityWorld/entityWorld.txt");
+
 
     }
 
@@ -56,30 +60,30 @@ public class EntityWorld {
             for (int x = 0; x < 20; x++) {
                 z = tokens[x+y*20].charAt(0);
 
-                if (z == 'b') EntityManager.createBulletFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'c') EntityManager.createCannonFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'd') EntityManager.createEnemyTank(x*widthInEntity,y*heightInEntity);
-                if (z == 'e') EntityManager.createEnemyCar(x*widthInEntity,y*heightInEntity);
-                if (z == 'f') EntityManager.createHardWall(x*widthInEntity,y*heightInEntity);
-                if (z == 'g') EntityManager.createMine(x*widthInEntity,y*heightInEntity);
-                if (z == 'h') EntityManager.createPlayer(x*widthInEntity,y*heightInEntity);
-                if (z == 'i') EntityManager.createRepairFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'j') EntityManager.createSoftWall(x*widthInEntity,y*heightInEntity);
-                if (z == 'k') EntityManager.createUpgrader(x*widthInEntity,y*heightInEntity);
-                if (z == 'l') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.LEFT);
-                if (z == 'm') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.RIGHT);
-                if (z == 'n') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.DOWN);
-                if (z == 'o') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.UP);
+                if (z == 'b') entityManager.createBulletFood(x*widthInEntity,y*heightInEntity);
+                if (z == 'c') entityManager.createCannonFood(x*widthInEntity,y*heightInEntity);
+                if (z == 'd') entityManager.createEnemyTank(x*widthInEntity,y*heightInEntity);
+                if (z == 'e') entityManager.createEnemyCar(x*widthInEntity,y*heightInEntity);
+                if (z == 'f') entityManager.createHardWall(x*widthInEntity,y*heightInEntity);
+                if (z == 'g') entityManager.createMine(x*widthInEntity,y*heightInEntity);
+                if (z == 'h') entityManager.createPlayer(x*widthInEntity,y*heightInEntity);
+                if (z == 'i') entityManager.createRepairFood(x*widthInEntity,y*heightInEntity);
+                if (z == 'j') entityManager.createSoftWall(x*widthInEntity,y*heightInEntity);
+                if (z == 'k') entityManager.createUpgrader(x*widthInEntity,y*heightInEntity);
+                if (z == 'l') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.LEFT);
+                if (z == 'm') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.RIGHT);
+                if (z == 'n') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.DOWN);
+                if (z == 'o') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.UP);
             }
         }
     }
 
 
-    public static int getWidthInEntity() {
+    public int getWidthInEntity() {
         return widthInEntity;
     }
 
-    public static int getHeightInEntity() {
+    public int getHeightInEntity() {
 
         return heightInEntity;
     }

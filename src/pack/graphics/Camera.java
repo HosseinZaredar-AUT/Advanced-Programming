@@ -27,16 +27,17 @@ public class Camera {
         yOffset = startYOffset;
     }
 
+    //TODO SADASDASFASFASFDASD 20 x 20
     public static void checkBlankSpace() {
         if (xOffset < 0)
             xOffset = 0;
-        else if (xOffset > (World.getWidthInTiles() * Tile.TILEWIDTH - Game.frameWidth))
-            xOffset = World.getWidthInTiles() * Tile.TILEWIDTH - Game.frameWidth;
+        else if (xOffset > (20 * Tile.TILEWIDTH - Game.frameWidth))
+            xOffset = 20 * Tile.TILEWIDTH - Game.frameWidth;
 
         if (yOffset < 0)
             yOffset = 0;
-        else if (yOffset > (World.getHeightInTiles() * Tile.TILEHEIGHT - Game.frameHeight))
-            yOffset = World.getHeightInTiles() * Tile.TILEHEIGHT - Game.frameHeight;
+        else if (yOffset > (20 * Tile.TILEHEIGHT - Game.frameHeight))
+            yOffset = 20 * Tile.TILEHEIGHT - Game.frameHeight;
     }
 
     public static void centerOnEntity(Entity entity) {

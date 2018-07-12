@@ -1,8 +1,11 @@
 package pack.states;
 
-import java.awt.*;
+import pack.entities.manager.EntityManager;
 
-public abstract class State {
+import java.awt.*;
+import java.io.Serializable;
+
+public abstract class State implements Serializable {
 
     public State() {
 
@@ -10,5 +13,6 @@ public abstract class State {
 
     public abstract void tick();
     public abstract void render(Graphics2D g);
+    public abstract EntityManager getEntityManager();
 
 }

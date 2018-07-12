@@ -10,7 +10,9 @@ public class EntityWorld implements Serializable {
 
 
     private int widthInEntity;
-    private static int heightInEntity;
+    private int heightInEntity;
+    private int entityWidth = 100;
+    private int entityHeight = 100;
     private EntityManager entityManager;
 
     public EntityWorld(EntityManager entityManager) {
@@ -28,8 +30,8 @@ public class EntityWorld implements Serializable {
         String[] tokens = file.split("\\s+");
         // not automatic
 
-        widthInEntity = 100;
-        heightInEntity = 100;
+        widthInEntity = Integer.parseInt(tokens[0]);
+        heightInEntity = Integer.parseInt(tokens[1]);
 
 
 
@@ -56,36 +58,27 @@ public class EntityWorld implements Serializable {
         */
 
         char z = ' ';
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
-                z = tokens[x+y*20].charAt(0);
+        for (int y = 0; y < widthInEntity ; y++) {
+            for (int x = 0; x < heightInEntity; x++) {
+                z = tokens[x + (y * 20) + 2].charAt(0);
 
-                if (z == 'b') entityManager.createBulletFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'c') entityManager.createCannonFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'd') entityManager.createEnemyTank(x*widthInEntity,y*heightInEntity);
-                if (z == 'e') entityManager.createEnemyCar(x*widthInEntity,y*heightInEntity);
-                if (z == 'f') entityManager.createHardWall(x*widthInEntity,y*heightInEntity);
-                if (z == 'g') entityManager.createMine(x*widthInEntity,y*heightInEntity);
-                if (z == 'h') entityManager.createServerPlayer(x*widthInEntity,y*heightInEntity);
-                if (z == 'i') entityManager.createRepairFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'j') entityManager.createSoftWall(x*widthInEntity,y*heightInEntity);
-                if (z == 'k') entityManager.createUpgrader(x*widthInEntity,y*heightInEntity);
-                if (z == 'l') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.LEFT);
-                if (z == 'm') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.RIGHT);
-                if (z == 'n') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.DOWN);
-                if (z == 'o') entityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.UP);
+                if (z == 'b') entityManager.createBulletFood(x * entityWidth, y * entityHeight);
+                if (z == 'c') entityManager.createCannonFood(x * entityWidth, y * entityHeight);
+                if (z == 'd') entityManager.createEnemyTank(x * entityWidth, y * entityHeight);
+                if (z == 'e') entityManager.createEnemyCar(x * entityWidth, y * entityHeight);
+                if (z == 'f') entityManager.createHardWall(x * entityWidth, y * entityHeight);
+                if (z == 'g') entityManager.createMine(x * entityWidth, y * entityHeight);
+                if (z == 'h') entityManager.createServerPlayer(x * entityWidth, y * entityHeight);
+                if (z == 'i') entityManager.createRepairFood(x * entityWidth, y * entityHeight);
+                if (z == 'j') entityManager.createSoftWall(x * entityWidth, y * entityHeight);
+                if (z == 'k') entityManager.createUpgrader(x * entityWidth, y * entityHeight);
+                if (z == 'l') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.LEFT);
+                if (z == 'm') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.RIGHT);
+                if (z == 'n') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.DOWN);
+                if (z == 'o') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.UP);
             }
         }
     }
 
-
-    public int getWidthInEntity() {
-        return widthInEntity;
-    }
-
-    public int getHeightInEntity() {
-
-        return heightInEntity;
-    }
 
 }

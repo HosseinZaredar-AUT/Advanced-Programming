@@ -49,6 +49,7 @@ public class GameState extends State {
 
         world.render(g);
         entityManager.render(g);
+        entityManager.getServerPlayer().renderPlayerState(g);
 
         // Print FPS info
         long currentRender = System.currentTimeMillis();

@@ -101,6 +101,18 @@ public class Player extends Entity {
         g.drawImage(imageGun, transformGun, null);
     }
 
+    public void renderPlayerState(Graphics2D g) {
+        g.setColor(Color.BLACK);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
+        g.drawString("Cannon: " + cannon, 15, 60);
+        g.drawString("Bullet: " + bullet, 15, 90);
+        g.drawString("Health: " + health, 15, 120);
+
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
+        g.drawString("Cannon Level: " + cannonLevel, 15, 170);
+        g.drawString("Bullet Level: " + bulletLevel, 15, 200);
+    }
+
     @Override
     public Rectangle getBounds() {
         return new Rectangle((int)x + 6, (int)y + 6, width - 6, height - 6);

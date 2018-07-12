@@ -28,8 +28,6 @@ public class ClientPlayer extends Player {
 
         //
         OutputStream out = Server.getOutputStream(number);
-        if (out == null)
-            System.out.println("null e");
 
         try {
             ObjectOutputStream objectOut = new ObjectOutputStream(out);
@@ -59,7 +57,6 @@ public class ClientPlayer extends Player {
         right = tokens[2].equals("1");
         left = tokens[3].equals("1");
 
-        System.out.println(up);
         rightClick = tokens[4].equals("1");
         leftClick = tokens[5].equals("1");
         degreeGun = Float.parseFloat(tokens[6]);

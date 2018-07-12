@@ -7,7 +7,6 @@ import pack.input.KeyManager;
 import pack.input.MouseManager;
 import pack.network.Client;
 import pack.world.World;
-
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,8 +16,8 @@ import java.io.OutputStream;
 public class ClientGameState extends State {
 
     private World world;
-    EntityManager entityManager;
-    ClientPlayer me;
+    private EntityManager entityManager;
+    private ClientPlayer me;
 
 
     public ClientGameState() {
@@ -107,6 +106,7 @@ public class ClientGameState extends State {
     public void render(Graphics2D g) {
         world.render(g);
         entityManager.render(g);
+        me.renderPlayerState(g);
     }
 
     @Override

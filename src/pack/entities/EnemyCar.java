@@ -12,7 +12,7 @@ import java.awt.image.BufferedImage;
 
 public class EnemyCar extends Entity {
     private double degree;
-    public static double degreeGun;
+    private double degreeGun;
     private float health;
     private final int SPEED = 5;
     private final int FIRE_Rate = 7; //the less, the faster
@@ -33,21 +33,18 @@ public class EnemyCar extends Entity {
     }
 
     private void doAI() {
-      if (entityManager.deltaXToClosestPlayer(this) < (2 * Game.frameWidth / 3) && entityManager.deltaYToClosestPlayer(this) < (2 * Game.frameHeight / 3)) {
-            degreeGun = MouseManager.angleToPlayer(entityManager.getClosestPlayer(this), this);
+        if (entityManager.deltaXToClosestPlayer(this) < (2 * Game.frameWidth / 3) && entityManager.deltaYToClosestPlayer(this) < (2 * Game.frameHeight / 3)) {
+            Player closestPlayer = entityManager.getClosestPlayer(this);
+            degreeGun = MouseManager.angleToPlayer(closestPlayer, this);
             //same gun and tank
-            boolean flag = true;
             Bullet bullet = entityManager.createEnemyBullet(x, y, degreeGun);
 
-          Player closestPlayer = entityManager.getClosestPlayer(this);
-
-          while (((Math.abs(bullet.getX() + bullet.xPlus - closestPlayer.getX()) > 2)
+            while (((Math.abs(bullet.getX() + bullet.xPlus - closestPlayer.getX()) > 2)
                     || (Math.abs(bullet.getY() + bullet.yPlus - closestPlayer.getY()) > 2)) &&
                     (Math.abs(bullet.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(bullet.getBounds().y) < Game.frameHeight)) {
                 if (entityManager.doCollideWithHardWalls(bullet) != null) {
                     entityManager.removeEnemyBullet(bullet);
-                    flag = false;
                     break;
                 }
                 bullet.xPlus += Math.cos(Math.toRadians(degreeGun)) * SPEED;
@@ -75,7 +72,6 @@ public class EnemyCar extends Entity {
                     entityManager.doCollideWithEnemyTank(this) != null) {
                 x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
-                flag = false;
             }
 
 
@@ -117,7 +113,7 @@ public class EnemyCar extends Entity {
 
         BufferedImage imageGun = Assets.enemyCarGun;
         AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()), (int) (y - Camera.getYOffset()));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2, imageGun.getHeight() / 2);
+        transformGun.rotate(Math.toRadians(degreeGun), image.getWidth() / 2, image.getHeight() / 2);
 
         g.drawImage(imageGun, transformGun, null);
     }

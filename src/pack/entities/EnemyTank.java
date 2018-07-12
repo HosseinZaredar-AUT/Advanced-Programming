@@ -45,12 +45,12 @@ public class EnemyTank extends Entity {
         boolean equalXORY=true;
         //if for game.width and game.height
         if (entityManager.deltaXToClosestPlayer(this) < (Game.frameWidth) && entityManager.deltaYToClosestPlayer(this) < (Game.frameHeight)) {
-            degreeGun = MouseManager.angleToPlayer(entityManager.getClosestPlayer(this), this);
+            Player closestPlayer = entityManager.getClosestPlayer(this);
+            degreeGun = MouseManager.angleToPlayer(closestPlayer, this);
             //same gun and tank
             boolean flag = true;
             Cannon cannon = entityManager.createEnemyCannon(x, y, degreeGun);
 
-            Player closestPlayer = entityManager.getClosestPlayer(this);
             while (((Math.abs(cannon.getX() + cannon.xPlus - closestPlayer.getX()) > 2)
                     || (Math.abs(cannon.getY() + cannon.yPlus - closestPlayer.getY()) > 2)) &&
                     (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
@@ -138,22 +138,6 @@ public class EnemyTank extends Entity {
 
 
                     for (int i = 0; i < 3; i++) {
-                        if (up && right)
-                            degree = -45;
-                        else if (up && left)
-                            degree = -135;
-                        else if (right && down) {
-                            degree = 45;
-                        } else if (left && down)
-                            degree = 135;
-                        else if (down)
-                            degree = 90;
-                        else if (up)
-                            degree = -90;
-                        else if (right)
-                            degree = 0;
-                        else if (left)
-                            degree = 180;
 
                         move = true;
                         x += Math.cos(Math.toRadians(degree)) * SPEED;

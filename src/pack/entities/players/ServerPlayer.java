@@ -233,23 +233,6 @@ public class ServerPlayer extends Player {
             degree = 180;
     }
 
-    @Override
-    public void render(Graphics2D g) {
-
-        super.render(g);
-
-        g.setColor(Color.BLACK);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
-        g.drawString("Cannon: " + cannon, 15, 60);
-        g.drawString("Bullet: " + bullet, 15, 90);
-        g.drawString("Health: " + health, 15, 120);
-
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
-        g.drawString("Cannon Level: " + cannonLevel, 15, 170);
-        g.drawString("Bullet Level: " + bulletLevel, 15, 200);
-
-    }
-
 
     public float getStartX() {
         return startX;

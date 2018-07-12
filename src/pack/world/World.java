@@ -10,7 +10,6 @@ import java.security.SecureRandomParameters;
 
 public class World implements Serializable {
 
-
     private int widthInTiles;
     private int heightInTiles;
     private int[][] tiles;
@@ -48,24 +47,17 @@ public class World implements Serializable {
     private void loadWorld(String path) {
         String file = FileLoader.loadFileAsString(path);
         String[] tokens = file.split("\\s+");
-        widthInTiles = 20;
-        heightInTiles = 20;
+        widthInTiles = Integer.parseInt(tokens[0]);
+        heightInTiles = Integer.parseInt(tokens[1]);
 
 
         tiles = new int[widthInTiles][heightInTiles];
         for (int y = 0; y < heightInTiles; y++) {
             for (int x = 0; x < widthInTiles; x++) {
-                tiles[x][y] = FileLoader.parseInt(tokens[(x + y * widthInTiles) + 4]);
+                tiles[x][y] = FileLoader.parseInt(tokens[(x + y * widthInTiles) + 2]);
             }
         }
     }
 
-    public int getWidthInTiles() {
-        return widthInTiles;
-    }
-
-    public int getHeightInTiles() {
-        return heightInTiles;
-    }
 
 }

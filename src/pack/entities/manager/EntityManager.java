@@ -70,7 +70,7 @@ public class EntityManager implements Serializable {
     public Player getClosestPlayer(Entity e) {
         Player closestPlayer = serverPlayer;
         for (ClientPlayer cp : clientPlayers) {
-            if (Math.pow(cp.getX() - e.getX(), 2) + Math.pow(cp.getY() - cp.getY(), 2) < Math.pow(closestPlayer.getX() - e.getX(), 2) + Math.pow(closestPlayer.getY() - e.getY(), 2))
+            if (Math.pow(cp.getX() - e.getX(), 2) + Math.pow(cp.getY() - e.getY(), 2) < Math.pow(closestPlayer.getX() - e.getX(), 2) + Math.pow(closestPlayer.getY() - e.getY(), 2))
                 closestPlayer = cp;
         }
         return closestPlayer;
@@ -94,10 +94,14 @@ public class EntityManager implements Serializable {
         return deltaY;
     }
 
+    public ServerPlayer getServerPlayer() {
+        return serverPlayer;
+    }
+
 
     //CREATORS
     public void createServerPlayer(float x, float y) {
-        serverPlayer = new ServerPlayer(x, y, 1, this);
+        serverPlayer = new ServerPlayer(x, y, 0, this);
     }
 
     public void createEnemyTank(float x, float y) {

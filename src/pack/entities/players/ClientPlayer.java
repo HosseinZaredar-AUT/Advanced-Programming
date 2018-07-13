@@ -81,8 +81,8 @@ public class ClientPlayer extends Player {
         degreeGun = Float.parseFloat(tokens[6]);
 
 
-
-
+        if (!alive)
+            return;
         move();
         getFood();
         upgrade();
@@ -268,7 +268,7 @@ public class ClientPlayer extends Player {
         }
 
         if (health <= 0) {
-            entityManager.gameOver = true;
+            alive = false;
         }
 
     }

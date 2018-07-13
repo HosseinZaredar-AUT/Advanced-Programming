@@ -164,12 +164,16 @@ public class ClientGameState extends State {
 
             } catch (Exception ex) {
                 Game.setState(new MainMenuState());
+                return;
             }
         }
 
     @Override
     public void render(Graphics2D g) {
+        System.out.println("win: " + entityManager.gameWin);
+        System.out.println("over: " + entityManager.gameOver);
         if (entityManager.gameWin || entityManager.gameOver) {
+            System.out.println("finish");
             Game.setState(new MainMenuState());
             return;
         }

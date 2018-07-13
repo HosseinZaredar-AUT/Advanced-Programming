@@ -30,14 +30,17 @@ public class Server implements Runnable {
 
     @Override
     public void run() {
-        ExecutorService pool = Executors.newCachedThreadPool();
         try {
             server = new ServerSocket(PORT_NUMBER);
+            //server.setReuseAddress(true);
             System.out.println("Server started...");
             System.out.println();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+            } catch (IOException e) {
+                 e.printStackTrace();
+            System.out.println("SHIT");
+            }
+
 
         while (true) {
             try {
@@ -48,10 +51,14 @@ public class Server implements Runnable {
                 entityManager.addClientPlayer(number);
 
             } catch (IOException ex) {
-                System.err.println(ex);
+                return;
             }
         }
 
+    }
+
+    public ServerSocket getServerSocket() {
+        return server;
     }
 
     public static InputStream getInputStream(int number) {

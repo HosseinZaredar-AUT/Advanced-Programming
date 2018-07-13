@@ -20,6 +20,13 @@ public class ServerPlayer extends Player {
 
     @Override
     public void tick() {
+
+        if (!alive) {
+            Camera.centerOnEntity(x, y, width, height);
+            degreeGun = MouseManager.angle;
+            return;
+        }
+
         move();
         getFood();
         upgrade();
@@ -208,10 +215,10 @@ public class ServerPlayer extends Player {
         }
 
         if (health <= 0) {
-            entityManager.gameOver = true;
-      }
-
+            alive = false;
         }
+
+    }
 
 
 

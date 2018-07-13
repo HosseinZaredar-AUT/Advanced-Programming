@@ -15,12 +15,14 @@ public class Client {
     }
 
     public boolean connect() {
+
         try {
-            server = new Socket(ip, 7654);
+            server = new Socket(ip, Server.PORT_NUMBER);
             return true;
         } catch (IOException e) {
             return false;
         }
+
     }
 
     public static InputStream getInputStream() {

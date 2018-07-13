@@ -68,7 +68,6 @@ public class EntityManager implements Serializable {
 
     }
 
-    //might need to return player
     public void addClientPlayer(int number) {
         ClientPlayer player = new ClientPlayer(serverPlayer.getStartX(), serverPlayer.getStartY(), number, this);
         newClientPlayers.add(player);
@@ -77,9 +76,18 @@ public class EntityManager implements Serializable {
     }
 
     public Player getClosestPlayer(Entity e) {
-        Player closestPlayer = serverPlayer;
+        Player closestPlayer = null;
+        if (serverPlayer.isAlive()) {
+            closestPlayer = serverPlayer;
+        } else if (clientPlayers.size() != 0) {
+            for (ClientPlayer cp : clientPlayers) {
+                if (cp.isAlive())
+                    closestPlayer = cp;
+            }
+        }
         for (ClientPlayer cp : clientPlayers) {
-            if (Math.pow(cp.getX() - e.getX(), 2) + Math.pow(cp.getY() - e.getY(), 2) < Math.pow(closestPlayer.getX() - e.getX(), 2) + Math.pow(closestPlayer.getY() - e.getY(), 2))
+            if ((Math.pow(cp.getX() - e.getX(), 2) + Math.pow(cp.getY() - e.getY(), 2) < Math.pow(closestPlayer.getX() - e.getX(), 2) + Math.pow(closestPlayer.getY() - e.getY(), 2))
+                    && cp.isAlive())
                 closestPlayer = cp;
         }
         return closestPlayer;
@@ -405,6 +413,21 @@ public class EntityManager implements Serializable {
 
         serverPlayer.tick();
 
+        //TO CHECK IF GAME IS OVER (NOT WRITTEN WELL)
+        gameOver = true;
+        if (serverPlayer.isAlive())
+            gameOver = false;
+        else {
+            for (ClientPlayer cp : clientPlayers) {
+                if (cp.isAlive())
+                    gameOver = false;
+            }
+        }
+        if (gameOver)
+            return;
+
+
+
         try {
             for (EnemyTank e : enemyTanks)
                 e.tick();
@@ -498,7 +521,6 @@ public class EntityManager implements Serializable {
 
         removeLeftClients();
 
-
         //MIGHT CHANGE IT'S PLACE
         gameEnder.tick();
 
@@ -510,6 +532,7 @@ public class EntityManager implements Serializable {
         //IF GAME IS ENDED
         if (gameWin || gameOver) {
 
+            ThreadPool.shutDownServer();
             Game.setState(new MainMenuState());
         }
 

@@ -1,7 +1,12 @@
 package pack;
 
+import pack.network.Server;
+
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * This class holds a global thread-pool for executing our threads.
@@ -9,6 +14,8 @@ import java.util.concurrent.Executors;
 public class ThreadPool {
 
     private static ExecutorService executor;
+    private static Future serverFuture;
+    private static Server server;
 
     /**
      * Initializes a new CachedThreadPool.
@@ -24,7 +31,28 @@ public class ThreadPool {
     public static void execute(Runnable r) {
         if (executor == null)
             init();
-        executor.execute(r);
+        if (r instanceof Server) {
+            server = (Server)r;
+            serverFuture = executor.submit(r);
+        } else
+            executor.execute(r);
+
+
+    }
+
+    public static void shutDownServer() {
+        if (server != null && serverFuture != null) {
+            serverFuture.cancel(true);
+
+            ServerSocket serverSocket = server.getServerSocket();
+            try {
+                serverSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
     }
 
     /**

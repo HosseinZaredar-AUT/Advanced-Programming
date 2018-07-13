@@ -29,8 +29,8 @@ public class Game implements Runnable {
     private void init() {
         frame = new GameFrame("JTanks");
         //to make it fullscreen
-//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-//        frame.setUndecorated(true);
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //frame.setUndecorated(true);
         frame.setSize(frameWidth, frameHeight);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,6 +63,8 @@ public class Game implements Runnable {
 
     private void render() {
 
+        if (frame.getBufferStrategy() == null)
+            frame.initBufferStrategy();
         Graphics2D g = (Graphics2D) frame.getBufferStrategy().getDrawGraphics();
 
         try {

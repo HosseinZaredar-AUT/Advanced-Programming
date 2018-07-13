@@ -31,7 +31,7 @@ public class Player extends Entity {
     protected int bulletCounter = 0;
 
 
-    protected final float MAX_HEALTH = 25;
+    protected final float MAX_HEALTH = 5;
     protected float health;
 
     protected final int MAX_CANNON = 50;
@@ -39,6 +39,8 @@ public class Player extends Entity {
 
     protected final int MAX_BULLET = 200;
     protected int bullet;
+
+    protected boolean alive = true;
 
 
     public float getXMove() {
@@ -116,6 +118,10 @@ public class Player extends Entity {
     @Override
     public Rectangle getBounds() {
         return new Rectangle((int) x + 2 * SPEED / 3, (int) y + 2 * SPEED / 3, width -  4 * SPEED / 3 , height - 4 * SPEED / 3);
+    }
+
+    public boolean isAlive() {
+        return alive;
     }
 
     public int getHealth() {

@@ -15,10 +15,8 @@ import java.awt.*;
 public class MainMenuState extends State {
 
     private MyUIManager uiManager;
-    private Game game;
 
-    public MainMenuState(Game game) {
-        this.game = game;
+    public MainMenuState() {
         uiManager = new MyUIManager();
         MouseManager.setUIManager(uiManager);
 
@@ -32,7 +30,7 @@ public class MainMenuState extends State {
             public void onClick() {
                 GameState gameState = new GameState();
                 ThreadPool.execute(new Server(gameState));
-                game.setState(gameState);
+                Game.setState(gameState);
                 MouseManager.setUIManager(null);
             }
         });
@@ -43,7 +41,7 @@ public class MainMenuState extends State {
                 Client client = new Client("127.0.0.1");
                 boolean connected = client.connect();
                 if (connected) {
-                    game.setState(new ClientGameState(game));
+                    Game.setState(new ClientGameState());
                     MouseManager.setUIManager(null);
 
                 }

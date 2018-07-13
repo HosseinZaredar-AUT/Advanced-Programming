@@ -1,9 +1,12 @@
 package pack.states;
 
 import pack.Game;
+import pack.entities.BarbedWire;
+import pack.entities.Bush;
 import pack.entities.HardWall;
 import pack.entities.players.ClientPlayer;
 import pack.entities.manager.EntityManager;
+import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.KeyManager;
 import pack.input.MouseManager;
@@ -16,17 +19,20 @@ import java.util.ArrayList;
 public class ClientGameState extends State {
 
     private World world;
-    private Game game;
     private EntityManager entityManager;
-    private ClientPlayer me;
-    private boolean gotHardWalls = false;
+    private boolean gotStatics = false;
     private ArrayList<HardWall> hardWalls;
-    private int count = 0;
+    private ArrayList<BarbedWire> barbedWires;
+    private ArrayList<Bush> bushes;
+    private int c = 0;
+
+    private int health;
+    private int cannon;
+    private int bullet;
 
 
-    public ClientGameState(Game game) {
+    public ClientGameState() {
         world = new World("res/world/worldFile.txt");
-        this.game = game;
 
     }
 
@@ -37,7 +43,7 @@ public class ClientGameState extends State {
 
          //GETTING STATIC STUFF FOR 1 TIME
 
-         if (!gotHardWalls) {
+         if (!gotStatics) {
 
              InputStream wallsIn = Client.getInputStream();
              try {
@@ -45,10 +51,32 @@ public class ClientGameState extends State {
                  hardWalls = (ArrayList<HardWall>) wallReader.readObject();
 
              } catch (Exception ex) {
-                 game.setState(new MainMenuState(game));
+                 Game.setState(new MainMenuState());
+                 return;
              }
 
-             gotHardWalls = true;
+             InputStream barbedWiresIn = Client.getInputStream();
+             try {
+                 ObjectInputStream barbedWireReader = new ObjectInputStream(barbedWiresIn);
+                 barbedWires = (ArrayList<BarbedWire>) barbedWireReader.readObject();
+
+             } catch (Exception ex) {
+                 Game.setState(new MainMenuState());
+                 return;
+             }
+
+             InputStream BushesIn = Client.getInputStream();
+             try {
+                 ObjectInputStream BushesReader = new ObjectInputStream(BushesIn);
+                 bushes = (ArrayList<Bush>) BushesReader.readObject();
+
+             } catch (Exception ex) {
+                 Game.setState(new MainMenuState());
+                 return;
+             }
+
+
+             gotStatics = true;
          }
 
 
@@ -90,25 +118,29 @@ public class ClientGameState extends State {
         try {
             out.write(stringBuilder.toString().getBytes());
         } catch (IOException e) {
-            game.setState(new MainMenuState(game));
+            Game.setState(new MainMenuState());
+            return;
         }
 
 
-        //GETTING POSITION TO CENTER CAMERA
-        float x, y;
+        //GETTING PLAYERS STATE
         byte[] buffer = new byte[1024];
         int size = -1;
         InputStream positionIn = Client.getInputStream();
         try {
             size = positionIn.read(buffer);
         } catch (IOException e) {
-            e.printStackTrace();
+            Game.setState(new MainMenuState());
+            return;
         }
 
         String position = new String(buffer, 0, size);
         String[] tokens = position.split(",");
-        x = Float.parseFloat(tokens[0]);
-        y = Float.parseFloat(tokens[1]);
+        health = Integer.parseInt(tokens[0]);
+        cannon = Integer.parseInt(tokens[1]);
+        bullet = Integer.parseInt(tokens[2]);
+        float x = Float.parseFloat(tokens[3]);
+        float y = Float.parseFloat(tokens[4]);
 
         Camera.centerOnEntity(x, y, 100, 100);
 
@@ -117,25 +149,59 @@ public class ClientGameState extends State {
                 ObjectInputStream managerReader = new ObjectInputStream(managerIn);
                 entityManager = (EntityManager) managerReader.readObject();
 
-                //SAVE INTO FILE TO CHECK THE SIZE
 
+                //SAVE INTO FILE TO CHECK THE SIZE
+//                c++;
+//                if (c == 50) {
+//                    try (FileOutputStream fout = new FileOutputStream("manager.bin");
+//                         ObjectOutputStream ooo = new ObjectOutputStream(fout)) {
+//
+//                        ooo.writeObject(entityManager);
+//                    }
+//                }
 
                 //
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+            } catch (Exception ex) {
+                Game.setState(new MainMenuState());
             }
-
         }
 
     @Override
     public void render(Graphics2D g) {
+        if (entityManager.gameWin || entityManager.gameOver) {
+            Game.setState(new MainMenuState());
+            return;
+        }
         world.render(g);
         entityManager.render(g, false);
         for (HardWall h : hardWalls)
+            if ((h.getX() + h.getWidth() > Camera.getXOffset()) && (h.getX() < (Camera.getXOffset() + Game.frameWidth)) && (h.getY() + h.getHeight() > Camera.getYOffset())
+                    && (h.getY() < (Camera.getYOffset() + Game.frameHeight)))
             h.render(g);
+
+        for (BarbedWire b : barbedWires)
+            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
+            b.render(g);
+
+        for (Bush b : bushes)
+            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
+            b.render(g);
+
+        renderPlayerSate(g);
+    }
+
+    private void renderPlayerSate(Graphics2D g) {
+        g.drawImage(Assets.cannonNum, 15, 40, null);
+        g.drawImage(Assets.bulletNum, 15, 110, null);
+        g.drawImage(Assets.healthNum, 15, 180, null);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        g.drawString(cannon + "", 40, 110);
+        g.drawString(bullet + "", 40, 180);
+        g.drawString((int) health + "", 40, 225);
     }
 
     @Override

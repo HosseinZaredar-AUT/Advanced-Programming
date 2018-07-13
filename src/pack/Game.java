@@ -13,7 +13,7 @@ public class Game implements Runnable {
 
     private final int FPS = 60;
     private GameFrame frame;
-    private State state;
+    private static State state;
 
 
     public static int frameWidth, frameHeight;
@@ -53,7 +53,7 @@ public class Game implements Runnable {
 
     public void start() {
 
-        state = new MainMenuState(this);
+        state = new MainMenuState();
         ThreadPool.execute(this);
     }
 
@@ -106,8 +106,8 @@ public class Game implements Runnable {
         }
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public static void setState(State newState) {
+        state = newState;
     }
 
 }

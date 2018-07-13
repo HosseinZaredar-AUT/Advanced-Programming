@@ -101,16 +101,33 @@ public class Player extends Entity {
     }
 
     public void renderPlayerState(Graphics2D g) {
-        g.setColor(Color.BLACK);
-        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 25));
-        g.drawString("Cannon: " + cannon, 15, 60);
-        g.drawString("Bullet: " + bullet, 15, 90);
-        g.drawString("Health: " + health, 15, 120);
+
+        g.drawImage(Assets.cannonNum, 15, 40, null);
+        g.drawImage(Assets.bulletNum, 15, 110, null);
+        g.drawImage(Assets.healthNum, 15, 180, null);
+        g.setColor(Color.WHITE);
+        g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 18));
+        g.drawString(cannon + "", 40, 110);
+        g.drawString(bullet + "", 40, 180);
+        g.drawString((int) health + "", 40, 225);
+
     }
 
     @Override
     public Rectangle getBounds() {
         return new Rectangle((int) x + 2 * SPEED / 3, (int) y + 2 * SPEED / 3, width -  4 * SPEED / 3 , height - 4 * SPEED / 3);
+    }
+
+    public int getHealth() {
+        return (int) health;
+    }
+
+    public int getCannon() {
+        return cannon;
+    }
+
+    public int getBullet() {
+        return bullet;
     }
 
 }

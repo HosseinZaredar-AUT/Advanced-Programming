@@ -1,6 +1,7 @@
 package pack.entities.manager;
 
 import pack.Game;
+import pack.ThreadPool;
 import pack.entities.*;
 import pack.entities.players.ClientPlayer;
 import pack.entities.players.Player;
@@ -8,6 +9,7 @@ import pack.entities.players.ServerPlayer;
 import pack.graphics.Camera;
 import pack.network.Client;
 import pack.network.Server;
+import pack.states.MainMenuState;
 
 import java.awt.*;
 import java.io.IOException;
@@ -20,6 +22,8 @@ import java.util.Iterator;
 public class EntityManager implements Serializable {
 
     public boolean gameOver = false;
+    public boolean gameWin = false;
+    private GameEnder gameEnder;
     private ServerPlayer serverPlayer = null;
     private ArrayList<ClientPlayer> clientPlayers;
     private ArrayList<ClientPlayer> newClientPlayers;
@@ -165,7 +169,10 @@ public class EntityManager implements Serializable {
 
     public void createSoftWall(float x, float y) {
         softWalls.add(new SoftWall(x, y, this));
+    }
 
+    public void createGameEnder(float x, float y) {
+        gameEnder = new GameEnder(x, y, this);
     }
 
     public void createBulletFood(float x, float y) {
@@ -269,6 +276,19 @@ public class EntityManager implements Serializable {
                 return cp;
         }
         return null;
+    }
+
+    public boolean doCollideWithAllPlayers(Entity e) {
+        if (!serverPlayer.getBounds().intersects(e.getBounds())) {
+            return false;
+        }
+
+        for (ClientPlayer cp : clientPlayers) {
+            if (!cp.getBounds().intersects(e.getBounds())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Cannon doCollideWithFriendlyCannon(Entity e) {
@@ -432,22 +452,19 @@ public class EntityManager implements Serializable {
 
 
         //REMOVING GONE CLIENTS
-        Iterator<ClientPlayer> it = clientPlayers.iterator();
-        while (it.hasNext()) {
-            ClientPlayer current = it.next();
-            if (current.hasLeft)
-                it.remove();
-        }
+        removeLeftClients();
 
         //SENDING NEW STATE TO CLIENTS
         if (clientPlayers.size() > 0) {
             for (ClientPlayer cp : clientPlayers) {
                 OutputStream positionOut = Server.getOutputStream(cp.getNumber());
-                String position = cp.getX() + "," + cp.getY();
+                String position = cp.getHealth() + "," +
+                        cp.getCannon() + "," + cp.getBullet() + "," +
+                        cp.getX() + "," + cp.getY();
                 try {
                     positionOut.write(position.getBytes());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    cp.hasLeft = true;
                 }
             }
 
@@ -459,26 +476,44 @@ public class EntityManager implements Serializable {
                 try {
 
                     ObjectOutputStream managerWriter = new ObjectOutputStream(managerOut);
-                    ArrayList<HardWall> temp = hardWalls;
+
+                    //EXCLUDING THE STATICS
+                    ArrayList<HardWall> tempWalls = hardWalls;
+                    ArrayList<BarbedWire> tempBarbedWires = barbedWires;
+                    ArrayList<Bush> tempBushes = bushes;
                     hardWalls = null;
+                    barbedWires = null;
+                    bushes = null;
                     managerWriter.writeObject(this);
-                    hardWalls = temp;
+                    hardWalls = tempWalls;
+                    barbedWires = tempBarbedWires;
+                    bushes = tempBushes;
+
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    cp.hasLeft = true;
                 }
-
-
             }
         }
 
+        removeLeftClients();
 
+
+        //MIGHT CHANGE IT'S PLACE
+        gameEnder.tick();
 
     }
 
+
     public void render(Graphics2D g, boolean renderStatics) {
 
-        if (renderStatics && hardWalls != null) {
+        //IF GAME IS ENDED
+        if (gameWin || gameOver) {
+
+            Game.setState(new MainMenuState());
+        }
+
+        if (renderStatics) {
             for (HardWall w : hardWalls) {
                 if ((w.getX() + w.getWidth() > Camera.getXOffset()) && (w.getX() < (Camera.getXOffset() + Game.frameWidth)) && (w.getY() + w.getHeight() > Camera.getYOffset())
                         && (w.getY() < (Camera.getYOffset() + Game.frameHeight)))
@@ -486,11 +521,12 @@ public class EntityManager implements Serializable {
             }
         }
 
-
-        for (BarbedWire b : barbedWires) {
-            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
-                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
-                b.render(g);
+        if (renderStatics) {
+            for (BarbedWire b : barbedWires) {
+                if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                        && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
+                    b.render(g);
+            }
         }
 
         for (SoftWall w : softWalls) {
@@ -582,11 +618,15 @@ public class EntityManager implements Serializable {
 
         }
 
-        for (Bush b : bushes) {
-            if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
-                    && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
-            b.render(g);
+        if (renderStatics) {
+            for (Bush b : bushes) {
+                if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
+                        && (b.getY() < (Camera.getYOffset() + Game.frameHeight)))
+                    b.render(g);
+            }
         }
+
+        gameEnder.render(g);
 
     }
 
@@ -596,8 +636,27 @@ public class EntityManager implements Serializable {
         newClientPlayers.clear();
     }
 
+
+    private void removeLeftClients() {
+        Iterator<ClientPlayer> it = clientPlayers.iterator();
+        while (it.hasNext()) {
+            ClientPlayer current = it.next();
+            if (current.hasLeft)
+                it.remove();
+        }
+    }
+
     public ArrayList<HardWall> getHardWalls() {
         return hardWalls;
+    }
+
+    public ArrayList<BarbedWire> getBarbedWires() {
+        return barbedWires;
+    }
+
+
+    public ArrayList<Bush> getBushes() {
+        return bushes;
     }
 
 

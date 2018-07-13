@@ -13,7 +13,7 @@ public class ClientPlayer extends Player {
     private String command;
     private boolean rightClick, leftClick;
     public boolean hasLeft = false;
-    private boolean sentHardWalls = false;
+    private boolean sentStatics = false;
 
 
     public ClientPlayer(float x, float y, int number, EntityManager entityManager) {
@@ -25,16 +25,35 @@ public class ClientPlayer extends Player {
 
 
         //SENDING STATIC STUFF FOR 1 TIME
-        if (!sentHardWalls) {
+        if (!sentStatics) {
             OutputStream wallsOut = Server.getOutputStream(number);
             try {
                 ObjectOutputStream wallWriter = new ObjectOutputStream(wallsOut);
                 wallWriter.writeObject(entityManager.getHardWalls());
             } catch (IOException e) {
+                hasLeft = true;
                 return;
             }
 
-            sentHardWalls = true;
+            OutputStream barbedWiresOut = Server.getOutputStream(number);
+            try {
+                ObjectOutputStream barbedWiresWriter = new ObjectOutputStream(barbedWiresOut);
+                barbedWiresWriter.writeObject(entityManager.getBarbedWires());
+            } catch (IOException e) {
+                hasLeft = true;
+                return;
+            }
+
+            OutputStream bushesOut = Server.getOutputStream(number);
+            try {
+                ObjectOutputStream bushesWriter = new ObjectOutputStream(bushesOut);
+                bushesWriter.writeObject(entityManager.getBushes());
+            } catch (IOException e) {
+                hasLeft = true;
+                return;
+            }
+
+            sentStatics = true;
         }
 
 

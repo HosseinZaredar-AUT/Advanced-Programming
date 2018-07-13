@@ -44,6 +44,7 @@ public class EntityWorld implements Serializable {
         َ Artillery_Right : m
         َ Artillery_Down : n
         َ Artillery_Up : o
+        GameEnder : p
 
 
 
@@ -70,6 +71,7 @@ public class EntityWorld implements Serializable {
                 if (z == 'm') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.RIGHT);
                 if (z == 'n') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.DOWN);
                 if (z == 'o') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.UP);
+                if (z == 'p') entityManager.createGameEnder(x * entityWidth, y * entityHeight);
             }
 
         }

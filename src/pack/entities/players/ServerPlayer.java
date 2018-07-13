@@ -71,7 +71,7 @@ public class ServerPlayer extends Player {
 
             y -= yMove;
 
-        Camera.centerOnEntity(this);
+        Camera.centerOnEntity(x, y ,width, height);
     }
 
     private void getFood() {

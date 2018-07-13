@@ -66,7 +66,7 @@ public class EntityManager implements Serializable {
 
     //might need to return player
     public void addClientPlayer(int number) {
-        ClientPlayer player = new ClientPlayer(this.serverPlayer.getStartX(), this.serverPlayer.getStartY(), number, this);
+        ClientPlayer player = new ClientPlayer(serverPlayer.getStartX(), serverPlayer.getStartY(), number, this);
         newClientPlayers.add(player);
         System.out.println("client added");
 
@@ -439,14 +439,13 @@ public class EntityManager implements Serializable {
                 it.remove();
         }
 
+        //SENDING NEW STATE TO CLIENTS
         if (clientPlayers.size() > 0) {
             for (ClientPlayer cp : clientPlayers) {
-
-                OutputStream out = Server.getOutputStream(cp.getNumber());
+                OutputStream positionOut = Server.getOutputStream(cp.getNumber());
+                String position = cp.getX() + "," + cp.getY();
                 try {
-                    ObjectOutputStream objectOut = new ObjectOutputStream(out);
-                    objectOut.writeObject(this);
-
+                    positionOut.write(position.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -454,16 +453,39 @@ public class EntityManager implements Serializable {
 
         }
 
+        if (clientPlayers.size() > 0) {
+            for (ClientPlayer cp : clientPlayers) {
+                OutputStream managerOut = Server.getOutputStream(cp.getNumber());
+                try {
+
+                    ObjectOutputStream managerWriter = new ObjectOutputStream(managerOut);
+                    ArrayList<HardWall> temp = hardWalls;
+                    hardWalls = null;
+                    managerWriter.writeObject(this);
+                    hardWalls = temp;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+
+
+
     }
 
-    public void render(Graphics2D g) {
+    public void render(Graphics2D g, boolean renderStatics) {
 
-
-        for (HardWall w : hardWalls) {
-            if ((w.getX() + w.getWidth() > Camera.getXOffset()) && (w.getX() < (Camera.getXOffset() + Game.frameWidth)) && (w.getY() + w.getHeight() > Camera.getYOffset())
-                    && (w.getY() < (Camera.getYOffset() + Game.frameHeight)))
-                w.render(g);
+        if (renderStatics && hardWalls != null) {
+            for (HardWall w : hardWalls) {
+                if ((w.getX() + w.getWidth() > Camera.getXOffset()) && (w.getX() < (Camera.getXOffset() + Game.frameWidth)) && (w.getY() + w.getHeight() > Camera.getYOffset())
+                        && (w.getY() < (Camera.getYOffset() + Game.frameHeight)))
+                    w.render(g);
+            }
         }
+
 
         for (BarbedWire b : barbedWires) {
             if ((b.getX() + b.getWidth() > Camera.getXOffset()) && (b.getX() < (Camera.getXOffset() + Game.frameWidth)) && (b.getY() + b.getHeight() > Camera.getYOffset())
@@ -573,6 +595,11 @@ public class EntityManager implements Serializable {
         clientPlayers.addAll(newClientPlayers);
         newClientPlayers.clear();
     }
+
+    public ArrayList<HardWall> getHardWalls() {
+        return hardWalls;
+    }
+
 
 
 }

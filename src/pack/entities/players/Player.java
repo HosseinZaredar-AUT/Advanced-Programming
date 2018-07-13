@@ -15,7 +15,7 @@ public class Player extends Entity {
     protected int degree;
     protected double degreeGun;
     protected float xMove, yMove;
-    protected final int SPEED = 20;
+    protected final int SPEED = 10;
     protected float xSpeed;
     protected float ySpeed;
 

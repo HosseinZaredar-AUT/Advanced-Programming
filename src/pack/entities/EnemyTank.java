@@ -16,7 +16,7 @@ public class EnemyTank extends Entity {
     private double degree;
     private double degreeGun;
     private float health = 1;
-    private final int SPEED = 8;
+    private final int SPEED = 4;
     private final int FIRE_Rate = 40; //the less, the faster
     private int fireCounter = 0;
 

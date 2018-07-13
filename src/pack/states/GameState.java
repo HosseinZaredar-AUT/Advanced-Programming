@@ -1,11 +1,9 @@
 package pack.states;
 
-import pack.sound.ExampleSounds;
 import pack.entities.EntityWorld;
 import pack.entities.manager.EntityManager;
 import pack.world.World;
 import java.awt.*;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class GameState extends State {
@@ -15,8 +13,8 @@ public class GameState extends State {
     private ArrayList<Float> fpsHistory;
     private EntityWorld entityWorld;
     private EntityManager entityManager;
+    private int count = 0;
 //    public static LocalTime localTime1;
-
 
 
 
@@ -39,16 +37,14 @@ public class GameState extends State {
 
     @Override
     public void tick() {
-        world.tick();
         entityManager.tick();
-
     }
 
     @Override
     public void render(Graphics2D g) {
 
         world.render(g);
-        entityManager.render(g);
+        entityManager.render(g, true);
         entityManager.getServerPlayer().renderPlayerState(g);
 
         // Print FPS info

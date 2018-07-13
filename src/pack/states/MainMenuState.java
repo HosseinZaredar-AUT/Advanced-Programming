@@ -10,7 +10,6 @@ import pack.network.Server;
 import pack.ui.ClickListener;
 import pack.ui.MyUIManager;
 import pack.ui.UIImageButton;
-
 import java.awt.*;
 
 public class MainMenuState extends State {

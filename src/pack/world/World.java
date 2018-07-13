@@ -10,8 +10,8 @@ import java.security.SecureRandomParameters;
 
 public class World implements Serializable {
 
-    private int widthInTiles;
-    private int heightInTiles;
+    private static int widthInTiles;
+    private static int heightInTiles;
     private int[][] tiles;
 
     public World( String path) {
@@ -59,5 +59,12 @@ public class World implements Serializable {
         }
     }
 
+    public static int getWidthInTiles() {
+        return widthInTiles;
+    }
+
+    public static int getHeightInTiles() {
+        return heightInTiles;
+    }
 
 }

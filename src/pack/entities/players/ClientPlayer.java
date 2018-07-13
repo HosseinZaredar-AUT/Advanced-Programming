@@ -13,6 +13,7 @@ public class ClientPlayer extends Player {
     private String command;
     private boolean rightClick, leftClick;
     public boolean hasLeft = false;
+    private boolean sentHardWalls = false;
 
 
     public ClientPlayer(float x, float y, int number, EntityManager entityManager) {
@@ -22,16 +23,18 @@ public class ClientPlayer extends Player {
     @Override
     public void tick() {
 
-        //
-        OutputStream out = Server.getOutputStream(number);
 
-        try {
-            ObjectOutputStream objectOut = new ObjectOutputStream(out);
-            objectOut.writeObject(this);
+        //SENDING STATIC STUFF FOR 1 TIME
+        if (!sentHardWalls) {
+            OutputStream wallsOut = Server.getOutputStream(number);
+            try {
+                ObjectOutputStream wallWriter = new ObjectOutputStream(wallsOut);
+                wallWriter.writeObject(entityManager.getHardWalls());
+            } catch (IOException e) {
+                return;
+            }
 
-        } catch (IOException e) {
-            hasLeft = true;
-            return;
+            sentHardWalls = true;
         }
 
 
@@ -57,6 +60,8 @@ public class ClientPlayer extends Player {
         rightClick = tokens[4].equals("1");
         leftClick = tokens[5].equals("1");
         degreeGun = Float.parseFloat(tokens[6]);
+
+
 
 
         move();
@@ -109,7 +114,6 @@ public class ClientPlayer extends Player {
 
                 y -= yMove;
 
-//        Camera.centerOnEntity(this);
     }
 
     private void getFood() {

@@ -14,7 +14,7 @@ public class EnemyCar extends Entity {
     private double degree;
     private double degreeGun;
     private float health;
-    private final int SPEED = 10;
+    private final int SPEED = 5;
     private final int FIRE_Rate = 7; //the less, the faster
     private int fireCounter = 0;
 

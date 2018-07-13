@@ -3,10 +3,6 @@ package pack;
 import pack.graphics.Assets;
 import pack.input.KeyManager;
 import pack.input.MouseManager;
-import pack.network.Client;
-import pack.network.Server;
-import pack.states.ClientGameState;
-import pack.states.GameState;
 import pack.states.MainMenuState;
 import pack.states.State;
 import javax.swing.*;
@@ -15,7 +11,7 @@ import java.awt.*;
 public class Game implements Runnable {
 
 
-    private final int FPS = 30;
+    private final int FPS = 60;
     private GameFrame frame;
     private State state;
 
@@ -33,8 +29,8 @@ public class Game implements Runnable {
     private void init() {
         frame = new GameFrame("JTanks");
         //to make it fullscreen
-        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //frame.setUndecorated(true);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setUndecorated(true);
         frame.setSize(frameWidth, frameHeight);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

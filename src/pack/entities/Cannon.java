@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 public class Cannon extends Entity {
 
-    private final int SPEED = 12;
+    private final int SPEED = 6;
     public static final float DAMAGE = 1;
     private double angle;
     private float xSpeed, ySpeed;

@@ -6,16 +6,22 @@ import pack.entities.players.Player;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.MouseManager;
+import pack.sound.ExampleSounds;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+/**
+ * this class is for
+ * enemy car that is
+ * a enemy
+ */
 public class EnemyCar extends Entity {
     private double degree;
     private double degreeGun;
     private float health;
-    private final int SPEED = 5;
-    private final int FIRE_Rate = 7; //the less, the faster
+    private final int SPEED = 10;
+    private final int FIRE_Rate = 4; //the less, the faster
     private int fireCounter = 0;
     private int loot;
 
@@ -34,9 +40,16 @@ public class EnemyCar extends Entity {
 
     }
 
+    /**
+     * this method is for
+     * AI of enemy
+     */
     private void doAI() {
         if (entityManager.deltaXToClosestPlayer(this) < (2 * Game.frameWidth / 3) && entityManager.deltaYToClosestPlayer(this) < (2 * Game.frameHeight / 3)) {
             Player closestPlayer = entityManager.getClosestPlayer(this);
+            if (closestPlayer == null)
+                return;
+
             degreeGun = MouseManager.angleToPlayer(closestPlayer, this);
             //same gun and tank
             Bullet bullet = entityManager.createEnemyBullet(x, y, degreeGun);
@@ -77,11 +90,16 @@ public class EnemyCar extends Entity {
                 y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
             }
 
-
+if (entityManager.containEnemyBullet(bullet)!=null)
+    ExampleSounds.playEnemyBulletToMyTank(true);
 
         }
     }
 
+    /**
+     * this method is for
+     * manage damaging enemy
+     */
     private void getDamage() {
         Bullet bullet = entityManager.doCollideWithFriendlyBullet(this);
         if (bullet != null) {

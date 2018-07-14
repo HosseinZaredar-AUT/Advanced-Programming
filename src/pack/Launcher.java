@@ -11,7 +11,7 @@ public class Launcher {
         ThreadPool.init();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         //pass x and y to have fullscreen
-        Game game = new Game(1280, 720);
+        Game game = new Game(screenSize.width, screenSize.height);
         game.start();
 
     }

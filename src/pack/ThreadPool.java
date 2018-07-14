@@ -40,6 +40,10 @@ public class ThreadPool {
 
     }
 
+    /**
+     * for shut down server
+     * and cancel it
+     */
     public static void shutDownServer() {
         if (server != null && serverFuture != null) {
             serverFuture.cancel(true);

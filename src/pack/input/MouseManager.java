@@ -7,6 +7,10 @@ import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * this class is for
+ * managing mouse click
+ */
 public class MouseManager extends MouseAdapter {
 
     private static MyUIManager uiManager;
@@ -61,6 +65,13 @@ public class MouseManager extends MouseAdapter {
             rightMouseButton = false;
     }
 
+    /**
+     * this method is set
+     * angle of player to enemy
+     * @param player
+     * @param enemy
+     * @return
+     */
     public static double angleToPlayer(Entity player, Entity enemy){
         float dx = enemy.getX() - player.getX();
         float dy = enemy.getY() - player.getY();

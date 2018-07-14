@@ -11,11 +11,18 @@ import pack.graphics.Camera;
 import pack.input.KeyManager;
 import pack.input.MouseManager;
 import pack.network.Client;
+import pack.sound.ExampleSounds;
 import pack.world.World;
 import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 
+/**
+ * this class is the state of a client-player
+ * which sends data to and receives data from
+ * the connected server and updates players screen
+ */
 public class ClientGameState extends State {
 
     private World world;
@@ -148,26 +155,45 @@ public class ClientGameState extends State {
         //GETTING PLAYERS STATE
         byte[] buffer = new byte[1024];
         int size = -1;
-        InputStream positionIn = Client.getInputStream();
+        InputStream stateIn = Client.getInputStream();
         try {
-            size = positionIn.read(buffer);
+            size = stateIn.read(buffer);
         } catch (IOException e) {
             Game.setState(new MainMenuState());
             return;
         }
 
+        String sounds;
         String position = new String(buffer, 0, size);
         String[] tokens = position.split(",");
 
         float x = 0,y = 0;
         try {
-            health = Integer.parseInt(tokens[0]);
-            cannon = Integer.parseInt(tokens[1]);
-            bullet = Integer.parseInt(tokens[2]);
-            x = Float.parseFloat(tokens[3]);
-            y = Float.parseFloat(tokens[4]);
+            sounds = tokens[0];
+            for (int i = 0; i < sounds.length(); i++) {
+                switch (sounds.charAt(i)) {
+                    case '1':
+                        ExampleSounds.playAgree(false); break;
+                    case '2':
+                        ExampleSounds.playCannon(false); break;
+                    case '3':
+                        ExampleSounds.playEnemyBulletToMyTank(false); break;
+                    case '4':
+                        ExampleSounds.playEnemyShot(false); break;
+                    case '5':
+                        ExampleSounds.playLightGun(false); break;
+                    case '6':
+                        ExampleSounds.playSelect(false); break;
+                }
+            }
+            health = Integer.parseInt(tokens[1]);
+            cannon = Integer.parseInt(tokens[2]);
+            bullet = Integer.parseInt(tokens[3]);
+            x = Float.parseFloat(tokens[4]);
+            y = Float.parseFloat(tokens[5]);
         } catch (Exception ex) {
-
+            Game.setState(new MainMenuState());
+            return;
         }
 
         Camera.centerOnEntity(x, y, 100, 100);

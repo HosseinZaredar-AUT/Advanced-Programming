@@ -5,6 +5,11 @@ import pack.graphics.Assets;
 import pack.graphics.Camera;
 import java.awt.*;
 
+/**
+ * this class is for
+ * cannon food and
+ * fulling cannons
+ */
 public class CannonFood extends Entity{
 
     public CannonFood(float x, float y, EntityManager entityManager) {

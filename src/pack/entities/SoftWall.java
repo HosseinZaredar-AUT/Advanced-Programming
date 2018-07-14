@@ -3,9 +3,13 @@ package pack.entities;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 
+/**
+ * this class is for
+ * managing soft wall of
+ * map that is an Entity
+ */
 public class SoftWall extends Entity {
 
     private final float MAX_HEALTH = 4;
@@ -21,6 +25,10 @@ public class SoftWall extends Entity {
         getDamage();
     }
 
+    /**
+     * this method is for
+     * manage damaging soft wall
+     */
     private void getDamage() {
 
         Cannon friendlyCannon = entityManager.doCollideWithFriendlyCannon(this);

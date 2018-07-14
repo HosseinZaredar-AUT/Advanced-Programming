@@ -1,9 +1,11 @@
 package pack.graphics;
 
-import pack.utils.ImageLoader;
-
 import java.awt.image.BufferedImage;
 
+/**
+ * this class keeps all buffered image
+ * for managing it
+ */
 public class Assets {
 
     public static BufferedImage player, dirt, hardWall, softWall[],
@@ -16,6 +18,10 @@ public class Assets {
             easy[], normal[], hard[], cursor, youLost, youWin, exitBackToMenu[];
 
 
+    /**
+     * this method load
+     * all the buffered image
+     */
     public static void init() {
 
         dirt = pack.utils.ImageLoader.load("res/textures/dirt.png");

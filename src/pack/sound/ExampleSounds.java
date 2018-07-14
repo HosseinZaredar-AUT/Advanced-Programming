@@ -1,98 +1,84 @@
 package pack.sound;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import pack.entities.manager.EntityManager;
 
+/**
+ * this class manages playing different
+ * audios in the game
+ */
 public class ExampleSounds {
-   public static ExecutorService executorService;
 
+    private static Sound sound1 = null;
+    private static Sound soundEndOfGame = null;
+    private static Sound  SoundStart = null;
 
-    public ExampleSounds() {
-        executorService = Executors.newFixedThreadPool(20);
+    public static void playAgree(boolean write) {
+        new Sound("res/Sounds/agree.wav", false,0);
+        if (write)
+            EntityManager.soundCharacters.add('1');
     }
 
-    public static void playagree() {
-        executorService.execute(new Sound("res/Sounds/agree.wav"));
+    public static void playCannon(boolean write) {
+        new Sound("res/Sounds/cannon.wav",false,0);
+        if (write)
+            EntityManager.soundCharacters.add('2');
     }
 
-    public static void playcannon() {
-        executorService.execute(new Sound("res/Sounds/cannon.wav"));
+    public static void playEndOfGame() {
+       soundEndOfGame =  new Sound("res/Sounds/endOfGame.wav",false,0);
     }
 
-    public static void playemptyGun() {
-        executorService.execute(new Sound("res/Sounds/emptyGun.wav"));
+    public static void closeSoundEndOfGame() {
+        if(soundEndOfGame != null) {
+            soundEndOfGame.getClip().close();
+        }
     }
 
-    public static void playendOfGame() {
-        executorService.execute(new Sound("res/Sounds/endOfGame.wav"));
+    public static void playEnemyBulletToMyTank(boolean write) {
+        new Sound("res/Sounds/EnemyBulletToMyTank.wav",false,0);
+        if (write)
+            EntityManager.soundCharacters.add('3');
     }
 
-    public static void playEnemyBulletToMyTank() {
-        executorService.execute(new Sound("res/Sounds/EnemyBulletToMyTank.wav"));
+
+    public static void playEnemyShot(boolean write) {
+        new Sound("res/Sounds/enemyshot.wav",false,0);
+        if (write)
+            EntityManager.soundCharacters.add('4');
     }
 
-    public static void playenemydestroyed() {
-        executorService.execute(new Sound("res/Sounds/enemydestroyed.wav"));
+
+    public static void playGameSound1() {
+        sound1 = new Sound("res/Sounds/gameSound1.wav", true, 10);
     }
 
-    public static void playenemyshot() {
-        executorService.execute(new Sound("res/Sounds/enemyshot.wav"));
+    public static void closeSound1() {
+        if(sound1!=null) {
+            sound1.getClip().close();
+        }
     }
 
-    public static void playgameOver() {
-        executorService.execute(new Sound("res/Sounds/gameOver.wav"));
+    public static void playLightGun(boolean write) {
+        new Sound("res/Sounds/lightgun.wav",false,0);
+        if (write)
+            EntityManager.soundCharacters.add('5');
     }
 
-    public static void playheavygun() {
-        executorService.execute(new Sound("res/Sounds/heavygun.wav"));
+
+    public static void playSelect(boolean write) {
+        new Sound("res/Sounds/select.wav",false,0);
+        if (write)
+            EntityManager.soundCharacters.add('6');
     }
 
-    public static void playgameSound1() {
-        executorService.execute(new Sound("res/Sounds/gameSound1.wav"));
+    public static void playStartup() {
+       SoundStart =  new Sound("res/Sounds/startup.wav",false,0);
     }
 
-    public static void playgameSound2() {
-        executorService.execute(new Sound("res/Sounds/gameSound2.wav"));
-    }
-
-    public static void playlightgun() {
-        executorService.execute(new Sound("res/Sounds/lightgun.wav"));
-    }
-
-    public static void playmashingun() {
-        executorService.execute(new Sound("res/Sounds/mashingun.wav"));
-    }
-
-    public static void playmine() {
-        executorService.execute(new Sound("res/Sounds/mine.wav"));
-    }
-
-    public static void playMineBoom() {
-        executorService.execute(new Sound("res/Sounds/MineBoom.wav"));
-    }
-
-    public static void playmotor1() {
-        executorService.execute(new Sound("res/Sounds/motor1.wav"));
-    }
-
-    public static void playrecosh() {
-        executorService.execute(new Sound("res/Sounds/recosh.wav"));
-    }
-
-    public static void playrepair() {
-        executorService.execute(new Sound("res/Sounds/repair.wav"));
-    }
-
-    public static void playselect() {
-        executorService.execute(new Sound("res/Sounds/select.wav"));
-    }
-
-    public static void playsoftwall() {
-        executorService.execute(new Sound("res/Sounds/softwall.wav"));
-    }
-
-    public static void playstartup() {
-        executorService.execute(new Sound("res/Sounds/startup.wav"));
+    public static void closeSoundStartUp() {
+        if(SoundStart!=null) {
+            SoundStart.getClip().close();
+        }
     }
 
 

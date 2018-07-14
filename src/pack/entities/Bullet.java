@@ -7,9 +7,13 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+/**
+ * this class is for
+ * any bullet
+ */
 public class Bullet extends Entity {
 
-    private final int SPEED = 8;
+    private final int SPEED = 16;
     public static final float DAMAGE = 0.1f;
     private double angle;
     private float xSpeed, ySpeed;

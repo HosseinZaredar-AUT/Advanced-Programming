@@ -2,11 +2,14 @@ package pack.graphics;
 
 import pack.Game;
 import pack.world.World;
-import pack.entities.Entity;
 import pack.input.MouseManager;
 import pack.tiles.Tile;
 
-
+/**
+ * this class is for
+ * camera of game that is
+ * keep important x and y of frame
+ */
 public class Camera {
 
     private static float xOffset, yOffset;
@@ -27,6 +30,11 @@ public class Camera {
         yOffset = startYOffset;
     }
 
+    /**
+     * this method is for
+     * checking blank spaces
+     * of frame
+     */
     public static void checkBlankSpace() {
         if (xOffset < 0)
             xOffset = 0;
@@ -39,6 +47,14 @@ public class Camera {
             yOffset = World.getHeightInTiles() * Tile.TILEHEIGHT - Game.frameHeight;
     }
 
+    /**
+     * this useful method set
+     * center of entity
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     */
     public static void centerOnEntity(float x, float y, int width, int height) {
         xOffset = x - Game.frameWidth / 2 + width / 2 + (float) MouseManager.dx / 5;
         yOffset = y - Game.frameHeight / 2 + height / 2 + (float) MouseManager.dy / 5;

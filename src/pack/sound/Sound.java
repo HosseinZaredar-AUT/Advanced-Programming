@@ -1,80 +1,38 @@
 package pack.sound;
-import java.io.File;
-import java.io.IOException;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.SourceDataLine;
+import javax.sound.sampled.*;
+import java.io.*;
 
-public class Sound implements Runnable {
+/**
+ * this class represents an audio which is playable
+ */
+public class Sound {
 
-    private final int BUFFER_SIZE = 128000;
-    private File soundFile;
-    private AudioInputStream audioStream;
-    private AudioFormat audioFormat;
-    private SourceDataLine sourceLine;
-    String filename;
-    public Sound(String filename) {
-        this.filename=filename;
-    }
+    private Clip clip;
 
-
-    @Override
-    public void run() {
-
-
-        String strFilename = filename;
-
+    public Sound(String name, boolean loop ,int count) {
         try {
-            soundFile = new File(strFilename);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        try {
-            audioStream = AudioSystem.getAudioInputStream(soundFile);
-        } catch (Exception e){
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        audioFormat = audioStream.getFormat();
-
-        DataLine.Info info = new DataLine.Info(SourceDataLine.class, audioFormat);
-        try {
-            sourceLine = (SourceDataLine) AudioSystem.getLine(info);
-            sourceLine.open(audioFormat);
+            clip = AudioSystem.getClip();
         } catch (LineUnavailableException e) {
             e.printStackTrace();
-            System.exit(1);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
         }
-
-        sourceLine.start();
-
-        int nBytesRead = 0;
-        byte[] abData = new byte[BUFFER_SIZE];
-        while (nBytesRead != -1) {
-            try {
-                nBytesRead = audioStream.read(abData, 0, abData.length);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if (nBytesRead >= 0) {
-                @SuppressWarnings("unused")
-                int nBytesWritten = sourceLine.write(abData, 0, nBytesRead);
-            }
-        }
-
-        sourceLine.drain();
-        sourceLine.close();
+        playSound(name, loop,count);
     }
 
+    private void playSound(String name, boolean loop,int count) {
+        try {
+            File file =new File(name);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(file);
+            clip.open(audioIn);
+            clip.start();
+            if (loop)
+                clip.loop(count);
+        } catch (UnsupportedAudioFileException | LineUnavailableException | IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public Clip getClip() {
+        return clip;
+    }
 }

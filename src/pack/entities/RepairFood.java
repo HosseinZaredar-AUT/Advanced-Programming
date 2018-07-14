@@ -5,6 +5,11 @@ import pack.graphics.Assets;
 import pack.graphics.Camera;
 import java.awt.*;
 
+/**
+ * this class is for
+ * managing foods that is
+ * an Entity
+ */
 public class RepairFood extends Entity {
 
     public RepairFood(float x, float y, EntityManager entityManager) {

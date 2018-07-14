@@ -4,12 +4,17 @@ import pack.Game;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.input.MouseManager;
+import pack.sound.ExampleSounds;
 import pack.ui.ClickListener;
 import pack.ui.MyUIManager;
 import pack.ui.UIImageButton;
 
 import java.awt.*;
 
+/**
+ * this class is the state of players
+ * when they lose or win the game
+ */
 public class LostWinState extends State {
     public enum LostWin {
         LOST, WIN;
@@ -20,7 +25,9 @@ public class LostWinState extends State {
 
 
     public LostWinState(LostWin state) {
-
+        ExampleSounds.closeSound1();
+        ExampleSounds.closeSoundStartUp();
+        ExampleSounds.playEndOfGame();
         uiManager = new MyUIManager();
         MouseManager.setUIManager(uiManager);
         this.state = state;

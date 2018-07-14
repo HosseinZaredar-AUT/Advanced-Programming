@@ -3,9 +3,12 @@ package pack.entities;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 
+/**
+ * this class is for
+ * managing upgraders
+ */
 public class Upgrader extends Entity {
 
 

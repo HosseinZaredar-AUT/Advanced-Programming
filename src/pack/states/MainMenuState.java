@@ -7,16 +7,25 @@ import pack.graphics.Assets;
 import pack.input.MouseManager;
 import pack.network.Client;
 import pack.network.Server;
+import pack.sound.ExampleSounds;
 import pack.ui.ClickListener;
 import pack.ui.MyUIManager;
 import pack.ui.UIImageButton;
 import java.awt.*;
 
+/**
+ * this class is the first state of the game,
+ * which is the menu, that user selects a way
+ * to start the game
+ */
 public class MainMenuState extends State {
 
     private MyUIManager uiManager;
 
     public MainMenuState() {
+        ExampleSounds.closeSoundEndOfGame();
+        ExampleSounds.closeSound1();
+        ExampleSounds.playStartup();
         uiManager = new MyUIManager();
         MouseManager.setUIManager(uiManager);
 
@@ -32,7 +41,7 @@ public class MainMenuState extends State {
             }
         });
 
-        UIImageButton easy = new UIImageButton(550, 105, 100, 35, Assets.easy, new ClickListener() {
+        UIImageButton easy = new UIImageButton(550, 105, 90, 35, Assets.easy, new ClickListener() {
             @Override
             public void onClick() {
 
@@ -43,7 +52,7 @@ public class MainMenuState extends State {
             }
         });
 
-        UIImageButton normal = new UIImageButton(650, 105, 100, 35, Assets.normal, new ClickListener() {
+        UIImageButton normal = new UIImageButton(650, 105, 90, 35, Assets.normal, new ClickListener() {
             @Override
             public void onClick() {
 
@@ -54,7 +63,7 @@ public class MainMenuState extends State {
             }
         });
 
-        UIImageButton hard = new UIImageButton(750, 105, 100, 35, Assets.hard, new ClickListener() {
+        UIImageButton hard = new UIImageButton(750, 105, 90, 35, Assets.hard, new ClickListener() {
             @Override
             public void onClick() {
 

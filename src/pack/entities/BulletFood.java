@@ -5,6 +5,11 @@ import pack.graphics.Assets;
 import pack.graphics.Camera;
 import java.awt.*;
 
+/**
+ * this class is
+ * for bullet food
+ * and fulling bullet
+ */
 public class BulletFood extends Entity {
 
     public BulletFood(float x, float y, EntityManager entityManager) {

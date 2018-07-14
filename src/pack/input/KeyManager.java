@@ -4,6 +4,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 
+/**
+ * this class is
+ * for managing keys
+ */
 public class KeyManager implements KeyListener {
 
     public static boolean up, down, left, right;
@@ -21,6 +25,10 @@ public class KeyManager implements KeyListener {
     public static boolean upgradeWeapon = false;
 
 
+    /**
+     * this method is
+     * for cheat code
+     */
     public void initialKey() {
         life.add(KeyEvent.VK_E);
         life.add(KeyEvent.VK_F);
@@ -42,6 +50,11 @@ public class KeyManager implements KeyListener {
         initialKey();
     }
 
+    /**
+     * this method is
+     * for cheat code
+     * @param e
+     */
     @Override
     public void keyTyped(KeyEvent e) {
         switch (e.getKeyChar()) {
@@ -133,6 +146,10 @@ public class KeyManager implements KeyListener {
             left = true;
     }
 
+    /**
+     * managing keys that released
+     * @param e
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S)

@@ -4,16 +4,17 @@ import pack.entities.*;
 import pack.entities.manager.EntityManager;
 import pack.graphics.*;
 import pack.input.*;
+import pack.sound.ExampleSounds;
 
-
-import java.security.Key;
-
+/**
+ * this class is server
+ * that manage main player
+ */
 public class ServerPlayer extends Player {
 
     private float startX;
     private float startY;
 
-//    public static LocalTime localTime2;
 
     public ServerPlayer(float x, float y, int number, EntityManager entityManager) {
         super(x, y, number, entityManager);
@@ -41,6 +42,9 @@ public class ServerPlayer extends Player {
         prepareRender();
     }
 
+    /**
+     * this method is for cheat code
+     */
     private void getCheat() {
         if (KeyManager.fullLife) {
             health = MAX_HEALTH;
@@ -58,6 +62,9 @@ public class ServerPlayer extends Player {
     }
 
 
+    /**
+     * move
+     */
     private void move() {
         //MOVEMENT
         up = KeyManager.up;
@@ -110,11 +117,15 @@ public class ServerPlayer extends Player {
 
     }
 
+    /**
+     * this method is
+     * getting food
+     */
     private void getFood() {
         if (bullet != MAX_BULLET) {
             BulletFood bulletFood = entityManager.doCollideWithBulletFood(this);
             if (bulletFood != null) {
-//                ExampleSounds.playagree();
+                ExampleSounds.playAgree(true);
                 bullet = MAX_BULLET;
                 entityManager.removeBulletFood(bulletFood);
             }
@@ -123,7 +134,7 @@ public class ServerPlayer extends Player {
         if (cannon != MAX_CANNON) {
             CannonFood cannonFood = entityManager.doCollideWithCannonFood(this);
             if (cannonFood != null) {
-//                ExampleSounds.playagree();
+                ExampleSounds.playAgree(true);
                 cannon = MAX_CANNON;
                 entityManager.removeCannonFood(cannonFood);
             }
@@ -132,7 +143,7 @@ public class ServerPlayer extends Player {
         if (health != MAX_HEALTH) {
             RepairFood repairFood = entityManager.doCollideWithRepairFood(this);
             if (repairFood != null) {
-//                ExampleSounds.playagree();
+                ExampleSounds.playAgree(true);
                 health = MAX_HEALTH;
                 entityManager.removeRepairFood(repairFood);
             }
@@ -140,6 +151,10 @@ public class ServerPlayer extends Player {
 
     }
 
+    /**
+     * this method is for upgrading
+     * gun of tank
+     */
     private void upgrade() {
         Upgrader upgrader = entityManager.doCollideWithUpgrader(this);
 
@@ -155,6 +170,10 @@ public class ServerPlayer extends Player {
         //if both of them are fully upgraded, nothing upgrades, but the Star is removed anyways.
     }
 
+    /**
+     * this method is for
+     * updating cannon
+     */
     private void updateCannon() {
         if (cannonLevel < 3) {
             cannonLevel++;
@@ -166,10 +185,14 @@ public class ServerPlayer extends Player {
         } else if (bulletLevel < 2)
             updateBullet();
 
-//        ExampleSounds.playagree();
+        ExampleSounds.playSelect(true);
 
     }
 
+    /**
+     * this method is for
+     * updating bullet
+     */
     private void updateBullet() {
         if (bulletLevel < 2) {
             bulletLevel++;
@@ -178,10 +201,14 @@ public class ServerPlayer extends Player {
         } else if (cannonLevel < 3)
             updateCannon();
 
-//        ExampleSounds.playagree();
+        ExampleSounds.playSelect(true);
 
     }
 
+    /**
+     * this method is
+     * for set shoot of enemy
+     */
     private void shoot() {
         gunState = MouseManager.rightMouseButtonFlag;
 
@@ -198,7 +225,7 @@ public class ServerPlayer extends Player {
 
                     entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))), (int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
 
-//                    ExampleSounds.playcannon();
+                    ExampleSounds.playCannon(true);
                     if (cannonLevel == 2 || cannonLevel == 3) {
                         entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))), (int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun + 8);
                         entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))), (int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun - 8);
@@ -215,7 +242,7 @@ public class ServerPlayer extends Player {
                     entityManager.createFriendlyBullet((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
 
 
-//                    ExampleSounds.playlightgun();
+                    ExampleSounds.playLightGun(true);
 
                     bullet--;
                     bulletCounter = -1;
@@ -226,10 +253,15 @@ public class ServerPlayer extends Player {
 
     }
 
+    /**
+     * this method is for
+     * set damaging enemy
+     *
+     */
     private void getDamage() {
         Bullet enemyBullet = entityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null) {
-//            ExampleSounds.playEnemyBulletToMyTank();
+            ExampleSounds.playEnemyBulletToMyTank(true);
             health -= Bullet.DAMAGE;
             entityManager.removeEnemyBullet(enemyBullet);
         }
@@ -243,7 +275,7 @@ public class ServerPlayer extends Player {
         Mine mine = entityManager.doCollideWithMine(this);
         if (mine != null) {
             health -= Mine.DAMAGE;
-//            ExampleSounds.playEnemyBulletToMyTank();
+            ExampleSounds.playEnemyBulletToMyTank(true);
             entityManager.removeMine(mine);
         }
 
@@ -254,8 +286,10 @@ public class ServerPlayer extends Player {
 
     }
 
-
-
+    /**
+     * set degree at
+     * this method
+     */
     private void prepareRender() {
         if (up && right)
             degree = -45;

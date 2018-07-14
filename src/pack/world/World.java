@@ -6,8 +6,11 @@ import pack.tiles.Tile;
 import pack.utils.FileLoader;
 import java.awt.*;
 import java.io.Serializable;
-import java.security.SecureRandomParameters;
 
+/**
+ * this class make world
+ * for back ground of area
+ */
 public class World implements Serializable {
 
     private static int widthInTiles;
@@ -23,6 +26,11 @@ public class World implements Serializable {
 
     }
 
+    /**
+     * this method is for rendering
+     * world efficiently
+     * @param g Graphics2D
+     */
     public void render(Graphics2D g) {
         int xStart = (int) Math.max(0, Camera.getXOffset() / Tile.TILEWIDTH);
         int xEnd = (int) Math.min(widthInTiles, (Camera.getXOffset() + Game.frameWidth) / Tile.TILEWIDTH + 1);
@@ -37,6 +45,14 @@ public class World implements Serializable {
         }
     }
 
+    /**
+     * this method is just
+     * for getting tile at
+     * specify x , y
+     * @param x
+     * @param y
+     * @return
+     */
     public Tile getTile(int x, int y) {
         Tile t = Tile.tiles[tiles[x][y]];
         if (t == null)
@@ -44,6 +60,11 @@ public class World implements Serializable {
         return t;
     }
 
+    /**
+     * this method is for
+     * loading world at specify path
+     * @param path
+     */
     private void loadWorld(String path) {
         String file = FileLoader.loadFileAsString(path);
         String[] tokens = file.split("\\s+");
@@ -59,10 +80,18 @@ public class World implements Serializable {
         }
     }
 
+    /**
+     * get width
+     * @return width
+     */
     public static int getWidthInTiles() {
         return widthInTiles;
     }
 
+    /**
+     * get height
+     * @return height
+     */
     public static int getHeightInTiles() {
         return heightInTiles;
     }

@@ -8,9 +8,12 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+/**
+ * this class manages connecting possible clients
+ * in a separate thread, and is able to get in/out stream
+ * of these clients
+ */
 public class Server implements Runnable {
 
 
@@ -28,11 +31,13 @@ public class Server implements Runnable {
 
     }
 
+    /**
+     * runs the server
+     */
     @Override
     public void run() {
         try {
             server = new ServerSocket(PORT_NUMBER);
-            //server.setReuseAddress(true);
             System.out.println("Server started...");
             System.out.println();
 
@@ -56,10 +61,19 @@ public class Server implements Runnable {
 
     }
 
+    /**
+     * returns the ServerSocket object of the server
+     * @return
+     */
     public ServerSocket getServerSocket() {
         return server;
     }
 
+    /**
+     * returns the inputs stream of the wanted client
+     * @param number
+     * @return
+     */
     public static InputStream getInputStream(int number) {
         try {
             return clientsMap.get(number).getInputStream();
@@ -70,6 +84,11 @@ public class Server implements Runnable {
         return null;
     }
 
+    /**
+     * returns the inputs stream of the wanted client
+     * @param number
+     * @return
+     */
     public static OutputStream getOutputStream(int number) {
         try {
             return clientsMap.get(number).getOutputStream();

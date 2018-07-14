@@ -6,6 +6,10 @@ import pack.graphics.Camera;
 
 import java.awt.*;
 
+/**
+ * this class is for
+ * plant of map
+ */
 public class Bush extends Entity {
 
     public Bush(float x, float y, EntityManager entityManager) {

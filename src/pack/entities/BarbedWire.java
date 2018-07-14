@@ -5,6 +5,11 @@ import pack.graphics.Assets;
 import pack.graphics.Camera;
 import java.awt.*;
 
+/**
+ * this class is for
+ * barbed wire that is
+ * an entity
+ */
 public class BarbedWire extends Entity {
 
     public BarbedWire(float x, float y, EntityManager entityManager) {

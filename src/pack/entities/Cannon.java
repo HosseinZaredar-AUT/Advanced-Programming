@@ -7,9 +7,13 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+/**
+ * this class is for
+ * cannon of guns
+ */
 public class Cannon extends Entity {
 
-    private final int SPEED = 6;
+    private final int SPEED = 12;
     public static final float DAMAGE = 1;
     private double angle;
     private float xSpeed, ySpeed;

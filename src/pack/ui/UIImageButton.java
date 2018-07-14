@@ -3,6 +3,10 @@ package pack.ui;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
+/**
+ * this class is representation of a button
+ * that is created via an image
+ */
 public class UIImageButton extends UIObject {
 
     BufferedImage[] images;

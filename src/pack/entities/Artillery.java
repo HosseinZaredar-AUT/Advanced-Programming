@@ -2,13 +2,19 @@ package pack.entities;
 
 import pack.Game;
 import pack.entities.manager.EntityManager;
+import pack.entities.players.Player;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.MouseManager;
+import pack.sound.ExampleSounds;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+/**
+ * this class is for
+ * artillery that is an enemy
+ */
 public class Artillery extends Entity {
 
     public enum Type {
@@ -20,7 +26,7 @@ public class Artillery extends Entity {
     private final double MAX_ROTATE = 60;
     private float health;
     private boolean alive;
-    private final int CANNON_RATE = 160;
+    private final int CANNON_RATE = 80;
     private int cannonCounter = -1;
 
 
@@ -44,12 +50,19 @@ public class Artillery extends Entity {
         shoot();
     }
 
+    /**
+     * this method is
+     * for set shoot of enemy
+     */
     private void shoot() {
         if (alive) {
 
-            //when to shoot...
+            Player closestPlayer = entityManager.getClosestPlayer(this);
+            if (closestPlayer == null)
+                return;
+
             if (entityManager.deltaXToClosestPlayer(this) < (2 * Game.frameWidth / 3) && entityManager.deltaYToClosestPlayer(this) < (2 * Game.frameHeight / 3)) {
-                degreeGun = MouseManager.angleToPlayer(entityManager.getClosestPlayer(this), this);
+                degreeGun = MouseManager.angleToPlayer(closestPlayer, this);
                 if (-360 <= degreeGun - degreeBase && degreeGun - degreeBase <= -270)
                     degreeGun += 360;
                 if (degreeGun - degreeBase < -MAX_ROTATE)
@@ -61,6 +74,7 @@ public class Artillery extends Entity {
                 if (degreeGun - degreeBase != MAX_ROTATE && degreeGun - degreeBase != -MAX_ROTATE) {
                     if (cannonCounter == CANNON_RATE) {
                         entityManager.createEnemyCannon(x + width / 2, y + height / 2, degreeGun);
+                        ExampleSounds.playCannon(true);
                         cannonCounter = -1;
                     }
                     cannonCounter++;
@@ -71,6 +85,10 @@ public class Artillery extends Entity {
         }
     }
 
+    /**
+     * this method is for
+     * set damaging enemy
+     */
     private void getDamage() {
         if (alive) {
 
@@ -94,6 +112,11 @@ public class Artillery extends Entity {
     }
 
 
+    /**
+     * this method is
+     * for rendering artillery
+     * @param g
+     */
     @Override
     public void render(Graphics2D g) {
 

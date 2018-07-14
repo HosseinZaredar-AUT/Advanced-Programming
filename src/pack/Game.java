@@ -3,18 +3,19 @@ package pack;
 import pack.graphics.Assets;
 import pack.input.KeyManager;
 import pack.input.MouseManager;
-import pack.network.Client;
-import pack.states.ClientGameState;
-import pack.states.GameState;
 import pack.states.MainMenuState;
 import pack.states.State;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ *Class game is main class
+ * for showing frames at the loop
+ */
 public class Game implements Runnable {
 
 
-    private final int FPS = 60;
+    private final int FPS = 30;
     private GameFrame frame;
     private static State state;
 
@@ -22,6 +23,12 @@ public class Game implements Runnable {
     public static int frameWidth, frameHeight;
 
 
+    /**
+     * constructor get width
+     * and height of frame
+     * @param width
+     * @param height
+     */
     public Game(int width, int height) {
         frameWidth = width;
         frameHeight = height;
@@ -29,11 +36,15 @@ public class Game implements Runnable {
 
     }
 
+    /**
+     * init just make frame
+     * and feature of this
+     */
     private void init() {
         frame = new GameFrame("JTanks");
         //to make it fullscreen
-        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        //frame.setUndecorated(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setUndecorated(true);
         frame.setSize(frameWidth, frameHeight);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,16 +62,26 @@ public class Game implements Runnable {
         frame.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(Assets.cursor, new Point(20, 20), "Gun"));
     }
 
+    /**
+     * start menu
+     * to run game
+     */
     public void start() {
 
         state = new MainMenuState();
         ThreadPool.execute(this);
     }
 
+    /**
+     * call tick of state
+     */
     private void tick() {
         state.tick();
     }
 
+    /**
+     * main frame render
+     */
     private void render() {
 
         if (frame.getBufferStrategy() == null)

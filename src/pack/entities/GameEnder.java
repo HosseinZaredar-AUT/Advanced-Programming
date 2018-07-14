@@ -3,9 +3,12 @@ package pack.entities;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 
+/**
+ * this class is for
+ * managing end game
+ */
 public class GameEnder extends Entity {
 
     public GameEnder(float x, float y, EntityManager entityManager) {

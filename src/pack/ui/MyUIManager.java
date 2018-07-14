@@ -1,12 +1,13 @@
 package pack.ui;
 
-import pack.Game;
-import pack.graphics.Assets;
-
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+/**
+ * this class manages the UIObjects that are
+ * used in MenuState and LostWinState
+ */
 public class MyUIManager {
 
     private ArrayList<UIObject> objects;

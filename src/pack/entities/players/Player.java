@@ -1,16 +1,18 @@
 package pack.entities.players;
 
-import pack.Game;
 import pack.entities.Entity;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.states.GameState;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+/**
+ * this class is for
+ * feature of player
+ */
 public class Player extends Entity {
 
     protected int number;
@@ -18,7 +20,7 @@ public class Player extends Entity {
     protected int degree;
     protected double degreeGun;
     protected float xMove, yMove;
-    protected final int SPEED = 10;
+    protected final int SPEED = 20;
     protected float xSpeed;
     protected float ySpeed;
 
@@ -27,9 +29,9 @@ public class Player extends Entity {
     protected double timeEnd;
 
     protected int gunState; //1.Cannon, -1.Bullet
-    protected double cannonRate = 1; //the less, the faster
+    protected double cannonRate = 0.8; //the less, the faster
     protected int cannonLevel = 0;
-    protected int bulletRate = 6; //the less, the faster
+    protected int bulletRate = 3; //the less, the faster
     protected int bulletLevel = 0;
     protected int bulletCounter = 0;
 
@@ -74,6 +76,11 @@ public class Player extends Entity {
     public void tick() {
     }
 
+    /**
+     * this method is for
+     * rendering player
+     * @param g graphics 2D
+     */
     @Override
     public void render(Graphics2D g) {
         BufferedImage image = Assets.player;

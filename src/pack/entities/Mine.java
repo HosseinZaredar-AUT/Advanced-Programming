@@ -5,6 +5,10 @@ import pack.graphics.Assets;
 import pack.graphics.Camera;
 import java.awt.*;
 
+/**
+ * this class is for
+ * mine that is an enemy
+ */
 public class Mine extends Entity {
 
     public static final float DAMAGE = 3;

@@ -6,18 +6,24 @@ import pack.entities.players.Player;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.MouseManager;
+import pack.sound.ExampleSounds;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
+/**
+ * this class is for
+ * enemy tank that is
+ * a enemy
+ */
 public class EnemyTank extends Entity {
     private boolean up, down, right, left;
     private boolean upFinal, downFinal, rightFinal, leftFinal;
     private double degree;
     private double degreeGun;
     private float health = 1;
-    private final int SPEED = 4;
-    private final int FIRE_Rate = 40; //the less, the faster
+    private final int SPEED = 8;
+    private final int FIRE_Rate = 20; //the less, the faster
     private int fireCounter = 0;
     private int loot;
 
@@ -34,6 +40,10 @@ public class EnemyTank extends Entity {
         doAI();
     }
 
+    /**
+     * this method is for
+     * AI of enemy
+     */
     private void doAI() {
         up = false;
         down = false;
@@ -48,6 +58,8 @@ public class EnemyTank extends Entity {
         //if for game.width and game.height
         if (entityManager.deltaXToClosestPlayer(this) < (Game.frameWidth) && entityManager.deltaYToClosestPlayer(this) < (Game.frameHeight)) {
             Player closestPlayer = entityManager.getClosestPlayer(this);
+            if (closestPlayer == null)
+                return;
             degreeGun = MouseManager.angleToPlayer(closestPlayer, this);
             //same gun and tank
             boolean flag = true;
@@ -201,30 +213,22 @@ public class EnemyTank extends Entity {
                                 up = false;
                                 continue;
                             }
-//                        if ((!up) && (upFinal)) {
-//                            up = true;
-//                        }
+
                             if (down) {
                                 down = false;
                                 continue;
                             }
-//                        if ((!down) && (downFinal)) {
-//                            down = true;
-//                        }
+
                             if (right) {
                                 right = false;
                                 continue;
                             }
-//                        if ((!right) && (rightFinal)) {
-//                            right = true;
-//                        }
+
                             if (left) {
                                 left = false;
                                 continue;
                             }
-//                        if ((!left) && (leftFinal)) {
-//                            left = true;
-//                        }
+
                         } else {
                             break;
                         }
@@ -263,10 +267,16 @@ public class EnemyTank extends Entity {
                 }
 
             }
+            if (entityManager.containEnemyCanon(cannon)!=null)
+                ExampleSounds.playEnemyShot(true);
 
         }
     }
 
+    /**
+     * this method is for
+     * manage damaging enemy
+     */
     private void getDamage() {
         Bullet bullet = entityManager.doCollideWithFriendlyBullet(this);
         if (bullet != null) {

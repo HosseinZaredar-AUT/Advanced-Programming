@@ -7,19 +7,24 @@ import pack.entities.players.ClientPlayer;
 import pack.entities.players.Player;
 import pack.entities.players.ServerPlayer;
 import pack.graphics.Camera;
-import pack.network.Client;
 import pack.network.Server;
 import pack.states.LostWinState;
-import pack.states.MainMenuState;
-
 import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 
+/**
+ * This important class
+ * is for managing all
+ * entity , this class is
+ * serializable for pass
+ * to client
+ */
 public class EntityManager implements Serializable {
 
     public boolean gameOver = false;
@@ -29,6 +34,7 @@ public class EntityManager implements Serializable {
     private ArrayList<ClientPlayer> clientPlayers;
     private ArrayList<ClientPlayer> newClientPlayers;
 
+    //ArrayList of entities
     private ArrayList<HardWall> hardWalls;
     private ArrayList<BarbedWire> barbedWires;
     private ArrayList<SoftWall> softWalls;
@@ -46,7 +52,12 @@ public class EntityManager implements Serializable {
     private ArrayList<Mine> mines;
     private ArrayList<Bush> bushes;
 
+    public static HashSet<Character> soundCharacters;
 
+
+    /**
+     * This constructor initializes the ArrayLists
+     */
     public EntityManager() {
         hardWalls = new ArrayList<>();
         barbedWires = new ArrayList<>();
@@ -67,8 +78,14 @@ public class EntityManager implements Serializable {
         clientPlayers = new ArrayList<>();
         newClientPlayers = new ArrayList<>();
 
+        soundCharacters = new HashSet<>();
+
     }
 
+    /**
+     * creat player
+     * @param number
+     */
     public void addClientPlayer(int number) {
         ClientPlayer player = new ClientPlayer(serverPlayer.getStartX(), serverPlayer.getStartY(), number, this);
         newClientPlayers.add(player);
@@ -76,6 +93,12 @@ public class EntityManager implements Serializable {
 
     }
 
+    /**
+     * getting closest player
+     * to Entity e
+     * @param e
+     * @return
+     */
     public Player getClosestPlayer(Entity e) {
         Player closestPlayer = null;
         if (serverPlayer.isAlive()) {
@@ -86,14 +109,24 @@ public class EntityManager implements Serializable {
                     closestPlayer = cp;
             }
         }
-        for (ClientPlayer cp : clientPlayers) {
-            if ((Math.pow(cp.getX() - e.getX(), 2) + Math.pow(cp.getY() - e.getY(), 2) < Math.pow(closestPlayer.getX() - e.getX(), 2) + Math.pow(closestPlayer.getY() - e.getY(), 2))
-                    && cp.isAlive())
-                closestPlayer = cp;
+        if(closestPlayer!=null) {
+            for (ClientPlayer cp : clientPlayers) {
+                if (cp != null) {
+                    if ((Math.pow(cp.getX() - e.getX(), 2) + Math.pow(cp.getY() - e.getY(), 2) < Math.pow(closestPlayer.getX() - e.getX(), 2) + Math.pow(closestPlayer.getY() - e.getY(), 2))
+                            && cp.isAlive())
+                        closestPlayer = cp;
+                }
+            }
         }
         return closestPlayer;
+
     }
 
+    /**
+     * x distance to closest player
+     * @param e
+     * @return
+     */
     public float deltaXToClosestPlayer(Entity e) {
         float deltaX = Math.abs(serverPlayer.getX() - e.getX());
         for (ClientPlayer cp : clientPlayers) {
@@ -103,6 +136,11 @@ public class EntityManager implements Serializable {
         return deltaX;
     }
 
+    /**
+     * y distance to closest player
+     * @param e
+     * @return
+     */
     public float deltaYToClosestPlayer(Entity e) {
         float deltaY = Math.abs(serverPlayer.getY() - e.getY());
         for (ClientPlayer cp : clientPlayers) {
@@ -261,6 +299,22 @@ public class EntityManager implements Serializable {
         return null;
     }
 
+    public Entity containEnemyCanon(Entity entity){
+        if (enemyCannons.contains(entity))
+            return entity;
+        else {
+            return null;
+        }
+}
+
+    public Entity containEnemyBullet(Entity entity){
+        if (enemyBullets.contains(entity))
+            return entity;
+        else {
+            return null;
+        }
+    }
+
     public Entity doCollideWithBarbedWires(Entity e) {
         for (BarbedWire b : barbedWires) {
             if (b.getBounds().intersects(e.getBounds()))
@@ -288,6 +342,16 @@ public class EntityManager implements Serializable {
     }
 
     public boolean doCollideWithAllPlayers(Entity e) {
+
+        boolean alive = false;
+        for (ClientPlayer cp : clientPlayers) {
+            if (cp.isAlive())
+                alive = true;
+        }
+        if (!serverPlayer.isAlive() && !alive)
+            return false;
+
+
         if (!serverPlayer.getBounds().intersects(e.getBounds()) && serverPlayer.isAlive()) {
             return false;
         }
@@ -430,8 +494,6 @@ public class EntityManager implements Serializable {
 
 
 
-
-
         try {
             for (EnemyTank e : enemyTanks)
                 e.tick();
@@ -482,15 +544,25 @@ public class EntityManager implements Serializable {
         //REMOVING GONE CLIENTS
         removeLeftClients();
 
+
+
         //SENDING NEW STATE TO CLIENTS
         if (clientPlayers.size() > 0) {
+
+            StringBuilder state = new StringBuilder();
+            for (Character c : soundCharacters)
+                state.append(c);
+            state.append(",");
+            soundCharacters.clear();
+
             for (ClientPlayer cp : clientPlayers) {
-                OutputStream positionOut = Server.getOutputStream(cp.getNumber());
+                OutputStream stateOut = Server.getOutputStream(cp.getNumber());
                 String position = cp.getHealth() + "," +
                         cp.getCannon() + "," + cp.getBullet() + "," +
                         cp.getX() + "," + cp.getY();
+                state.append(position);
                 try {
-                    positionOut.write(position.getBytes());
+                    stateOut.write(state.toString().getBytes());
                 } catch (IOException e) {
                     cp.hasLeft = true;
                 }
@@ -513,6 +585,8 @@ public class EntityManager implements Serializable {
                     barbedWires = null;
                     bushes = null;
                     managerWriter.writeObject(this);
+                    System.out.println(gameWin);
+                    System.out.println(gameOver);
                     hardWalls = tempWalls;
                     barbedWires = tempBarbedWires;
                     bushes = tempBushes;
@@ -526,12 +600,15 @@ public class EntityManager implements Serializable {
 
         removeLeftClients();
 
-        //MIGHT CHANGE IT'S PLACE
-
 
     }
 
 
+    /**
+     * rendering all array list
+     * @param g
+     * @param renderStatics
+     */
     public void render(Graphics2D g, boolean renderStatics) {
 
         //IF GAME IS ENDED

@@ -5,6 +5,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+/**
+ * this class manages connecting
+ * to a server to play multi-player
+ */
 public class Client {
 
     private String ip;
@@ -14,6 +18,10 @@ public class Client {
         this.ip = ip;
     }
 
+    /**
+     * tries to connect to the sever
+     * @return
+     */
     public boolean connect() {
 
         try {
@@ -25,6 +33,10 @@ public class Client {
 
     }
 
+    /**
+     * gets the inputStream of the server
+     * @return
+     */
     public static InputStream getInputStream() {
         try {
             return server.getInputStream();
@@ -34,6 +46,10 @@ public class Client {
         return null;
     }
 
+    /**
+     * gets the outputStream of the server
+     * @return
+     */
     public static OutputStream getOutputStream() {
         try {
             return server.getOutputStream();

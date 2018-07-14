@@ -1,11 +1,22 @@
 package pack.utils;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+/**
+ * This class load file
+ * and make file to string
+ */
 public class FileLoader {
 
+    /**
+     * read file and make
+     * it to string builder
+     * @param path
+     * @return builder
+     */
     public static String loadFileAsString(String path){
         StringBuilder builder = new StringBuilder();
 

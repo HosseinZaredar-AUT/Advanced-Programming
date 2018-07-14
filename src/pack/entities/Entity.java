@@ -1,10 +1,13 @@
 package pack.entities;
 
 import pack.entities.manager.EntityManager;
-
 import java.awt.*;
 import java.io.Serializable;
 
+/**
+ * this class is abstract class
+ * that super class of entities
+ */
 public abstract class Entity implements Serializable {
 
     protected float x, y;

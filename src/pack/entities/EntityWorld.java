@@ -4,7 +4,11 @@ import pack.entities.manager.EntityManager;
 import pack.utils.FileLoader;
 import java.io.Serializable;
 
-
+/**
+ * this class is for
+ * managing entities at
+ * world
+ */
 public class EntityWorld implements Serializable {
 
     private int widthInEntity;
@@ -14,7 +18,6 @@ public class EntityWorld implements Serializable {
     private EntityManager entityManager;
 
 
-
     public EntityWorld(EntityManager entityManager , String backgroundWorld, String foregroundWorld) {
         this.entityManager = entityManager;
         loadBackground(backgroundWorld);
@@ -22,6 +25,12 @@ public class EntityWorld implements Serializable {
 
     }
 
+    /**
+     * this method is for
+     * loading background of
+     * map
+     * @param path
+     */
     private void loadBackground(String path) {
         String background = FileLoader.loadFileAsString(path);
         String[] tokens = background.split("\\s+");
@@ -47,8 +56,6 @@ public class EntityWorld implements Serializable {
         َ Artillery_Down : n
         َ Artillery_Up : o
         GameEnder : p
-
-
 
         z : null
         */

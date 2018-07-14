@@ -5,6 +5,10 @@ import pack.graphics.Assets;
 import pack.graphics.Camera;
 import java.awt.*;
 
+/**
+ * this class is for
+ * hard wall that is entity
+ */
 public class HardWall extends Entity {
 
     public HardWall(float x, float y, EntityManager entityManager) {
@@ -16,6 +20,10 @@ public class HardWall extends Entity {
         getDamage();
     }
 
+    /**
+     * this method is for
+     * manage damaging of hard wall
+     */
     private void getDamage() {
         Bullet friendlyBullet = entityManager.doCollideWithFriendlyBullet(this);
         if (friendlyBullet != null)

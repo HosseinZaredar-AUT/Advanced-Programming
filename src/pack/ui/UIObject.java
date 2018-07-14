@@ -3,6 +3,10 @@ package pack.ui;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+/**
+ * this abstract class is representing the
+ * general form of a UI object
+ */
 public abstract class UIObject {
 
     protected float x, y;

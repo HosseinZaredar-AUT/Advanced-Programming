@@ -3,6 +3,10 @@ package pack.tiles;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
+/**
+ * Tile is for
+ * managing tiles
+ */
 public class Tile {
 
     //STATIC STUFF HERE
@@ -18,6 +22,12 @@ public class Tile {
     protected BufferedImage texture;
     protected final int id;
 
+    /**
+     * Constructor get Buffered image and
+     * id of tile
+     * @param texture
+     * @param id
+     */
     public Tile(BufferedImage texture, int id){
         this.texture = texture;
         this.id = id;
@@ -33,12 +43,5 @@ public class Tile {
         g.drawImage(texture, x, y, TILEWIDTH, TILEHEIGHT, null);
     }
 
-    public boolean isSolid(){
-        return false;
-    }
-
-    public int getId(){
-        return id;
-    }
 
 }

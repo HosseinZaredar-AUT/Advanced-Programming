@@ -17,11 +17,13 @@ public class EnemyCar extends Entity {
     private final int SPEED = 5;
     private final int FIRE_Rate = 7; //the less, the faster
     private int fireCounter = 0;
+    private int loot;
 
 
-    public EnemyCar(float x, float y, EntityManager entityManager) {
+    public EnemyCar(float x, float y, EntityManager entityManager, int loot) {
         super(x, y, 100, 100, entityManager);
         health = 1;
+        this.loot = loot;
 
     }
 
@@ -95,6 +97,11 @@ public class EnemyCar extends Entity {
 
         if (health <= 0) {
             entityManager.removeEnemyCar(this);
+            switch (loot) {
+                case 1: entityManager.createUpgrader(x, y); break;
+                case 2: entityManager.createCannonFood(x, y); break;
+                case 3: entityManager.createBulletFood(x, y); break;
+            }
         }
     }
 

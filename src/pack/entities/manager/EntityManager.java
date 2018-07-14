@@ -121,13 +121,13 @@ public class EntityManager implements Serializable {
         serverPlayer = new ServerPlayer(x, y, 0, this);
     }
 
-    public void createEnemyTank(float x, float y) {
-        enemyTanks.add(new EnemyTank(x, y, this));
+    public void createEnemyTank(float x, float y, int loot) {
+        enemyTanks.add(new EnemyTank(x, y, this, loot));
     }
 
 
-    public void createEnemyCar(float x, float y) {
-        enemyCars.add(new EnemyCar(x, y, this));
+    public void createEnemyCar(float x, float y, int loot) {
+        enemyCars.add(new EnemyCar(x, y, this, loot));
     }
 
 

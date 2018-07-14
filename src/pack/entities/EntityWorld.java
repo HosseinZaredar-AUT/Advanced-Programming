@@ -53,27 +53,36 @@ public class EntityWorld implements Serializable {
         z : null
         */
 
-        char z = ' ';
+        String z = "";
         for (int y = 0; y < widthInEntity ; y++) {
             for (int x = 0; x < heightInEntity; x++) {
-                z = tokens[x + (y * heightInEntity) + 2].charAt(0);
+                z = tokens[x + (y * heightInEntity) + 2];
 
-                if (z == 'a') entityManager.createBarbedWire(x * entityWidth, y * entityHeight);
-                if (z == 'b') entityManager.createBulletFood(x * entityWidth, y * entityHeight);
-                if (z == 'c') entityManager.createCannonFood(x * entityWidth, y * entityHeight);
-                if (z == 'd') entityManager.createEnemyTank(x * entityWidth, y * entityHeight);
-                if (z == 'e') entityManager.createEnemyCar(x * entityWidth, y * entityHeight);
-                if (z == 'f') entityManager.createHardWall(x * entityWidth, y * entityHeight);
-                if (z == 'g') entityManager.createMine(x * entityWidth, y * entityHeight);
-                if (z == 'h') entityManager.createServerPlayer(x * entityWidth, y * entityHeight);
-                if (z == 'i') entityManager.createRepairFood(x * entityWidth, y * entityHeight);
-                if (z == 'j') entityManager.createSoftWall(x * entityWidth, y * entityHeight);
-                if (z == 'k') entityManager.createUpgrader(x * entityWidth, y * entityHeight);
-                if (z == 'l') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.LEFT);
-                if (z == 'm') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.RIGHT);
-                if (z == 'n') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.DOWN);
-                if (z == 'o') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.UP);
-                if (z == 'p') entityManager.createGameEnder(x * entityWidth, y * entityHeight);
+                if (z.equals("a")) entityManager.createBarbedWire(x * entityWidth, y * entityHeight);
+                if (z.equals("b")) entityManager.createBulletFood(x * entityWidth, y * entityHeight);
+                if (z.equals("c")) entityManager.createCannonFood(x * entityWidth, y * entityHeight);
+
+                if (z.equals("d0")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 0);
+                if (z.equals("d1")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 1);
+                if (z.equals("d2")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 2);
+                if (z.equals("d3")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 3);
+
+                if (z.equals("e0")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 0);
+                if (z.equals("e1")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 1);
+                if (z.equals("e2")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 2);
+                if (z.equals("e3")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 3);
+
+                if (z.equals("f")) entityManager.createHardWall(x * entityWidth, y * entityHeight);
+                if (z.equals("g")) entityManager.createMine(x * entityWidth, y * entityHeight);
+                if (z.equals("h")) entityManager.createServerPlayer(x * entityWidth, y * entityHeight);
+                if (z.equals("i")) entityManager.createRepairFood(x * entityWidth, y * entityHeight);
+                if (z.equals("j")) entityManager.createSoftWall(x * entityWidth, y * entityHeight);
+                if (z.equals("k")) entityManager.createUpgrader(x * entityWidth, y * entityHeight);
+                if (z.equals("l")) entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.LEFT);
+                if (z.equals("m")) entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.RIGHT);
+                if (z.equals("n")) entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.DOWN);
+                if (z.equals("o")) entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.UP);
+                if (z.equals("p")) entityManager.createGameEnder(x * entityWidth, y * entityHeight);
             }
 
         }

@@ -19,10 +19,12 @@ public class EnemyTank extends Entity {
     private final int SPEED = 4;
     private final int FIRE_Rate = 40; //the less, the faster
     private int fireCounter = 0;
+    private int loot;
 
 
-    public EnemyTank(float x, float y, EntityManager entityManager) {
+    public EnemyTank(float x, float y, EntityManager entityManager, int loot) {
         super(x, y, 100, 100, entityManager);
+        this.loot = loot;
 
     }
 
@@ -280,6 +282,11 @@ public class EnemyTank extends Entity {
 
         if (health <= 0) {
             entityManager.removeEnemyTank(this);
+            switch (loot) {
+                case 1: entityManager.createUpgrader(x, y); break;
+                case 2: entityManager.createCannonFood(x, y); break;
+                case 3: entityManager.createBulletFood(x, y); break;
+            }
         }
     }
 

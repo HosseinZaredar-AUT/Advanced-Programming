@@ -2,7 +2,9 @@ package pack.entities.players;
 
 import pack.entities.*;
 import pack.entities.manager.EntityManager;
+
 import pack.input.KeyManager;
+
 import pack.network.Server;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,6 +58,7 @@ public class ClientPlayer extends Player {
 
             sentStatics = true;
         }
+
 
         //GETTING CHEAT
         InputStream cheatIn = Server.getInputStream(number);

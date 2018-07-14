@@ -79,6 +79,7 @@ public class ClientGameState extends State {
              gotStatics = true;
          }
 
+
          //SENDING CHEAT
 
             StringBuilder cheat = new StringBuilder();
@@ -107,6 +108,7 @@ public class ClientGameState extends State {
                 Game.setState(new MainMenuState());
                 return;
             }
+
 
         //SENDING INFO
         OutputStream out = Client.getOutputStream();

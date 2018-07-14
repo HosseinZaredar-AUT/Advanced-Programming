@@ -60,37 +60,13 @@ public class ClientPlayer extends Player {
         }
 
 
-        //GETTING CHEAT
-        InputStream cheatIn = Server.getInputStream(number);
-        byte[] cheatBuffer = new byte[1024];
-        int cheatSize;
-        try {
-            cheatSize = cheatIn.read(cheatBuffer);
-        } catch (Exception ex) {
-            hasLeft = true;
-            return;
-        }
-        String cheat = new String(cheatBuffer, 0, cheatSize);
-        if (cheat.charAt(0) == '1') {
-            health = MAX_HEALTH;
-        }
-        if (cheat.charAt(1) == '1') {
-            cannon = MAX_CANNON;
-            KeyManager.fullCB =false;
-        }
-        if (cheat.charAt(2) == '1') {
-            cannonLevel = 3;
-            bulletLevel = 2;
-            KeyManager.upgradeWeapon = false;
-        }
+        //GETTING COMMAND
 
-
-        //GETTING INFO FROM REAL CLIENT
         InputStream in = Server.getInputStream(number);
         byte[] buffer = new byte[1024];
-
+        int size;
         try {
-            int size = in.read(buffer);
+            size = in.read(buffer);
             command = new String(buffer, 0, size);
 
         } catch (IOException e) {
@@ -99,18 +75,33 @@ public class ClientPlayer extends Player {
         }
 
         String[] tokens = command.split(",");
-        up = tokens[0].equals("1");
-        down = tokens[1].equals("1");
-        right = tokens[2].equals("1");
-        left = tokens[3].equals("1");
 
-        rightClick = tokens[4].equals("1");
-        leftClick = tokens[5].equals("1");
-        degreeGun = Float.parseFloat(tokens[6]);
+        String cheat = tokens[0];
+        if (cheat.charAt(0) == '1') {
+            health = MAX_HEALTH;
+        }
+        if (cheat.charAt(1) == '1') {
+            cannon = MAX_CANNON;
+        }
+        if (cheat.charAt(2) == '1') {
+            cannonLevel = 3;
+            bulletLevel = 2;
+        }
+
+
+        up = tokens[1].equals("1");
+        down = tokens[2].equals("1");
+        right = tokens[3].equals("1");
+        left = tokens[4].equals("1");
+
+        rightClick = tokens[5].equals("1");
+        leftClick = tokens[6].equals("1");
+        degreeGun = Float.parseFloat(tokens[7]);
 
 
         if (!alive)
             return;
+
         move();
         getFood();
         upgrade();

@@ -9,6 +9,7 @@ import pack.entities.players.ServerPlayer;
 import pack.graphics.Camera;
 import pack.network.Client;
 import pack.network.Server;
+import pack.states.LostWinState;
 import pack.states.MainMenuState;
 
 import java.awt.*;
@@ -287,15 +288,18 @@ public class EntityManager implements Serializable {
     }
 
     public boolean doCollideWithAllPlayers(Entity e) {
-        if (!serverPlayer.getBounds().intersects(e.getBounds())) {
+        if (!serverPlayer.getBounds().intersects(e.getBounds()) && serverPlayer.isAlive()) {
             return false;
         }
 
         for (ClientPlayer cp : clientPlayers) {
-            if (!cp.getBounds().intersects(e.getBounds())) {
-                return false;
+            if (cp.isAlive()) {
+                if (!cp.getBounds().intersects(e.getBounds())) {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 
@@ -415,16 +419,16 @@ public class EntityManager implements Serializable {
 
         //TO CHECK IF GAME IS OVER (NOT WRITTEN WELL)
         gameOver = true;
-        if (serverPlayer.isAlive())
+        if (serverPlayer.isAlive()) {
             gameOver = false;
-        else {
-            for (ClientPlayer cp : clientPlayers) {
-                if (cp.isAlive())
-                    gameOver = false;
-            }
         }
-        if (gameOver)
-            return;
+
+        for (ClientPlayer cp : clientPlayers) {
+            if (cp.isAlive())
+                gameOver = false;
+        }
+
+
 
 
 
@@ -443,6 +447,7 @@ public class EntityManager implements Serializable {
         } catch (Exception ex) {
         }
 
+        gameEnder.tick();
 
         for (Artillery a : artilleries)
             a.tick();
@@ -522,7 +527,7 @@ public class EntityManager implements Serializable {
         removeLeftClients();
 
         //MIGHT CHANGE IT'S PLACE
-        gameEnder.tick();
+
 
     }
 
@@ -530,10 +535,16 @@ public class EntityManager implements Serializable {
     public void render(Graphics2D g, boolean renderStatics) {
 
         //IF GAME IS ENDED
-        if (gameWin || gameOver) {
-
+        if (gameOver) {
             ThreadPool.shutDownServer();
-            Game.setState(new MainMenuState());
+            Game.setState(new LostWinState(LostWinState.LostWin.LOST));
+            return;
+        }
+
+        if (gameWin) {
+            ThreadPool.shutDownServer();
+            Game.setState(new LostWinState(LostWinState.LostWin.WIN));
+            return;
         }
 
         if (renderStatics) {

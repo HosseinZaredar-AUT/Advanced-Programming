@@ -62,12 +62,12 @@ public class EntityWorld implements Serializable {
                 if (z.equals("b")) entityManager.createBulletFood(x * entityWidth, y * entityHeight);
                 if (z.equals("c")) entityManager.createCannonFood(x * entityWidth, y * entityHeight);
 
-                if (z.equals("d0")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 0);
+                if (z.equals("d")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 0);
                 if (z.equals("d1")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 1);
                 if (z.equals("d2")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 2);
                 if (z.equals("d3")) entityManager.createEnemyTank(x * entityWidth, y * entityHeight, 3);
 
-                if (z.equals("e0")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 0);
+                if (z.equals("e")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 0);
                 if (z.equals("e1")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 1);
                 if (z.equals("e2")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 2);
                 if (z.equals("e3")) entityManager.createEnemyCar(x * entityWidth, y * entityHeight, 3);

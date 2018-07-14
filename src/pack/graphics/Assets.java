@@ -12,8 +12,8 @@ public class Assets {
             artilleryBase, artilleryGun, artilleryDead, mine,
             enemyTank, enemyTankGun, enemyCar, enemyCarGun, barbedWire,
             bush, gameEnder, cannonNum, bulletNum, healthNum,
-            menuBackground, createGame[], joinGame[], exit[],
-            easy[], normal[], hard[];
+            menuBackground, menuBackgroundBlurred, createGame[], joinGame[], exit[],
+            easy[], normal[], hard[], cursor, youLost, youWin, exitBackToMenu[];
 
 
     public static void init() {
@@ -70,6 +70,7 @@ public class Assets {
 
         //MENU
         menuBackground = pack.utils.ImageLoader.load("res/textures/menuBackground.jpg");
+        menuBackgroundBlurred = pack.utils.ImageLoader.load("res/textures/menuBackgroundBlurred.jpg");
 
         createGame = new BufferedImage[2];
         createGame[0] = pack.utils.ImageLoader.load("res/textures/createGame0.png");
@@ -94,6 +95,16 @@ public class Assets {
         hard = new BufferedImage[2];
         hard[0] = pack.utils.ImageLoader.load("res/textures/hard0.png");
         hard[1] = pack.utils.ImageLoader.load("res/textures/hard1.png");
+
+        exitBackToMenu = new BufferedImage[2];
+        exitBackToMenu[0] = pack.utils.ImageLoader.load("res/textures/exitBackToMenu0.png");
+        exitBackToMenu[1] = pack.utils.ImageLoader.load("res/textures/exitBackToMenu1.png");
+
+        cursor = pack.utils.ImageLoader.load("res/textures/cursor.png");
+
+        youLost = pack.utils.ImageLoader.load("res/textures/youLost.png");
+        youWin = pack.utils.ImageLoader.load("res/textures/youWin.png");
+
     }
 
 }

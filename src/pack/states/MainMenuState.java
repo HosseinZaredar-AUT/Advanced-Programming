@@ -102,6 +102,7 @@ public class MainMenuState extends State {
 
     @Override
     public void render(Graphics2D g) {
+        g.drawImage(Assets.menuBackground, 0, 0, Game.frameWidth, Game.frameHeight, null);
         uiManager.render(g);
     }
 

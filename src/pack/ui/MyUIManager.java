@@ -22,7 +22,6 @@ public class MyUIManager {
     }
 
     public void render(Graphics2D g){
-        g.drawImage(Assets.menuBackground, 0, 0, Game.frameWidth, Game.frameHeight, null);
         for(UIObject o : objects)
             o.render(g);
     }

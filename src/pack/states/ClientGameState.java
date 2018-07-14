@@ -80,73 +80,65 @@ public class ClientGameState extends State {
          }
 
 
-         //SENDING CHEAT
+         //SENDING COMMAND
 
-            StringBuilder cheat = new StringBuilder();
+            StringBuilder command = new StringBuilder();
             if (KeyManager.fullLife) {
-                cheat.append("1");
+                command.append("1");
                 KeyManager.fullLife = false;
             } else
-                cheat.append("0");
+                command.append("0");
 
             if (KeyManager.fullCB) {
-                cheat.append("1");
+                command.append("1");
                 KeyManager.fullCB =false;
             } else
-                cheat.append("0");
+                command.append("0");
 
             if (KeyManager.upgradeWeapon) {
-                cheat.append("1");
+                command.append("1");
                 KeyManager.upgradeWeapon = false;
             } else
-                cheat.append("0");
+                command.append("0");
 
-            OutputStream cheatOut = Client.getOutputStream();
-            try {
-                cheatOut.write(cheat.toString().getBytes());
-            } catch (Exception ex) {
-                Game.setState(new MainMenuState());
-                return;
-            }
+            command.append(",");
 
 
-        //SENDING INFO
         OutputStream out = Client.getOutputStream();
-        StringBuilder stringBuilder = new StringBuilder();
         if (KeyManager.up)
-            stringBuilder.append("1,");
+            command.append("1,");
         else
-            stringBuilder.append("0,");
+            command.append("0,");
 
         if (KeyManager.down)
-            stringBuilder.append("1,");
+            command.append("1,");
         else
-            stringBuilder.append("0,");
+            command.append("0,");
 
         if (KeyManager.right)
-            stringBuilder.append("1,");
+            command.append("1,");
         else
-            stringBuilder.append("0,");
+            command.append("0,");
 
         if (KeyManager.left)
-            stringBuilder.append("1,");
+            command.append("1,");
         else
-            stringBuilder.append("0,");
+            command.append("0,");
 
         if (MouseManager.rightMouseButton)
-            stringBuilder.append("1,");
+            command.append("1,");
         else
-            stringBuilder.append("0,");
+            command.append("0,");
 
         if (MouseManager.leftMouseButton)
-            stringBuilder.append("1,");
+            command.append("1,");
         else
-            stringBuilder.append("0,");
+            command.append("0,");
 
-        stringBuilder.append(MouseManager.angle);
+            command.append(MouseManager.angle);
 
         try {
-            out.write(stringBuilder.toString().getBytes());
+            out.write(command.toString().getBytes());
         } catch (IOException e) {
             Game.setState(new MainMenuState());
             return;
@@ -184,6 +176,8 @@ public class ClientGameState extends State {
             try {
                 ObjectInputStream managerReader = new ObjectInputStream(managerIn);
                 entityManager = (EntityManager) managerReader.readObject();
+                System.out.println(entityManager.gameWin);
+                System.out.println(entityManager.gameOver);
 
 
                 //SAVE INTO FILE TO CHECK THE SIZE
@@ -206,12 +200,16 @@ public class ClientGameState extends State {
 
     @Override
     public void render(Graphics2D g) {
-        //THIS PART OF CODE DOESN'T RUN AT ALL, (BUG)
-        if (entityManager.gameWin || entityManager.gameOver) {
-            System.out.println("finish");
-            Game.setState(new MainMenuState());
+        if (entityManager.gameWin) {
+            Game.setState(new LostWinState(LostWinState.LostWin.WIN));
             return;
         }
+
+        if (entityManager.gameOver) {
+            Game.setState(new LostWinState(LostWinState.LostWin.LOST));
+            return;
+        }
+
         world.render(g);
         entityManager.render(g, false);
         for (HardWall h : hardWalls)

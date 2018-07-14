@@ -3,6 +3,9 @@ package pack;
 import pack.graphics.Assets;
 import pack.input.KeyManager;
 import pack.input.MouseManager;
+import pack.network.Client;
+import pack.states.ClientGameState;
+import pack.states.GameState;
 import pack.states.MainMenuState;
 import pack.states.State;
 import javax.swing.*;
@@ -36,7 +39,6 @@ public class Game implements Runnable {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
         frame.initBufferStrategy();
-
         KeyManager keyManager = new KeyManager();
         frame.addKeyListener(keyManager);
         MouseManager mouseManager = new MouseManager();
@@ -45,10 +47,8 @@ public class Game implements Runnable {
 
         Assets.init();
 
-    }
-
-    public GameFrame getFrame() {
-        return frame;
+        System.out.println(Assets.cursor.getWidth());
+        frame.setCursor(Toolkit.getDefaultToolkit().createCustomCursor(Assets.cursor, new Point(20, 20), "Gun"));
     }
 
     public void start() {
@@ -110,6 +110,7 @@ public class Game implements Runnable {
 
     public static void setState(State newState) {
         state = newState;
+
     }
 
 }

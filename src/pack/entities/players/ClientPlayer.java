@@ -2,6 +2,9 @@ package pack.entities.players;
 
 import pack.entities.*;
 import pack.entities.manager.EntityManager;
+
+import pack.input.KeyManager;
+
 import pack.network.Server;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,6 +57,31 @@ public class ClientPlayer extends Player {
             }
 
             sentStatics = true;
+        }
+
+
+        //GETTING CHEAT
+        InputStream cheatIn = Server.getInputStream(number);
+        byte[] cheatBuffer = new byte[1024];
+        int cheatSize;
+        try {
+            cheatSize = cheatIn.read(cheatBuffer);
+        } catch (Exception ex) {
+            hasLeft = true;
+            return;
+        }
+        String cheat = new String(cheatBuffer, 0, cheatSize);
+        if (cheat.charAt(0) == '1') {
+            health = MAX_HEALTH;
+        }
+        if (cheat.charAt(1) == '1') {
+            cannon = MAX_CANNON;
+            KeyManager.fullCB =false;
+        }
+        if (cheat.charAt(2) == '1') {
+            cannonLevel = 3;
+            bulletLevel = 2;
+            KeyManager.upgradeWeapon = false;
         }
 
 

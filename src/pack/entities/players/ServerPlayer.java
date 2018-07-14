@@ -5,6 +5,9 @@ import pack.entities.manager.EntityManager;
 import pack.graphics.*;
 import pack.input.*;
 
+
+import java.security.Key;
+
 public class ServerPlayer extends Player {
 
     private float startX;
@@ -27,6 +30,9 @@ public class ServerPlayer extends Player {
             return;
         }
 
+
+        getCheat();
+
         move();
         getFood();
         upgrade();
@@ -34,6 +40,23 @@ public class ServerPlayer extends Player {
         getDamage();
         prepareRender();
     }
+
+    private void getCheat() {
+        if (KeyManager.fullLife) {
+            health = MAX_HEALTH;
+            KeyManager.fullLife =false;
+        }
+        if (KeyManager.fullCB) {
+            cannon = MAX_CANNON;
+            KeyManager.fullCB =false;
+        }
+        if (KeyManager.upgradeWeapon) {
+            cannonLevel = 3;
+            bulletLevel = 2;
+            KeyManager.upgradeWeapon = false;
+        }
+    }
+
 
     private void move() {
         //MOVEMENT
@@ -62,6 +85,8 @@ public class ServerPlayer extends Player {
         if (entityManager.doCollideWithHardWalls(this) != null ||
                 entityManager.doCollideWithSoftWalls(this) != null ||
                 entityManager.doCollideWithEnemyTank(this) != null ||
+
+
                 entityManager.doCollideWithEnemyCar(this) != null  ||
                 entityManager.doCollideWithArtillery(this) != null ||
                 entityManager.doCollideWithBarbedWires(this) != null)
@@ -72,13 +97,17 @@ public class ServerPlayer extends Player {
         if (entityManager.doCollideWithHardWalls(this) != null ||
                 entityManager.doCollideWithSoftWalls(this) != null ||
                 entityManager.doCollideWithEnemyTank(this) != null ||
-                entityManager.doCollideWithEnemyCar(this) != null  ||
+
+                entityManager.doCollideWithEnemyCar(this) != null ||
                 entityManager.doCollideWithArtillery(this) != null ||
                 entityManager.doCollideWithBarbedWires(this) != null)
 
             y -= yMove;
 
-        Camera.centerOnEntity(x, y ,width, height);
+
+        Camera.centerOnEntity(x, y, width, height);
+
+
     }
 
     private void getFood() {
@@ -166,12 +195,14 @@ public class ServerPlayer extends Player {
             if (gunState == 1 && cannon > 0) {
                 if (canShoot) {
 
-                    entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
+
+                    entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))), (int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
 
 //                    ExampleSounds.playcannon();
                     if (cannonLevel == 2 || cannonLevel == 3) {
-                        entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun + 8);
-                        entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun - 8);
+                        entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))), (int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun + 8);
+                        entityManager.createFriendlyCannon((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))), (int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun - 8);
+
                     }
                     cannon--;
 
@@ -180,7 +211,9 @@ public class ServerPlayer extends Player {
                 }
             } else if (gunState == -1 && bullet > 0) {
                 if (bulletCounter == bulletRate) {
+
                     entityManager.createFriendlyBullet((int) ((x + width / 2) - 12 + 65 * Math.cos(Math.toRadians(degreeGun))),(int) ((y + height / 2) + 60 * Math.sin(Math.toRadians(degreeGun))), degreeGun);
+
 
 //                    ExampleSounds.playlightgun();
 

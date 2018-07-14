@@ -80,6 +80,36 @@ public class ClientGameState extends State {
          }
 
 
+         //SENDING CHEAT
+
+            StringBuilder cheat = new StringBuilder();
+            if (KeyManager.fullLife) {
+                cheat.append("1");
+                KeyManager.fullLife = false;
+            } else
+                cheat.append("0");
+
+            if (KeyManager.fullCB) {
+                cheat.append("1");
+                KeyManager.fullCB =false;
+            } else
+                cheat.append("0");
+
+            if (KeyManager.upgradeWeapon) {
+                cheat.append("1");
+                KeyManager.upgradeWeapon = false;
+            } else
+                cheat.append("0");
+
+            OutputStream cheatOut = Client.getOutputStream();
+            try {
+                cheatOut.write(cheat.toString().getBytes());
+            } catch (Exception ex) {
+                Game.setState(new MainMenuState());
+                return;
+            }
+
+
         //SENDING INFO
         OutputStream out = Client.getOutputStream();
         StringBuilder stringBuilder = new StringBuilder();

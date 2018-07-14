@@ -233,7 +233,7 @@ public class EnemyTank extends Entity {
                 }
 
                 if ((!move)&&(!equalXORY)) {
-                    System.out.println("A");
+
                 }
 
                 if (entityManager.doCollideWithPlayer(this) != null) {

@@ -214,8 +214,8 @@ public class EntityManager implements Serializable {
 
     }
 
-    public void createSoftWall(float x, float y) {
-        softWalls.add(new SoftWall(x, y, this));
+    public void createSoftWall(float x, float y, int loot) {
+        softWalls.add(new SoftWall(x, y, this, loot));
     }
 
     public void createGameEnder(float x, float y) {

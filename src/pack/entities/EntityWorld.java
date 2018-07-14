@@ -83,7 +83,12 @@ public class EntityWorld implements Serializable {
                 if (z.equals("g")) entityManager.createMine(x * entityWidth, y * entityHeight);
                 if (z.equals("h")) entityManager.createServerPlayer(x * entityWidth, y * entityHeight);
                 if (z.equals("i")) entityManager.createRepairFood(x * entityWidth, y * entityHeight);
-                if (z.equals("j")) entityManager.createSoftWall(x * entityWidth, y * entityHeight);
+
+                if (z.equals("j")) entityManager.createSoftWall(x * entityWidth, y * entityHeight, 0);
+                if (z.equals("j1")) entityManager.createSoftWall(x * entityWidth, y * entityHeight, 1);
+                if (z.equals("j2")) entityManager.createSoftWall(x * entityWidth, y * entityHeight, 2);
+                if (z.equals("j3")) entityManager.createSoftWall(x * entityWidth, y * entityHeight, 3);
+
                 if (z.equals("k")) entityManager.createUpgrader(x * entityWidth, y * entityHeight);
                 if (z.equals("l")) entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.LEFT);
                 if (z.equals("m")) entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.RIGHT);

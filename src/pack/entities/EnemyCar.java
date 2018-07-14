@@ -90,8 +90,8 @@ public class EnemyCar extends Entity {
                 y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
             }
 
-if (entityManager.containEnemyBullet(bullet)!=null)
-    ExampleSounds.playEnemyBulletToMyTank(true);
+            if (entityManager.containEnemyBullet(bullet)!=null)
+            ExampleSounds.playEnemyBulletToMyTank(true);
 
         }
     }

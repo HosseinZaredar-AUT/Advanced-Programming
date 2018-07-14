@@ -14,10 +14,12 @@ public class SoftWall extends Entity {
 
     private final float MAX_HEALTH = 4;
     private float health;
+    private int loot;
 
-    public SoftWall(float x, float y, EntityManager entityManager) {
+    public SoftWall(float x, float y, EntityManager entityManager, int loot) {
         super(x, y, 100, 100, entityManager);
         health = MAX_HEALTH;
+        this.loot = loot;
     }
 
     @Override
@@ -57,6 +59,11 @@ public class SoftWall extends Entity {
 
         if (health <= 0) {
             entityManager.removeSoftWall(this);
+            switch (loot) {
+                case 1: entityManager.createUpgrader(x, y); break;
+                case 2: entityManager.createCannonFood(x, y); break;
+                case 3: entityManager.createBulletFood(x, y); break;
+            }
 
         }
     }

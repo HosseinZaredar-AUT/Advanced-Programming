@@ -1,13 +1,9 @@
 package pack;
 
-
-import pack.Sound.ExampleSounds;
-
-import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.input.KeyManager;
 import pack.input.MouseManager;
-import pack.states.GameState;
+import pack.states.MainMenuState;
 import pack.states.State;
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +13,7 @@ public class Game implements Runnable {
 
     private final int FPS = 60;
     private GameFrame frame;
-    private State state;
+    private static State state;
 
 
     public static int frameWidth, frameHeight;
@@ -32,6 +28,9 @@ public class Game implements Runnable {
 
     private void init() {
         frame = new GameFrame("JTanks");
+        //to make it fullscreen
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //frame.setUndecorated(true);
         frame.setSize(frameWidth, frameHeight);
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -45,8 +44,6 @@ public class Game implements Runnable {
         frame.addMouseListener(mouseManager);
 
         Assets.init();
-        state = new GameState();
-
 
     }
 
@@ -55,34 +52,25 @@ public class Game implements Runnable {
     }
 
     public void start() {
+
+        state = new MainMenuState();
         ThreadPool.execute(this);
     }
 
     private void tick() {
         state.tick();
-
-
     }
 
     private void render() {
 
+        if (frame.getBufferStrategy() == null)
+            frame.initBufferStrategy();
         Graphics2D g = (Graphics2D) frame.getBufferStrategy().getDrawGraphics();
 
         try {
+            g.clearRect(0, 0, frameWidth, frameHeight);
 
-            //GAME OVER CHECK
-            if (EntityManager.gameOver) {
-                g.setColor(Color.BLACK);
-                g.fillRect(0, 0, frameWidth, frameHeight);
-                g.setColor(Color.WHITE);
-                g.setFont(new Font(Font.SERIF, Font.BOLD, 60));
-                g.drawString("GAME OVER !", 430, 380);
-
-            } else {
-                g.clearRect(0, 0, frameWidth, frameHeight);
-
-                state.render(g);
-            }
+            state.render(g);
 
         } finally {
             g.dispose();
@@ -118,7 +106,10 @@ public class Game implements Runnable {
             }
 
         }
-
-
     }
+
+    public static void setState(State newState) {
+        state = newState;
+    }
+
 }

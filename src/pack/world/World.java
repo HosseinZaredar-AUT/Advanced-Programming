@@ -5,12 +5,13 @@ import pack.graphics.Camera;
 import pack.tiles.Tile;
 import pack.utils.FileLoader;
 import java.awt.*;
+import java.io.Serializable;
+import java.security.SecureRandomParameters;
 
-public class World {
+public class World implements Serializable {
 
-
-    public static int widthInTiles;
-    public static int heightInTiles;
+    private static int widthInTiles;
+    private static int heightInTiles;
     private int[][] tiles;
 
     public World( String path) {
@@ -46,14 +47,14 @@ public class World {
     private void loadWorld(String path) {
         String file = FileLoader.loadFileAsString(path);
         String[] tokens = file.split("\\s+");
-        widthInTiles = 20;
-        heightInTiles = 20;
+        widthInTiles = Integer.parseInt(tokens[0]);
+        heightInTiles = Integer.parseInt(tokens[1]);
 
 
         tiles = new int[widthInTiles][heightInTiles];
         for (int y = 0; y < heightInTiles; y++) {
             for (int x = 0; x < widthInTiles; x++) {
-                tiles[x][y] = FileLoader.parseInt(tokens[(x + y * widthInTiles) + 4]);
+                tiles[x][y] = FileLoader.parseInt(tokens[(x + y * widthInTiles) + 2]);
             }
         }
     }

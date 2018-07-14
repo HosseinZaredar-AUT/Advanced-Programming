@@ -1,8 +1,8 @@
 package pack.entities;
 
+import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -16,8 +16,8 @@ public class Bullet extends Entity {
     public int xPlus, yPlus;
 
 
-    public Bullet(float x, float y, double angle) {
-        super(x, y, 24, 24);
+    public Bullet(float x, float y, double angle, EntityManager entityManager) {
+        super(x, y, 24, 24, entityManager);
         this.angle = angle;
         xSpeed = (float) (SPEED * Math.cos(Math.toRadians(angle)));
         ySpeed = (float) (SPEED * Math.sin(Math.toRadians(angle)));

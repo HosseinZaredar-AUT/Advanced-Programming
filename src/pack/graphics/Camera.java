@@ -39,16 +39,17 @@ public class Camera {
             yOffset = World.getHeightInTiles() * Tile.TILEHEIGHT - Game.frameHeight;
     }
 
-    public static void centerOnEntity(Entity entity) {
-        xOffset = entity.getX() - Game.frameWidth / 2 + entity.getWidth() / 2 + (float) MouseManager.dx / 5;
-        yOffset = entity.getY() - Game.frameHeight / 2 + entity.getHeight() / 2 + (float) MouseManager.dy / 5;
+    public static void centerOnEntity(float x, float y, int width, int height) {
+        xOffset = x - Game.frameWidth / 2 + width / 2 + (float) MouseManager.dx / 5;
+        yOffset = y - Game.frameHeight / 2 + height / 2 + (float) MouseManager.dy / 5;
 
         checkBlankSpace();
 
         //not important but necessary
-        entityX = entity.getX() + (entity.getWidth() / 2);
-        entityY = entity.getY() + (entity.getHeight() / 2);
+        entityX = x + (width / 2);
+        entityY = y + (height / 2);
     }
+
 
     public static float getXOffset() {
         return xOffset;

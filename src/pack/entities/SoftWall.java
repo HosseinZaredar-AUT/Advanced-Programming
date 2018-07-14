@@ -11,8 +11,8 @@ public class SoftWall extends Entity {
     private final float MAX_HEALTH = 4;
     private float health;
 
-    public SoftWall(float x, float y) {
-        super(x, y, 100, 100);
+    public SoftWall(float x, float y, EntityManager entityManager) {
+        super(x, y, 100, 100, entityManager);
         health = MAX_HEALTH;
     }
 
@@ -23,32 +23,32 @@ public class SoftWall extends Entity {
 
     private void getDamage() {
 
-        Cannon friendlyCannon = EntityManager.doCollideWithFriendlyCannon(this);
+        Cannon friendlyCannon = entityManager.doCollideWithFriendlyCannon(this);
         if (friendlyCannon != null) {
-            EntityManager.removeFriendlyCannon(friendlyCannon);
+            entityManager.removeFriendlyCannon(friendlyCannon);
             health -= Cannon.DAMAGE;
         }
 
-        Bullet friendlyBullet = EntityManager.doCollideWithFriendlyBullet(this);
+        Bullet friendlyBullet = entityManager.doCollideWithFriendlyBullet(this);
         if (friendlyBullet != null) {
-            EntityManager.removeFriendlyBullet(friendlyBullet);
+            entityManager.removeFriendlyBullet(friendlyBullet);
             health -= Bullet.DAMAGE;
         }
 
-        Bullet enemyBullet = EntityManager.doCollideWithEnemyBullet(this);
+        Bullet enemyBullet = entityManager.doCollideWithEnemyBullet(this);
         if (enemyBullet != null) {
-            EntityManager.removeEnemyBullet(enemyBullet);
+            entityManager.removeEnemyBullet(enemyBullet);
             health -= Bullet.DAMAGE;
         }
 
-        Cannon enemyCannon = EntityManager.doCollideWithEnemyCannon(this);
+        Cannon enemyCannon = entityManager.doCollideWithEnemyCannon(this);
         if (enemyCannon != null) {
-            EntityManager.removeEnemyCannon(enemyCannon);
+            entityManager.removeEnemyCannon(enemyCannon);
             health -= Cannon.DAMAGE;
         }
 
         if (health <= 0) {
-            EntityManager.removeSoftWall(this);
+            entityManager.removeSoftWall(this);
 
         }
     }

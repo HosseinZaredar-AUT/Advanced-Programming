@@ -20,12 +20,12 @@ public class Artillery extends Entity {
     private final double MAX_ROTATE = 60;
     private float health;
     private boolean alive;
-    private final int CANNON_RATE = 180;
+    private final int CANNON_RATE = 160;
     private int cannonCounter = -1;
 
 
-    public Artillery(float x, float y, Type type) {
-        super(x, y, 100, 100);
+    public Artillery(float x, float y, Type type, EntityManager entityManager) {
+        super(x, y, 100, 100, entityManager);
         health = 2;
         alive = true;
 
@@ -47,9 +47,9 @@ public class Artillery extends Entity {
     private void shoot() {
         if (alive) {
 
-            if ((x > Camera.getXOffset()) && (x < (Camera.getXOffset() + Game.frameWidth)) && (y > Camera.getYOffset())
-                    && (y < (Camera.getYOffset() + Game.frameHeight))) {
-                degreeGun = MouseManager.angleWithEnemy(x, y);
+            //when to shoot...
+            if (entityManager.deltaXToClosestPlayer(this) < (2 * Game.frameWidth / 3) && entityManager.deltaYToClosestPlayer(this) < (2 * Game.frameHeight / 3)) {
+                degreeGun = MouseManager.angleToPlayer(entityManager.getClosestPlayer(this), this);
                 if (-360 <= degreeGun - degreeBase && degreeGun - degreeBase <= -270)
                     degreeGun += 360;
                 if (degreeGun - degreeBase < -MAX_ROTATE)
@@ -60,7 +60,7 @@ public class Artillery extends Entity {
 
                 if (degreeGun - degreeBase != MAX_ROTATE && degreeGun - degreeBase != -MAX_ROTATE) {
                     if (cannonCounter == CANNON_RATE) {
-                        EntityManager.createEnemyCannon(x + width / 2, y + height / 2, degreeGun);
+                        entityManager.createEnemyCannon(x + width / 2, y + height / 2, degreeGun);
                         cannonCounter = -1;
                     }
                     cannonCounter++;
@@ -75,15 +75,15 @@ public class Artillery extends Entity {
         if (alive) {
 
             //GETTING SHOT
-            Bullet bullet = EntityManager.doCollideWithFriendlyBullet(this);
+            Bullet bullet = entityManager.doCollideWithFriendlyBullet(this);
             if (bullet != null) {
-                EntityManager.removeFriendlyBullet(bullet);
+                entityManager.removeFriendlyBullet(bullet);
                 health -= Bullet.DAMAGE;
             }
 
-            Cannon cannon = EntityManager.doCollideWithFriendlyCannon(this);
+            Cannon cannon = entityManager.doCollideWithFriendlyCannon(this);
             if (cannon != null) {
-                EntityManager.removeFriendlyCannon(cannon);
+                entityManager.removeFriendlyCannon(cannon);
                 health -= Cannon.DAMAGE;
             }
 

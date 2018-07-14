@@ -1,5 +1,6 @@
 package pack.entities;
 
+import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import java.awt.*;
@@ -8,8 +9,8 @@ public class Mine extends Entity {
 
     public static final float DAMAGE = 3;
 
-    public Mine(float x, float y) {
-        super(x, y, 100, 100);
+    public Mine(float x, float y, EntityManager entityManager) {
+        super(x, y, 100, 100, entityManager);
     }
 
     @Override
@@ -24,7 +25,7 @@ public class Mine extends Entity {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle((int)x, (int)y, width, height);
+        return new Rectangle((int)x + 20, (int)y + 20, width - 40, height - 40);
     }
 
     @Override

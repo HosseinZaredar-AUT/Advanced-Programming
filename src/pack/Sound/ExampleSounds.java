@@ -1,4 +1,4 @@
-package pack.Sound;
+package pack.sound;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

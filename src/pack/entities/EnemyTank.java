@@ -2,10 +2,10 @@ package pack.entities;
 
 import pack.Game;
 import pack.entities.manager.EntityManager;
+import pack.entities.players.Player;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
 import pack.input.MouseManager;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -21,8 +21,8 @@ public class EnemyTank extends Entity {
     private int fireCounter = 0;
 
 
-    public EnemyTank(float x, float y) {
-        super(x, y, 100, 100);
+    public EnemyTank(float x, float y, EntityManager entityManager) {
+        super(x, y, 100, 100, entityManager);
 
     }
 
@@ -42,22 +42,21 @@ public class EnemyTank extends Entity {
         leftFinal = false;
         rightFinal = false;
 
-//if for game.width and game.height
         boolean equalXORY=true;
-        if (((x > (Camera.getXOffset() - 100)) && (x < (Camera.getXOffset() + Game.frameWidth + 100))) || ((y > Camera.getYOffset() - 100)
-                && (y < (Camera.getYOffset() + Game.frameHeight + 100)))
-                ) {
-            degreeGun = MouseManager.angleWithEnemy(x, y);
+        //if for game.width and game.height
+        if (entityManager.deltaXToClosestPlayer(this) < (Game.frameWidth) && entityManager.deltaYToClosestPlayer(this) < (Game.frameHeight)) {
+            Player closestPlayer = entityManager.getClosestPlayer(this);
+            degreeGun = MouseManager.angleToPlayer(closestPlayer, this);
             //same gun and tank
             boolean flag = true;
-            Cannon cannon = EntityManager.createEnemyCannon(x, y, degreeGun);
+            Cannon cannon = entityManager.createEnemyCannon(x, y, degreeGun);
 
-            while (((Math.abs(cannon.getX() + cannon.xPlus - EntityManager.getPlayer().getX()) > 2)
-                    || (Math.abs(cannon.getY() + cannon.yPlus - EntityManager.getPlayer().getY()) > 2)) &&
+            while (((Math.abs(cannon.getX() + cannon.xPlus - closestPlayer.getX()) > 2)
+                    || (Math.abs(cannon.getY() + cannon.yPlus - closestPlayer.getY()) > 2)) &&
                     (Math.abs(cannon.getBounds().x) < Game.frameWidth) &&
                     (Math.abs(cannon.getBounds().y) < Game.frameHeight)) {
-                if ((EntityManager.doCollideWithHardWalls(cannon) != null)) {
-                    EntityManager.removeEnemyCannon(cannon);
+                if ((entityManager.doCollideWithHardWalls(cannon) != null)) {
+                    entityManager.removeEnemyCannon(cannon);
                     flag = false;
                     break;
                 }
@@ -69,7 +68,7 @@ public class EnemyTank extends Entity {
             cannon.yPlus = 0;
             if (fireCounter != FIRE_Rate) {
                 fireCounter++;
-                EntityManager.removeEnemyCannon(cannon);
+                entityManager.removeEnemyCannon(cannon);
             } else {
                 fireCounter = -1;
             }
@@ -80,14 +79,14 @@ public class EnemyTank extends Entity {
                 degree = degreeGun;
                 x += Math.cos(Math.toRadians(degreeGun)) * SPEED;
                 y += Math.sin(Math.toRadians(degreeGun)) * SPEED;
-                System.out.println(getBounds());
-                if (EntityManager.doCollideWithHardWalls(this) != null) {
-                    EntityManager.removeEnemyCannon(cannon);
+                if (entityManager.doCollideWithHardWalls(this) != null) {
+                    entityManager.removeEnemyCannon(cannon);
                     x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                     y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
                     flag = false;
-                } else if (EntityManager.doCollideWithSoftWalls(this) != null ||
-                        EntityManager.doCollideWithPlayer(this) != null) {
+                } else if (entityManager.doCollideWithSoftWalls(this) != null ||
+                        entityManager.doCollideWithPlayer(this) != null ||
+                        entityManager.doCollideWithBarbedWires(this) != null) {
                     x -= Math.cos(Math.toRadians(degreeGun)) * SPEED;
                     y -= Math.sin(Math.toRadians(degreeGun)) * SPEED;
                     flag = false;
@@ -97,42 +96,42 @@ public class EnemyTank extends Entity {
             if (!flag) {
 
                 boolean move = false;
-                if (((EntityManager.getPlayer().xMove == 0) && (EntityManager.getPlayer().yMove == 0))&&((Math.abs(EntityManager.getPlayer().getY() - y) < 4)||(Math.abs(EntityManager.getPlayer().getX() - x) < 4))) {
+                if (((closestPlayer.getXMove() == 0) && (closestPlayer.getYMove() == 0))&&((Math.abs(closestPlayer.getY() - y) < 4)||(Math.abs(closestPlayer.getX() - x) < 4))) {
                     equalXORY=false;
                 }else {
-                    if ((EntityManager.getPlayer().xMove == 0) && (EntityManager.getPlayer().yMove == 0)) {
-                        if (x > EntityManager.getPlayer().getX()) {
+                    if ((closestPlayer.getXMove() == 0) && (closestPlayer.getYMove() == 0)) {
+                        if (x > closestPlayer.getX()) {
 
                             left = true;
                             leftFinal = true;
                         }
-                        if (x < EntityManager.getPlayer().getX()) {
+                        if (x < closestPlayer.getX()) {
                             right = true;
                             rightFinal = true;
                         }
-                        if (y >= EntityManager.getPlayer().getY()) {
+                        if (y >= closestPlayer.getY()) {
                             up = true;
                             upFinal = true;
                         }
-                        if (y < EntityManager.getPlayer().getY()) {
+                        if (y < closestPlayer.getY()) {
                             down = true;
                             downFinal = true;
                         }
                     } else {
-                        if (x > EntityManager.getPlayer().getX()) {
+                        if (x > closestPlayer.getX()) {
 
                             left = true;
                             leftFinal = true;
                         }
-                        if (x < EntityManager.getPlayer().getX()) {
+                        if (x < closestPlayer.getX()) {
                             right = true;
                             rightFinal = true;
                         }
-                        if (y >= EntityManager.getPlayer().getY()) {
+                        if (y >= closestPlayer.getY()) {
                             up = true;
                             upFinal = true;
                         }
-                        if (y < EntityManager.getPlayer().getY()) {
+                        if (y < closestPlayer.getY()) {
                             down = true;
                             downFinal = true;
                         }
@@ -160,7 +159,7 @@ public class EnemyTank extends Entity {
                         move = true;
                         x += Math.cos(Math.toRadians(degree)) * SPEED;
                         y += Math.sin(Math.toRadians(degree)) * SPEED;
-                        if (EntityManager.doCollideWithHardWalls(this) != null) {
+                        if (entityManager.doCollideWithHardWalls(this) != null) {
 
                             move = false;
                             x -= Math.cos(Math.toRadians(degree)) * SPEED;
@@ -232,12 +231,10 @@ public class EnemyTank extends Entity {
                 }
 
                 if ((!move)&&(!equalXORY)) {
-                    System.out.println("A");
+
                 }
 
-                if (x - Camera.getXOffset() + width > Game.frameWidth || x - Camera.getXOffset() < 0 ||
-                        y - Camera.getYOffset() + height > Game.frameHeight || y - Camera.getYOffset() < 0 || (
-                        EntityManager.doCollideWithPlayer(this) != null)) {
+                if (entityManager.doCollideWithPlayer(this) != null) {
                     x -= Math.cos(Math.toRadians(degree)) * SPEED;
                     y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
@@ -245,18 +242,20 @@ public class EnemyTank extends Entity {
 
                     y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
-                    if (EntityManager.doCollideWithHardWalls(this) != null ||
-                            EntityManager.doCollideWithSoftWalls(this) != null ||
-                            EntityManager.doCollideWithEnemyTank(this) != null ||
-                            EntityManager.doCollideWithEnemyCar(this) != null)
+                    if (entityManager.doCollideWithHardWalls(this) != null ||
+                            entityManager.doCollideWithSoftWalls(this) != null ||
+                            entityManager.doCollideWithEnemyTank(this) != null ||
+                            entityManager.doCollideWithEnemyCar(this) != null ||
+                            entityManager.doCollideWithBarbedWires(this) != null)
                         x -= Math.cos(Math.toRadians(degree)) * SPEED;
                     ;
 
                     y += Math.sin(Math.toRadians(degree)) * SPEED;
-                    if (EntityManager.doCollideWithHardWalls(this) != null ||
-                            EntityManager.doCollideWithSoftWalls(this) != null ||
-                            EntityManager.doCollideWithEnemyTank(this) != null ||
-                            EntityManager.doCollideWithEnemyCar(this) != null)
+                    if (entityManager.doCollideWithHardWalls(this) != null ||
+                            entityManager.doCollideWithSoftWalls(this) != null ||
+                            entityManager.doCollideWithEnemyTank(this) != null ||
+                            entityManager.doCollideWithEnemyCar(this) != null ||
+                            entityManager.doCollideWithBarbedWires(this) != null)
                         y -= Math.sin(Math.toRadians(degree)) * SPEED;
 
                 }
@@ -267,20 +266,20 @@ public class EnemyTank extends Entity {
     }
 
     private void getDamage() {
-        Bullet bullet = EntityManager.doCollideWithFriendlyBullet(this);
+        Bullet bullet = entityManager.doCollideWithFriendlyBullet(this);
         if (bullet != null) {
             health -= Bullet.DAMAGE;
-            EntityManager.removeFriendlyBullet(bullet);
+            entityManager.removeFriendlyBullet(bullet);
         }
 
-        Cannon cannon = EntityManager.doCollideWithFriendlyCannon(this);
+        Cannon cannon = entityManager.doCollideWithFriendlyCannon(this);
         if (cannon != null) {
             health -= Cannon.DAMAGE;
-            EntityManager.removeFriendlyCannon(cannon);
+            entityManager.removeFriendlyCannon(cannon);
         }
 
         if (health <= 0) {
-            EntityManager.removeEnemyTank(this);
+            entityManager.removeEnemyTank(this);
         }
     }
 
@@ -297,8 +296,8 @@ public class EnemyTank extends Entity {
 
 
         BufferedImage imageGun = Assets.enemyTankGun;
-        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset() + 18), (int) (y - Camera.getYOffset() + 13));
-        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 4 + 4, imageGun.getHeight() / 4 + 4);
+        AffineTransform transformGun = AffineTransform.getTranslateInstance((int) (x - Camera.getXOffset()) + 15, (int) (y - Camera.getYOffset()));
+        transformGun.rotate(Math.toRadians(degreeGun), imageGun.getWidth() / 2 - 15, imageGun.getHeight() / 2);
 
 
         g.drawImage(imageGun, transformGun, null);
@@ -307,9 +306,8 @@ public class EnemyTank extends Entity {
     @Override
     public Rectangle getBounds() {
 
-        return new Rectangle((int) x, (int) y, width, height);
+        return new Rectangle((int) x + 2 * SPEED / 3, (int) y + 2 * SPEED / 3, width - 4 * SPEED / 3 , height - 4 * SPEED / 3);
     }
-
 
     @Override
     public boolean equals(Object obj) {

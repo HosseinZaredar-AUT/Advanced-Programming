@@ -1,17 +1,22 @@
 package pack.entities;
 
-import java.awt.*;
+import pack.entities.manager.EntityManager;
 
-public abstract class Entity {
+import java.awt.*;
+import java.io.Serializable;
+
+public abstract class Entity implements Serializable {
 
     protected float x, y;
     protected int width, height;
+    protected EntityManager entityManager;
 
-    public Entity(float x, float y, int width, int height){
+    public Entity(float x, float y, int width, int height, EntityManager entityManager){
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
+        this.entityManager = entityManager;
     }
 
     public abstract void tick();

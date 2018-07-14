@@ -2,35 +2,36 @@ package pack.entities;
 
 import pack.entities.manager.EntityManager;
 import pack.utils.FileLoader;
+import java.io.Serializable;
 
 
-public class EntityWorld {
+public class EntityWorld implements Serializable {
+
+    private int widthInEntity;
+    private int heightInEntity;
+    private int entityWidth = 100;
+    private int entityHeight = 100;
+    private EntityManager entityManager;
 
 
-    public static int widthInEntity;
-    public static int heightInEntity;
 
-    public EntityWorld() {
-
-        loadWorld("res/entityWorld/entityWorld.txt");
+    public EntityWorld(EntityManager entityManager , String backgroundWorld, String foregroundWorld) {
+        this.entityManager = entityManager;
+        loadBackground(backgroundWorld);
+        loadForeground(foregroundWorld);
 
     }
 
+    private void loadBackground(String path) {
+        String background = FileLoader.loadFileAsString(path);
+        String[] tokens = background.split("\\s+");
 
-
-
-    private void loadWorld(String path) {
-        String file = FileLoader.loadFileAsString(path);
-        String[] tokens = file.split("\\s+");
-        // not automatic
-
-        widthInEntity = 100;
-        heightInEntity = 100;
-
-
+        widthInEntity = Integer.parseInt(tokens[0]);
+        heightInEntity = Integer.parseInt(tokens[1]);
 
         /*
 
+        BarbedWire: a
         BulletFood : b
         CannonFood : c
         EnemyTank : d
@@ -45,6 +46,7 @@ public class EntityWorld {
         َ Artillery_Right : m
         َ Artillery_Down : n
         َ Artillery_Up : o
+        GameEnder : p
 
 
 
@@ -52,44 +54,50 @@ public class EntityWorld {
         */
 
         char z = ' ';
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
-                z = tokens[x+y*20].charAt(0);
+        for (int y = 0; y < widthInEntity ; y++) {
+            for (int x = 0; x < heightInEntity; x++) {
+                z = tokens[x + (y * heightInEntity) + 2].charAt(0);
 
-                if (z == 'b') EntityManager.createBulletFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'c') EntityManager.createCannonFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'd') EntityManager.createEnemyTank(x*widthInEntity,y*heightInEntity);
-                if (z == 'e') EntityManager.createEnemyCar(x*widthInEntity,y*heightInEntity);
-                if (z == 'f') EntityManager.createHardWall(x*widthInEntity,y*heightInEntity);
-                if (z == 'g') EntityManager.createMine(x*widthInEntity,y*heightInEntity);
-                if (z == 'h') EntityManager.createPlayer(x*widthInEntity,y*heightInEntity);
-                if (z == 'i') EntityManager.createRepairFood(x*widthInEntity,y*heightInEntity);
-                if (z == 'j') EntityManager.createSoftWall(x*widthInEntity,y*heightInEntity);
-                if (z == 'k') EntityManager.createUpgrader(x*widthInEntity,y*heightInEntity);
-                if (z == 'l') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.LEFT);
-                if (z == 'm') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.RIGHT);
-                if (z == 'n') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.DOWN);
-                if (z == 'o') EntityManager.createArtillery(x*widthInEntity,y*heightInEntity, Artillery.Type.UP);
+                if (z == 'a') entityManager.createBarbedWire(x * entityWidth, y * entityHeight);
+                if (z == 'b') entityManager.createBulletFood(x * entityWidth, y * entityHeight);
+                if (z == 'c') entityManager.createCannonFood(x * entityWidth, y * entityHeight);
+                if (z == 'd') entityManager.createEnemyTank(x * entityWidth, y * entityHeight);
+                if (z == 'e') entityManager.createEnemyCar(x * entityWidth, y * entityHeight);
+                if (z == 'f') entityManager.createHardWall(x * entityWidth, y * entityHeight);
+                if (z == 'g') entityManager.createMine(x * entityWidth, y * entityHeight);
+                if (z == 'h') entityManager.createServerPlayer(x * entityWidth, y * entityHeight);
+                if (z == 'i') entityManager.createRepairFood(x * entityWidth, y * entityHeight);
+                if (z == 'j') entityManager.createSoftWall(x * entityWidth, y * entityHeight);
+                if (z == 'k') entityManager.createUpgrader(x * entityWidth, y * entityHeight);
+                if (z == 'l') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.LEFT);
+                if (z == 'm') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.RIGHT);
+                if (z == 'n') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.DOWN);
+                if (z == 'o') entityManager.createArtillery(x * entityWidth, y * entityHeight, Artillery.Type.UP);
+                if (z == 'p') entityManager.createGameEnder(x * entityWidth, y * entityHeight);
+            }
+
+        }
+
+    }
+
+
+    private void loadForeground(String path) {
+
+        //Bushes (and other possible foreground entities)
+        String foreground = FileLoader.loadFileAsString(path);
+        String[] tokens = foreground.split("\\s+");
+        char z = ' ';
+        for (int y = 0; y < widthInEntity ; y++) {
+            for (int x = 0; x < heightInEntity; x++) {
+                z = tokens[x + (y * heightInEntity) + 2].charAt(0);
+
+                if (z == 'b') entityManager.createBush(x * entityWidth, y * entityHeight);
+
             }
         }
 
-
-
-
-        }
-
-
-
-
-
-
-    public static int getWidthInEntity() {
-        return widthInEntity;
     }
 
-    public static int getHeightInEntity() {
 
-        return heightInEntity;
-    }
 
 }

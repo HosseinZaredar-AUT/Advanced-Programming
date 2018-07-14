@@ -1,17 +1,18 @@
 package pack.input;
 
+import pack.entities.Entity;
 import pack.graphics.Camera;
-
+import pack.ui.MyUIManager;
 import javax.swing.*;
-import javax.swing.event.MouseInputListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 public class MouseManager extends MouseAdapter {
 
+    private static MyUIManager uiManager;
+
     public static boolean leftMouseButton;
+    public static boolean rightMouseButton;
     public static int rightMouseButtonFlag = 1;
 
     public static double angle;
@@ -23,6 +24,8 @@ public class MouseManager extends MouseAdapter {
         dx = e.getX() - Camera.getEntityX() + Camera.getXOffset();
         dy = e.getY() - Camera.getEntityY() + Camera.getYOffset();
         angle = (Math.atan2(dy, dx) / (Math.PI)) * 180;
+        if(uiManager != null)
+            uiManager.onMouseMove(e);
     }
 
     @Override
@@ -43,18 +46,29 @@ public class MouseManager extends MouseAdapter {
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e))
             leftMouseButton = true;
+        if (SwingUtilities.isRightMouseButton(e))
+            rightMouseButton = true;
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e))
+        if (SwingUtilities.isLeftMouseButton(e)) {
             leftMouseButton = false;
+            if(uiManager != null)
+                uiManager.onMouseRelease(e);
+        }
+        if (SwingUtilities.isRightMouseButton(e))
+            rightMouseButton = false;
     }
 
-    public static double angleWithEnemy(float x,float y){
-        float dx = x - Camera.getEntityX() ;
-        float dy = y - Camera.getEntityY() ;
+    public static double angleToPlayer(Entity player, Entity enemy){
+        float dx = enemy.getX() - player.getX();
+        float dy = enemy.getY() - player.getY();
         return  (Math.atan2(dy, dx) / (Math.PI)) * 180 + 180;
+    }
+
+    public static void setUIManager(MyUIManager manager) {
+        uiManager = manager;
     }
 
 }

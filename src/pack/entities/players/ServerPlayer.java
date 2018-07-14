@@ -215,6 +215,7 @@ public class ServerPlayer extends Player {
         }
 
         if (health <= 0) {
+            health = 0;
             alive = false;
         }
 

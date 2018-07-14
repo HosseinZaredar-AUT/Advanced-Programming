@@ -13,10 +13,12 @@ public class EntityWorld implements Serializable {
     private int entityHeight = 100;
     private EntityManager entityManager;
 
-    public EntityWorld(EntityManager entityManager) {
+
+
+    public EntityWorld(EntityManager entityManager , String backgroundWorld, String foregroundWorld) {
         this.entityManager = entityManager;
-        loadBackground("res/entityWorld/backgroundWorld.txt");
-        loadForeground("res/entityWorld/foregroundWorld.txt");
+        loadBackground(backgroundWorld);
+        loadForeground(foregroundWorld);
 
     }
 

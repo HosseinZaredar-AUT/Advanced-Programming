@@ -136,11 +136,17 @@ public class ClientGameState extends State {
 
         String position = new String(buffer, 0, size);
         String[] tokens = position.split(",");
-        health = Integer.parseInt(tokens[0]);
-        cannon = Integer.parseInt(tokens[1]);
-        bullet = Integer.parseInt(tokens[2]);
-        float x = Float.parseFloat(tokens[3]);
-        float y = Float.parseFloat(tokens[4]);
+
+        float x = 0,y = 0;
+        try {
+            health = Integer.parseInt(tokens[0]);
+            cannon = Integer.parseInt(tokens[1]);
+            bullet = Integer.parseInt(tokens[2]);
+            x = Float.parseFloat(tokens[3]);
+            y = Float.parseFloat(tokens[4]);
+        } catch (Exception ex) {
+
+        }
 
         Camera.centerOnEntity(x, y, 100, 100);
 
@@ -170,8 +176,7 @@ public class ClientGameState extends State {
 
     @Override
     public void render(Graphics2D g) {
-        System.out.println("win: " + entityManager.gameWin);
-        System.out.println("over: " + entityManager.gameOver);
+        //THIS PART OF CODE DOESN'T RUN AT ALL, (BUG)
         if (entityManager.gameWin || entityManager.gameOver) {
             System.out.println("finish");
             Game.setState(new MainMenuState());

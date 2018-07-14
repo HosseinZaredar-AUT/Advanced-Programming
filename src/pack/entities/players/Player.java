@@ -1,9 +1,12 @@
 package pack.entities.players;
 
+import pack.Game;
 import pack.entities.Entity;
 import pack.entities.manager.EntityManager;
 import pack.graphics.Assets;
 import pack.graphics.Camera;
+import pack.states.GameState;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -31,13 +34,13 @@ public class Player extends Entity {
     protected int bulletCounter = 0;
 
 
-    protected final float MAX_HEALTH = 5;
+    protected final float MAX_HEALTH;
     protected float health;
 
-    protected final int MAX_CANNON = 50;
+    protected final int MAX_CANNON;
     protected int cannon;
 
-    protected final int MAX_BULLET = 200;
+    protected final int MAX_BULLET;
     protected int bullet;
 
     protected boolean alive = true;
@@ -55,8 +58,11 @@ public class Player extends Entity {
         super(x, y, 100, 100, entityManager);
         this.number = number;
         gunState = 1;
+        MAX_HEALTH = GameState.maxPlayerHealth;
         health = MAX_HEALTH;
+        MAX_BULLET = GameState.maxPlayerBullet;
         bullet = MAX_BULLET;
+        MAX_CANNON = GameState.maxPlayerCannon;
         cannon = MAX_CANNON;
         xSpeed = (float)(Math.sqrt(2) / 2 * SPEED);
         ySpeed = (float)(Math.sqrt(2) / 2 * SPEED);

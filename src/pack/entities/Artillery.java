@@ -20,7 +20,7 @@ public class Artillery extends Entity {
     private final double MAX_ROTATE = 60;
     private float health;
     private boolean alive;
-    private final int CANNON_RATE = 180;
+    private final int CANNON_RATE = 160;
     private int cannonCounter = -1;
 
 

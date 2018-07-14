@@ -38,7 +38,6 @@ public class Server implements Runnable {
 
             } catch (IOException e) {
                  e.printStackTrace();
-            System.out.println("SHIT");
             }
 
 

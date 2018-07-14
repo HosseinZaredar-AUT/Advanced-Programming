@@ -12,7 +12,8 @@ public class Assets {
             artilleryBase, artilleryGun, artilleryDead, mine,
             enemyTank, enemyTankGun, enemyCar, enemyCarGun, barbedWire,
             bush, gameEnder, cannonNum, bulletNum, healthNum,
-            menuBackground, createGame[], joinGame[], exit[] ;
+            menuBackground, createGame[], joinGame[], exit[],
+            easy[], normal[], hard[];
 
 
     public static void init() {
@@ -81,6 +82,18 @@ public class Assets {
         exit = new BufferedImage[2];
         exit[0] = pack.utils.ImageLoader.load("res/textures/exit0.png");
         exit[1] = pack.utils.ImageLoader.load("res/textures/exit1.png");
+
+        easy = new BufferedImage[2];
+        easy[0] = pack.utils.ImageLoader.load("res/textures/easy0.png");
+        easy[1] = pack.utils.ImageLoader.load("res/textures/easy1.png");
+
+        normal = new BufferedImage[2];
+        normal[0] = pack.utils.ImageLoader.load("res/textures/normal0.png");
+        normal[1] = pack.utils.ImageLoader.load("res/textures/normal1.png");
+
+        hard = new BufferedImage[2];
+        hard[0] = pack.utils.ImageLoader.load("res/textures/hard0.png");
+        hard[1] = pack.utils.ImageLoader.load("res/textures/hard1.png");
     }
 
 }

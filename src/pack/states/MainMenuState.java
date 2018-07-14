@@ -28,7 +28,37 @@ public class MainMenuState extends State {
         UIImageButton createGame = new UIImageButton(250, 100, 300, 45, Assets.createGame, new ClickListener() {
             @Override
             public void onClick() {
-                GameState gameState = new GameState();
+
+            }
+        });
+
+        UIImageButton easy = new UIImageButton(550, 105, 100, 35, Assets.easy, new ClickListener() {
+            @Override
+            public void onClick() {
+
+                GameState gameState = new GameState(GameState.Difficulty.EASY);
+                ThreadPool.execute(new Server(gameState));
+                Game.setState(gameState);
+                MouseManager.setUIManager(null);
+            }
+        });
+
+        UIImageButton normal = new UIImageButton(650, 105, 100, 35, Assets.normal, new ClickListener() {
+            @Override
+            public void onClick() {
+
+                GameState gameState = new GameState(GameState.Difficulty.NORMAL);
+                ThreadPool.execute(new Server(gameState));
+                Game.setState(gameState);
+                MouseManager.setUIManager(null);
+            }
+        });
+
+        UIImageButton hard = new UIImageButton(750, 105, 100, 35, Assets.hard, new ClickListener() {
+            @Override
+            public void onClick() {
+
+                GameState gameState = new GameState(GameState.Difficulty.HARD);
                 ThreadPool.execute(new Server(gameState));
                 Game.setState(gameState);
                 MouseManager.setUIManager(null);
@@ -45,7 +75,6 @@ public class MainMenuState extends State {
                     MouseManager.setUIManager(null);
 
                 }
-
             }
         });
 
@@ -56,6 +85,10 @@ public class MainMenuState extends State {
             }
         });
 
+
+        uiManager.addObject(easy);
+        uiManager.addObject(normal);
+        uiManager.addObject(hard);
         uiManager.addObject(createGame);
         uiManager.addObject(joinGame);
         uiManager.addObject(exit);

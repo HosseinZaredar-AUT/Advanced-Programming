@@ -8,17 +8,23 @@ import java.util.ArrayList;
 
 public class GameState extends State {
 
+    public enum Difficulty {
+        EASY, NORMAL, HARD;
+    }
+
+    public static float maxPlayerHealth;
+    public static int maxPlayerCannon;
+    public static int maxPlayerBullet;
     private World world;
     private long lastRender;
     private ArrayList<Float> fpsHistory;
     private EntityWorld entityWorld;
     private EntityManager entityManager;
-    private int count = 0;
 //    public static LocalTime localTime1;
 
 
 
-    public GameState() {
+    public GameState(Difficulty difficulty) {
         //localTime1=LocalTime.now();
 
         fpsHistory = new ArrayList<>();
@@ -27,11 +33,32 @@ public class GameState extends State {
 //        ExampleSounds exampleSounds = new ExampleSounds();
         //ExampleSounds.playgameSound1();
 
+        switch (difficulty) {
+            case EASY: maxPlayerHealth = 8;
+            maxPlayerCannon = 100;
+            maxPlayerBullet = 300;
+            break;
+            case NORMAL: maxPlayerHealth = 6;
+            maxPlayerCannon = 60;
+            maxPlayerBullet = 200;
+            break;
+            case HARD: maxPlayerHealth = 4;
+            maxPlayerCannon = 40;
+            maxPlayerBullet = 100;
+        }
+
         entityManager = new EntityManager();
-        if (entityManager == null)
-            System.out.println("NULL");
         world = new World("res/world/worldFile.txt");
-        entityWorld = new EntityWorld(entityManager);
+
+        switch (difficulty) {
+            case HARD:
+                entityWorld = new EntityWorld(entityManager, "res/entityWorld/backgroundWorldHard.txt", "res/entityWorld/foregroundWorld.txt");
+                break;
+            case NORMAL:
+                entityWorld = new EntityWorld(entityManager, "res/entityWorld/backgroundWorldNormal.txt", "res/entityWorld/foregroundWorld.txt");
+            case EASY:
+                entityWorld = new EntityWorld(entityManager, "res/entityWorld/backgroundWorldEasy.txt", "res/entityWorld/foregroundWorld.txt");
+        }
 
     }
 

@@ -268,6 +268,7 @@ public class ClientPlayer extends Player {
         }
 
         if (health <= 0) {
+            health = 0;
             alive = false;
         }
 

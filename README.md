@@ -1,2 +1,5 @@
-# JTanks
-Final project for `Advanced Programming` course.
+# Advanced Programming
+
+A multi-player 2D game called JTanks!
+<br>
+Implemented by Hossein Zaredar and Amirhossein Khoshbin.
